@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"tractor.dev/toolkit/engine/log"
+	"tractor.dev/toolkit-go/engine/log"
 )
 
 // Initializer is initialized before services are started. Returning

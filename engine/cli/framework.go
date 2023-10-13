@@ -9,7 +9,7 @@ import (
 	"reflect"
 	"strconv"
 
-	"tractor.dev/toolkit/engine/log"
+	"tractor.dev/toolkit-go/engine/log"
 )
 
 // Initializer is a hook to allow units to customize the root Command.

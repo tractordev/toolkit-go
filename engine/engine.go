@@ -2,16 +2,14 @@ package engine
 
 import (
 	"context"
-	stdlog "log"
 	"os"
 	"path/filepath"
 	"reflect"
 
 	_ "embed"
 
-	"tractor.dev/toolkit/engine/cli"
-	"tractor.dev/toolkit/engine/daemon"
-	"tractor.dev/toolkit/engine/log"
+	"tractor.dev/toolkit-go/engine/cli"
+	"tractor.dev/toolkit-go/engine/daemon"
 )
 
 var (
@@ -118,8 +116,6 @@ func Init() {
 		}
 		Identifier = filepath.Base(path)
 	}
-	stdlog.SetOutput(log.DefaultLogger)
-	stdlog.SetFlags(0)
 }
 
 // Run assembles units and starts the program.
@@ -145,11 +141,6 @@ func Run(units ...Unit) {
 	// add cli framework
 	c := &cli.Framework{}
 	if err := asm.Add(c); err != nil {
-		panic(err)
-	}
-
-	// add logger
-	if err := asm.Add(log.DefaultLogger); err != nil {
 		panic(err)
 	}
 
@@ -189,27 +180,5 @@ func Terminate() {
 			t.Terminate()
 			return
 		}
-	}
-}
-
-func Logger() *log.Logger {
-	return log.DefaultLogger
-}
-
-func Info(v ...any) {
-	Logger().Log(2, "INFO", v...)
-}
-
-func Debug(v ...any) {
-	Logger().Log(2, "DEBUG", v...)
-}
-
-func Fatal(v ...any) {
-	Logger().Log(2, "FATAL", v...)
-}
-
-func FatalErr(err error) {
-	if err != nil {
-		Logger().Log(2, "FATAL", err)
 	}
 }

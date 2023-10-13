@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"tractor.dev/toolkit/engine"
-	"tractor.dev/toolkit/engine/daemon"
+	"tractor.dev/toolkit-go/engine"
+	"tractor.dev/toolkit-go/engine/daemon"
 )
 
 type initService struct {
