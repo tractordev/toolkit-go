@@ -3,6 +3,7 @@ package daemon
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"os"
 	"os/signal"
 	"reflect"
@@ -10,8 +11,6 @@ import (
 	"sync/atomic"
 	"syscall"
 	"time"
-
-	"tractor.dev/toolkit-go/engine/log"
 )
 
 // Initializer is initialized before services are started. Returning
@@ -37,7 +36,7 @@ type Framework struct {
 	Terminators  []Terminator
 	Context      context.Context
 	OnFinished   func()
-	Log          *log.Logger
+	Log          *slog.Logger
 
 	running    int32
 	cancel     context.CancelFunc
@@ -74,7 +73,7 @@ func (d *Framework) Run(ctx context.Context) error {
 
 	// call initializers
 	for _, i := range d.Initializers {
-		d.Log.Debug("initializing", ptrName(i))
+		d.Log.Debug("initializing", "service", ptrName(i))
 		if err := i.InitializeDaemon(); err != nil {
 			return err
 		}
@@ -106,7 +105,7 @@ func (d *Framework) Run(ctx context.Context) error {
 			defer func() {
 				if r := recover(); r != nil {
 					d.Log.Info("serve panic from ", ptrName(s))
-					d.Log.Debug(r)
+					d.Log.Debug("serve panic:", r)
 				}
 			}()
 			defer wg.Done()
@@ -180,7 +179,7 @@ func (d *Framework) Terminate() {
 			d.Log.Debug("terminating", ptrName(t))
 			// TODO: timeout
 			if err := t.TerminateDaemon(ctx); err != nil {
-				d.Log.Info(err)
+				d.Log.Info("terminate error:", err)
 			}
 			wg.Done()
 		}(d.Terminators[i])

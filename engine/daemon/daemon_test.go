@@ -2,6 +2,7 @@ package daemon_test
 
 import (
 	"context"
+	"log/slog"
 	"testing"
 	"time"
 
@@ -48,7 +49,7 @@ func TestDaemon(t *testing.T) {
 	s3 := new(termService)
 
 	r, _ := engine.New()
-	fatal(t, r.Add(s1, s2, s3))
+	fatal(t, r.Add(s1, s2, s3, slog.Default()))
 
 	d := &daemon.Framework{}
 	r.Assemble(d)

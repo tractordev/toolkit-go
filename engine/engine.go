@@ -2,11 +2,11 @@ package engine
 
 import (
 	"context"
+	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"reflect"
-
-	_ "embed"
 
 	"tractor.dev/toolkit-go/engine/cli"
 	"tractor.dev/toolkit-go/engine/daemon"
@@ -124,7 +124,7 @@ func Run(units ...Unit) {
 
 	asm, err := New(units...)
 	if err != nil {
-		Fatal(err)
+		log.Fatal(err)
 	}
 
 	// add assembly
@@ -144,6 +144,11 @@ func Run(units ...Unit) {
 		panic(err)
 	}
 
+	// add logger
+	if err := asm.Add(slog.Default()); err != nil {
+		panic(err)
+	}
+
 	// re-assemble
 	asm, err = Assemble(asm.Units()...)
 	if err != nil {
@@ -160,8 +165,7 @@ func Run(units ...Unit) {
 		r, ok := u.(Runner)
 		if ok {
 			if err := r.Run(context.Background()); err != nil {
-				Fatal(err)
-				os.Exit(1)
+				log.Fatal(err)
 			}
 			return
 		}

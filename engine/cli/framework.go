@@ -5,11 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"reflect"
 	"strconv"
-
-	"tractor.dev/toolkit-go/engine/log"
 )
 
 // Initializer is a hook to allow units to customize the root Command.
@@ -33,7 +32,6 @@ type Framework struct {
 	Initializers  []Initializer
 	Preprocessors []Preprocessor
 	Root          *Command
-	Log           *log.Logger
 }
 
 // Initialize sets up a Root command that simply runs the
@@ -45,7 +43,7 @@ func (f *Framework) Initialize() {
 				panic("only runner is cli.Framework")
 			}
 			if err := f.DefaultRunner.Run(ctx); err != nil {
-				f.Log.Fatal(err)
+				log.Fatal(err)
 			}
 		},
 	}
