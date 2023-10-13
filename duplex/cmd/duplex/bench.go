@@ -16,8 +16,8 @@ import (
 	"tractor.dev/toolkit-go/duplex/fn"
 	"tractor.dev/toolkit-go/duplex/interop"
 	"tractor.dev/toolkit-go/duplex/mux"
-	"tractor.dev/toolkit-go/duplex/pipe/quic"
 	"tractor.dev/toolkit-go/duplex/rpc"
+	"tractor.dev/toolkit-go/duplex/x/quic"
 	"tractor.dev/toolkit-go/engine/cli"
 )
 
