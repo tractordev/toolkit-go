@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"tractor.dev/toolkit/duplex/codec"
-	"tractor.dev/toolkit/duplex/mux"
+	"tractor.dev/toolkit-go/duplex/codec"
+	"tractor.dev/toolkit-go/duplex/mux"
 )
 
 // RemoteError is an error that has been returned from

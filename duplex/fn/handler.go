@@ -6,8 +6,8 @@ import (
 	"runtime"
 	"strings"
 
-	"tractor.dev/toolkit/duplex/mux"
-	"tractor.dev/toolkit/duplex/rpc"
+	"tractor.dev/toolkit-go/duplex/mux"
+	"tractor.dev/toolkit-go/duplex/rpc"
 )
 
 // HandlerFrom uses reflection to return a handler from either a function or

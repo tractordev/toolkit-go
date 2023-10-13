@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"tractor.dev/toolkit/engine/cli"
+	"tractor.dev/toolkit-go/engine/cli"
 )
 
 func main() {

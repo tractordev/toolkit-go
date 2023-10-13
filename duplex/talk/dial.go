@@ -3,8 +3,8 @@ package talk
 import (
 	"fmt"
 
-	"tractor.dev/toolkit/duplex/codec"
-	"tractor.dev/toolkit/duplex/mux"
+	"tractor.dev/toolkit-go/duplex/codec"
+	"tractor.dev/toolkit-go/duplex/mux"
 )
 
 // A Dialer connects to address and establishes a mux.Session

@@ -1,9 +1,9 @@
 package talk
 
 import (
-	"tractor.dev/toolkit/duplex/codec"
-	"tractor.dev/toolkit/duplex/mux"
-	"tractor.dev/toolkit/duplex/rpc"
+	"tractor.dev/toolkit-go/duplex/codec"
+	"tractor.dev/toolkit-go/duplex/mux"
+	"tractor.dev/toolkit-go/duplex/rpc"
 )
 
 // Peer is a mux session, RPC client and responder, all in one.

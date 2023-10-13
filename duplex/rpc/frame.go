@@ -5,7 +5,7 @@ import (
 	"encoding/binary"
 	"io"
 
-	"tractor.dev/toolkit/duplex/codec"
+	"tractor.dev/toolkit-go/duplex/codec"
 )
 
 // FrameCodec is a special codec used to actually read/write other

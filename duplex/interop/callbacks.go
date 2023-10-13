@@ -4,7 +4,7 @@ import (
 	"io"
 	"log"
 
-	"tractor.dev/toolkit/duplex/rpc"
+	"tractor.dev/toolkit-go/duplex/rpc"
 )
 
 type CallbackService struct{}

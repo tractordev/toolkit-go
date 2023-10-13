@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/quic-go/quic-go"
-	"tractor.dev/toolkit/duplex/mux"
+	"tractor.dev/toolkit-go/duplex/mux"
 )
 
 func fatal(err error, t *testing.T) {

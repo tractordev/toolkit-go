@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"tractor.dev/toolkit/duplex/mux/frame"
+	"tractor.dev/toolkit-go/duplex/mux/frame"
 )
 
 const (

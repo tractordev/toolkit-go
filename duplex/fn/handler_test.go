@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"tractor.dev/toolkit/duplex/codec"
-	"tractor.dev/toolkit/duplex/rpc"
-	"tractor.dev/toolkit/duplex/rpc/rpctest"
+	"tractor.dev/toolkit-go/duplex/codec"
+	"tractor.dev/toolkit-go/duplex/rpc"
+	"tractor.dev/toolkit-go/duplex/rpc/rpctest"
 )
 
 func TestHandlerFromBadData(t *testing.T) {

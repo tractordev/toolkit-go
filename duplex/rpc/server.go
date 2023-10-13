@@ -6,8 +6,8 @@ import (
 	"log"
 	"net"
 
-	"tractor.dev/toolkit/duplex/codec"
-	"tractor.dev/toolkit/duplex/mux"
+	"tractor.dev/toolkit-go/duplex/codec"
+	"tractor.dev/toolkit-go/duplex/mux"
 )
 
 // Server wraps a Handler and codec to respond to RPC calls.

@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"tractor.dev/toolkit/duplex/codec"
-	"tractor.dev/toolkit/duplex/mux"
+	"tractor.dev/toolkit-go/duplex/codec"
+	"tractor.dev/toolkit-go/duplex/mux"
 )
 
 func fatal(t *testing.T, err error) {

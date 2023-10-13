@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"github.com/mitchellh/mapstructure"
-	"tractor.dev/toolkit/duplex/codec"
-	"tractor.dev/toolkit/duplex/mux"
+	"tractor.dev/toolkit-go/duplex/codec"
+	"tractor.dev/toolkit-go/duplex/mux"
 )
 
 // A Caller is able to perform remote calls.

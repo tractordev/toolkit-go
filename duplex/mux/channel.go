@@ -6,7 +6,7 @@ import (
 	"io"
 	"sync"
 
-	"tractor.dev/toolkit/duplex/mux/frame"
+	"tractor.dev/toolkit-go/duplex/mux/frame"
 )
 
 type channelDirection uint8

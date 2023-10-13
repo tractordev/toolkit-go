@@ -12,13 +12,13 @@ import (
 	"strings"
 	"time"
 
-	"tractor.dev/toolkit/duplex/codec"
-	"tractor.dev/toolkit/duplex/fn"
-	"tractor.dev/toolkit/duplex/interop"
-	"tractor.dev/toolkit/duplex/mux"
-	"tractor.dev/toolkit/duplex/pipe/quic"
-	"tractor.dev/toolkit/duplex/rpc"
-	"tractor.dev/toolkit/engine/cli"
+	"tractor.dev/toolkit-go/duplex/codec"
+	"tractor.dev/toolkit-go/duplex/fn"
+	"tractor.dev/toolkit-go/duplex/interop"
+	"tractor.dev/toolkit-go/duplex/mux"
+	"tractor.dev/toolkit-go/duplex/pipe/quic"
+	"tractor.dev/toolkit-go/duplex/rpc"
+	"tractor.dev/toolkit-go/engine/cli"
 )
 
 var benchCmd = &cli.Command{

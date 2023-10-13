@@ -9,9 +9,9 @@ import (
 	"os"
 
 	"github.com/progrium/clon-go"
-	"tractor.dev/toolkit/duplex/codec"
-	"tractor.dev/toolkit/duplex/talk"
-	"tractor.dev/toolkit/engine/cli"
+	"tractor.dev/toolkit-go/duplex/codec"
+	"tractor.dev/toolkit-go/duplex/talk"
+	"tractor.dev/toolkit-go/engine/cli"
 )
 
 var callCmd = &cli.Command{

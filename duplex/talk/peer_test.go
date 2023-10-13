@@ -5,9 +5,9 @@ import (
 	"io"
 	"testing"
 
-	"tractor.dev/toolkit/duplex/codec"
-	"tractor.dev/toolkit/duplex/mux"
-	"tractor.dev/toolkit/duplex/rpc"
+	"tractor.dev/toolkit-go/duplex/codec"
+	"tractor.dev/toolkit-go/duplex/mux"
+	"tractor.dev/toolkit-go/duplex/rpc"
 )
 
 func TestPeerBidirectional(t *testing.T) {

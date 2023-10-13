@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"tractor.dev/toolkit/duplex/codec"
-	"tractor.dev/toolkit/duplex/fn"
-	"tractor.dev/toolkit/duplex/mux"
-	"tractor.dev/toolkit/duplex/talk"
+	"tractor.dev/toolkit-go/duplex/codec"
+	"tractor.dev/toolkit-go/duplex/fn"
+	"tractor.dev/toolkit-go/duplex/mux"
+	"tractor.dev/toolkit-go/duplex/talk"
 )
 
 func fatal(t *testing.T, err error) {
