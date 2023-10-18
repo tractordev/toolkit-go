@@ -2,6 +2,7 @@ package fs
 
 import (
 	"embed"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -17,5 +18,5 @@ func LiveDir(assets embed.FS) FS {
 	if os.IsNotExist(err) {
 		return assets
 	}
-	return watchfs.New(os.DirFS(filepath.Dir(filename)))
+	return watchfs.New(os.DirFS(filepath.Dir(filename)).(fs.StatFS))
 }
