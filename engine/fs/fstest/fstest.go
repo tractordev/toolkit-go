@@ -17,7 +17,11 @@ func must(t *testing.T, err error) {
 
 func ReadFS(t *testing.T, fsys fs.FS) map[string]string {
 	fsmap := map[string]string{}
-	must(t, fs.WalkDir(fsys, "", func(path string, d fs.DirEntry, err error) error {
+	must(t, fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
 		if d.IsDir() {
 			fsmap[path+"/"] = ""
 			return nil
