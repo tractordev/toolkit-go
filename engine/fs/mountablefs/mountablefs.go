@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"path/filepath"
 	"strings"
+	"syscall"
 
 	"tractor.dev/toolkit-go/engine/fs/fsutil"
 )
@@ -35,6 +36,9 @@ func (host *FS) Mount(fsys fs.FS, dir_path string) error {
 	if !fi.IsDir() {
 		return &fs.PathError{Op: "mount", Path: dir_path, Err: fs.ErrInvalid}
 	}
+	if found, _ := host.isPathInMount(dir_path); found {
+		return &fs.PathError{Op: "mount", Path: dir_path, Err: fs.ErrExist}
+	}
 
 	host.mounts = append(host.mounts, mountedFSDir{fsys: fsys, mountPoint: dir_path})
 	return nil
@@ -58,6 +62,7 @@ func remove(s []mountedFSDir, i int) []mountedFSDir {
 }
 
 func (host *FS) isPathInMount(path string) (bool, *mountedFSDir) {
+	path = filepath.Clean(path)
 	for i, m := range host.mounts {
 		if strings.HasPrefix(path, m.mountPoint) {
 			return true, &host.mounts[i]
@@ -67,8 +72,10 @@ func (host *FS) isPathInMount(path string) (bool, *mountedFSDir) {
 }
 
 func trimMountPoint(path string, mntPoint string) string {
-	result := strings.TrimPrefix(path, mntPoint)
-	return filepath.Clean(strings.TrimPrefix(result, "/"))
+	// Clean replaces path seperators with the native one, which
+	// requires us to do extra cleaning when handling mountPoint paths.
+	result := strings.TrimPrefix(filepath.Clean(path), mntPoint)
+	return filepath.Clean(strings.TrimPrefix(result, string(filepath.Separator)))
 }
 
 // TODO:
@@ -85,9 +92,7 @@ func (host *FS) Open(name string) (fs.File, error)  {
 	}
 
 	if found, mount := host.isPathInMount(name); found {
-		mntPath := trimMountPoint(name, mount.mountPoint)
-		fmt.Println("Open name:", name, "\tprefix:", mount.mountPoint, "\tmntPath:", mntPath)
-		return mount.fsys.Open(mntPath)
+		return mount.fsys.Open(trimMountPoint(name, mount.mountPoint))
 	}
 
 	return host.FS.Open(name)
@@ -107,7 +112,7 @@ func (host *FS) Remove(name string) error  {
 
 	if found, mount := host.isPathInMount(name); found {
 		fsys = mount.fsys
-		// TODO: maybe error if trying to remove mountPoint?
+		// TODO: error if trying to remove mountPoint?
 		prefix = mount.mountPoint
 	} else {
 		fsys = host.FS
@@ -128,7 +133,7 @@ func (host *FS) RemoveAll(path string) error  {
 
 	if found, mount := host.isPathInMount(path); found {
 		fsys = mount.fsys
-		// TODO: maybe error if trying to remove mountPoint?
+		// TODO: error if trying to remove mountPoint?
 		prefix = mount.mountPoint
 	} else {
 		fsys = host.FS
@@ -144,5 +149,50 @@ func (host *FS) RemoveAll(path string) error  {
 	return removableFS.RemoveAll(trimMountPoint(path, prefix))
 }
 
-// func (host *FS) Rename(oldname, newname string) error  {}
-// func (host *FS) Stat(name string) (fs.FileInfo, error)  {}
+func (host *FS) Rename(oldname, newname string) error  {
+	var fsys fs.FS
+	prefix := ""
+
+	// error if both paths aren't in the same filesystem
+	if found, oldMount := host.isPathInMount(oldname); found {
+		if found, newMount := host.isPathInMount(newname); found {
+			if oldMount != newMount {
+				return &fs.PathError{Op: "rename", Path: oldname+" -> "+newname, Err: syscall.EXDEV}		
+			}
+
+			// TODO: error if trying to rename mountPoint?
+			fsys = newMount.fsys
+			prefix = newMount.mountPoint
+		} else {
+			return &fs.PathError{Op: "rename", Path: oldname+" -> "+newname, Err: syscall.EXDEV}		
+		}	
+	} else {
+		if found, _ := host.isPathInMount(newname); found {
+			return &fs.PathError{Op: "rename", Path: oldname+" -> "+newname, Err: syscall.EXDEV}		
+		}
+
+		fsys = host.FS
+	}
+
+	renameableFS, ok := fsys.(interface {
+		Rename(oldname, newname string) error
+	})
+	if !ok {
+		return fmt.Errorf("rename: %w", errors.ErrUnsupported)
+	}
+	return renameableFS.Rename(trimMountPoint(oldname, prefix), trimMountPoint(newname, prefix))
+}
+
+func (host *FS) Stat(name string) (fs.FileInfo, error)  {
+	var fsys fs.FS
+	prefix := ""
+
+	if found, mount := host.isPathInMount(name); found {
+		fsys = mount.fsys
+		prefix = mount.mountPoint
+	} else {
+		fsys = host.FS
+	}
+
+	return fs.Stat(fsys, trimMountPoint(name, prefix))
+}
