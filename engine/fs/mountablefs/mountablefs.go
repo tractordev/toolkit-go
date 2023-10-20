@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/fs"
 	"path/filepath"
+	"slices"
 	"strings"
 	"syscall"
 	"time"
@@ -229,26 +230,32 @@ func (host *FS) OpenFile(name string, flag int, perm fs.FileMode) (fs.File, erro
 	}
 }
 
+type removableFS interface {
+	fs.FS
+	Remove(name string) error
+}
+
 func (host *FS) Remove(name string) error  {
 	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
 
 	if found, mount := host.isPathInMount(name); found {
+		if name == mount.mountPoint {
+			return &fs.PathError{Op: "remove", Path: name, Err: syscall.EBUSY}
+		}
+
 		fsys = mount.fsys
-		// TODO: error if trying to remove mountPoint?
 		prefix = mount.mountPoint
 	} else {
 		fsys = host.FS
 	}
 
-	removableFS, ok := fsys.(interface {
-		Remove(name string) error
-	})
-	if !ok {
-		return fmt.Errorf("remove: %w", errors.ErrUnsupported)
+	if removableFS, ok := fsys.(removableFS); ok {
+		return removableFS.Remove(trimMountPoint(name, prefix))
+	} else {
+		return &fs.PathError{Op: "remove", Path: name, Err: errors.ErrUnsupported}
 	}
-	return removableFS.Remove(trimMountPoint(name, prefix))
 }
 
 func (host *FS) RemoveAll(path string) error  {
@@ -257,21 +264,88 @@ func (host *FS) RemoveAll(path string) error  {
 	prefix := ""
 
 	if found, mount := host.isPathInMount(path); found {
+		if path == mount.mountPoint {
+			return &fs.PathError{Op: "remove_all", Path: path, Err: syscall.EBUSY}
+		}
+
 		fsys = mount.fsys
-		// TODO: error if trying to remove mountPoint?
 		prefix = mount.mountPoint
 	} else {
 		fsys = host.FS
+		// check if path contains any mountpoints, and call a custom removeAll
+		// if it does.
+		var mntPoints []string
+		for _, m := range host.mounts {
+			if path == "." || strings.HasPrefix(m.mountPoint, path) {
+				mntPoints = append(mntPoints, m.mountPoint)
+			}
+		}
+
+		if len(mntPoints) > 0 {
+			return removeAll(host, path, mntPoints)
+		}
 	}
 
-	removableFS, ok := fsys.(interface {
+	rmAllFS, ok := fsys.(interface {
 		RemoveAll(path string) error
 	})
 	if !ok {
-		// TODO: default implementation which depends on fsys supporting Remove
-		return fmt.Errorf("remove_all: %w", errors.ErrUnsupported)
+		if rmFS, ok := fsys.(removableFS); ok {
+			return removeAll(rmFS, path, nil)
+		} else {
+			return &fs.PathError{Op: "remove_all", Path: path, Err: errors.ErrUnsupported}
+		}
 	}
-	return removableFS.RemoveAll(trimMountPoint(path, prefix))
+	return rmAllFS.RemoveAll(trimMountPoint(path, prefix))
+}
+
+
+
+// RemoveAll removes path and any children it contains. It removes everything 
+// it can but returns the first error it encounters. If the path does not exist, 
+// RemoveAll returns nil (no error). If there is an error, it will be of type *PathError.
+// Additionally, this function errors if attempting to remove a mountpoint.
+func removeAll(fsys removableFS, path string, mntPoints []string) error {
+	path = filepath.Clean(path)
+
+	if exists, err := fsutil.Exists(fsys, path); !exists || err != nil {
+		return err
+	}
+
+	return rm_r(fsys, path, mntPoints)
+
+}
+
+func rm_r(fsys removableFS, path string, mntPoints []string) error {
+	if mntPoints != nil && slices.Contains(mntPoints, path) {
+		return &fs.PathError{Op: "remove", Path: path, Err: syscall.EBUSY}
+	}
+
+	isdir, dirErr := fsutil.IsDir(fsys, path)
+	if dirErr != nil {
+		return dirErr
+	}
+
+	if isdir {
+		if entries, err := fs.ReadDir(fsys, path); err == nil {
+			for _, entry := range entries {
+				entryPath := filepath.Join(path, entry.Name())
+				
+				if err := rm_r(fsys, entryPath, mntPoints); err != nil {
+					return err
+				}
+
+				if err := fsys.Remove(entryPath); err != nil {
+					return err
+				}
+			}
+		} else {
+			return err
+		}
+	}
+
+
+	return fsys.Remove(path)
 }
 
 func (host *FS) Rename(oldname, newname string) error  {

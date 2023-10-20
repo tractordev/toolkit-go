@@ -106,6 +106,23 @@ func TestRemove(t *testing.T) {
         t.Fatalf("Remove: expected attempt to Remove a non-existant file to fail")
     }
 
+    if err := fsys.Remove("C/D"); err == nil {
+        t.Fatalf("Remove: expected attempt to Remove a mount-point file to fail")
+    }
+
+    if err := fsys.RemoveAll("C/D"); err == nil {
+        t.Fatalf("RemoveAll: expected attempt to RemoveAll a mount-point file to fail")
+    }
+
+    if err := fsys.RemoveAll("/"); err == nil {
+        t.Fatalf("RemoveAll: expected attempt to RemoveAll a path containing a mount-point file to fail")
+    }
+
+    fstest.CheckFS(t, fsys, map[string]string{
+        // dirs are empty strings
+        "C/D/E/": "",
+    })
+
     if err := fsys.Unmount("C/D"); err != nil {
         t.Fatal(err)
     }
