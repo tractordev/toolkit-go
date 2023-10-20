@@ -110,11 +110,7 @@ func Assemble(units ...Unit) (asm *Assembly, err error) {
 // need to run code before calling Run
 func Init() {
 	if Identifier == "" {
-		path, err := os.Executable()
-		if err != nil {
-			panic(err)
-		}
-		Identifier = filepath.Base(path)
+		Identifier = filepath.Base(os.Args[0])
 	}
 }
 
