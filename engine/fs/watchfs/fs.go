@@ -95,7 +95,11 @@ type FS struct {
 	mu      sync.Mutex
 }
 
-func New(fsys fs.StatFS) *FS {
+func New(fsys fs.FS) *FS {
+	_, ok := fsys.(fs.StatFS)
+	if !ok {
+		panic("stat needed on fs")
+	}
 	return &FS{
 		FS:      fsys,
 		watcher: watcher.New(fsys),

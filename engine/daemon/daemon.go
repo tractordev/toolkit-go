@@ -4,12 +4,9 @@ import (
 	"context"
 	"errors"
 	"log/slog"
-	"os"
-	"os/signal"
 	"reflect"
 	"sync"
 	"sync/atomic"
-	"syscall"
 	"time"
 )
 
@@ -187,14 +184,6 @@ func (d *Framework) Terminate() {
 	wg.Wait()
 	d.Log.Debug("finished termination")
 	d.terminated <- true
-}
-
-// TerminateOnSignal waits for SIGINT, SIGHUP, SIGTERM, SIGKILL(?) to terminate the daemon.
-func TerminateOnSignal(d *Framework) {
-	termSigs := make(chan os.Signal, 1)
-	signal.Notify(termSigs, os.Interrupt, os.Kill, syscall.SIGHUP, syscall.SIGTERM)
-	<-termSigs
-	d.Terminate()
 }
 
 // TerminateOnContextDone waits for the deamon's context to be canceled.

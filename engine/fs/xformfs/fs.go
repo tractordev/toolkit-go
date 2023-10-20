@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	vfs "tractor.dev/toolkit-go/engine/fs"
 	"tractor.dev/toolkit-go/engine/fs/memfs"
 	"tractor.dev/toolkit-go/engine/fs/watchfs"
 )
@@ -38,7 +37,7 @@ func (xfs *FS) Transform(suffix string, fn func(dst io.Writer, src io.Reader) er
 }
 
 func (xfs *FS) Watch(name string, cfg *watchfs.Config) (*watchfs.Watch, error) {
-	wfs, ok := xfs.FS.(vfs.WatchFS)
+	wfs, ok := xfs.FS.(watchfs.WatchFS)
 	if !ok {
 		return nil, fmt.Errorf("not supported")
 	}
