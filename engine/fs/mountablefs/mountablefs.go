@@ -27,7 +27,7 @@ func New(fsys fs.FS) *FS {
 }
 
 func (host *FS) Mount(fsys fs.FS, dir_path string) error {
-	dir_path = filepath.Clean(dir_path)
+	dir_path = cleanPath(dir_path)
 
 	fi, err := fs.Stat(host, dir_path)
 	if err != nil {
@@ -46,7 +46,7 @@ func (host *FS) Mount(fsys fs.FS, dir_path string) error {
 }
 
 func (host *FS) Unmount(path string) error {
-	path = filepath.Clean(path)
+	path = cleanPath(path)
 	for i, m := range host.mounts {
 		if path == m.mountPoint {
 			host.mounts = remove(host.mounts, i)
@@ -63,7 +63,6 @@ func remove(s []mountedFSDir, i int) []mountedFSDir {
 }
 
 func (host *FS) isPathInMount(path string) (bool, *mountedFSDir) {
-	path = filepath.Clean(path)
 	for i, m := range host.mounts {
 		if strings.HasPrefix(path, m.mountPoint) {
 			return true, &host.mounts[i]
@@ -72,14 +71,23 @@ func (host *FS) isPathInMount(path string) (bool, *mountedFSDir) {
 	return false, nil
 }
 
+func cleanPath(p string) string {
+	return filepath.Clean(strings.TrimLeft(p, "/\\"))
+}
+
 func trimMountPoint(path string, mntPoint string) string {
-	// Clean replaces path seperators with the native one, which
-	// requires us to do extra cleaning when handling mountPoint paths.
-	result := strings.TrimPrefix(filepath.Clean(path), mntPoint)
-	return filepath.Clean(strings.TrimPrefix(result, string(filepath.Separator)))
+	result := strings.TrimPrefix(path, mntPoint)
+	result = strings.TrimPrefix(result, string(filepath.Separator))
+	
+	if result == "" {
+		return "."
+	} else {
+		return result
+	}
 }
 
 func (host *FS) Chmod(name string, mode fs.FileMode) error  {
+	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
 
@@ -100,6 +108,7 @@ func (host *FS) Chmod(name string, mode fs.FileMode) error  {
 }
 
 func (host *FS) Chown(name string, uid, gid int) error  {
+	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
 
@@ -120,6 +129,7 @@ func (host *FS) Chown(name string, uid, gid int) error  {
 }
 
 func (host *FS) Chtimes(name string, atime time.Time, mtime time.Time) error  {
+	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
 
@@ -141,6 +151,7 @@ func (host *FS) Chtimes(name string, atime time.Time, mtime time.Time) error  {
 
 
 func (host *FS) Create(name string) (fs.File, error)  {
+	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
 
@@ -161,6 +172,7 @@ func (host *FS) Create(name string) (fs.File, error)  {
 }
 
 func (host *FS) Mkdir(name string, perm fs.FileMode) error  {
+	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
 
@@ -181,6 +193,7 @@ func (host *FS) Mkdir(name string, perm fs.FileMode) error  {
 }
 
 func (host *FS) MkdirAll(path string, perm fs.FileMode) error  {
+	path = cleanPath(path)
 	var fsys fs.FS
 	prefix := ""
 
@@ -201,10 +214,7 @@ func (host *FS) MkdirAll(path string, perm fs.FileMode) error  {
 }
 
 func (host *FS) Open(name string) (fs.File, error)  {
-	if !fs.ValidPath(name) { // TODO: may be redundant
-		return nil, &fs.PathError{Op: "open", Path: name, Err: fs.ErrInvalid}
-	}
-
+	name = cleanPath(name)
 	if found, mount := host.isPathInMount(name); found {
 		return mount.fsys.Open(trimMountPoint(name, mount.mountPoint))
 	}
@@ -221,6 +231,7 @@ func (host *FS) OpenFile(name string, flag int, perm fs.FileMode) (fs.File, erro
 }
 
 func (host *FS) Remove(name string) error  {
+	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
 
@@ -242,6 +253,7 @@ func (host *FS) Remove(name string) error  {
 }
 
 func (host *FS) RemoveAll(path string) error  {
+	path = cleanPath(path)
 	var fsys fs.FS
 	prefix := ""
 
@@ -264,6 +276,8 @@ func (host *FS) RemoveAll(path string) error  {
 }
 
 func (host *FS) Rename(oldname, newname string) error  {
+	oldname = cleanPath(oldname)
+	newname = cleanPath(newname)
 	var fsys fs.FS
 	prefix := ""
 
@@ -301,6 +315,7 @@ func (host *FS) Rename(oldname, newname string) error  {
 // File from the correct filesystem anyway. Leaving this here in case 
 // it's useful in the future.
 // func (host *FS) Stat(name string) (fs.FileInfo, error)  {
+//  name = cleanPath(name)
 // 	var fsys fs.FS
 // 	prefix := ""
 
