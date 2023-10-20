@@ -17,8 +17,8 @@ import (
 func TestSimpleCommand(t *testing.T) {
 	cmd := &Command{
 		Usage: "simple",
-		Run: func(ctx context.Context, args []string) {
-			fmt.Fprint(IOFrom(ctx), "Hello world")
+		Run: func(ctx *Context, args []string) {
+			fmt.Fprint(ctx, "Hello world")
 		},
 	}
 	var buf bytes.Buffer
@@ -35,7 +35,7 @@ func TestPositionalArgs(t *testing.T) {
 	cmd := &Command{
 		Usage: "posargs",
 		Args:  ExactArgs(2),
-		Run:   func(ctx context.Context, args []string) {},
+		Run:   func(ctx *Context, args []string) {},
 	}
 	if err := Execute(context.Background(), cmd, []string{"one", "two"}); err != nil {
 		t.Fatal(err)
@@ -51,20 +51,20 @@ func TestPositionalArgs(t *testing.T) {
 func TestSubcommands(t *testing.T) {
 	cmd := &Command{
 		Usage: "subcmds",
-		Run: func(ctx context.Context, args []string) {
-			fmt.Fprint(IOFrom(ctx), "root")
+		Run: func(ctx *Context, args []string) {
+			fmt.Fprint(ctx, "root")
 		},
 	}
 	cmd.AddCommand(&Command{
 		Usage: "sub1",
-		Run: func(ctx context.Context, args []string) {
-			fmt.Fprint(IOFrom(ctx), "sub1")
+		Run: func(ctx *Context, args []string) {
+			fmt.Fprint(ctx, "sub1")
 		},
 	})
 	cmd.AddCommand(&Command{
 		Usage: "sub2",
-		Run: func(ctx context.Context, args []string) {
-			fmt.Fprint(IOFrom(ctx), "sub2")
+		Run: func(ctx *Context, args []string) {
+			fmt.Fprint(ctx, "sub2")
 		},
 	})
 
@@ -103,7 +103,7 @@ func TestFlags(t *testing.T) {
 	)
 	cmd := &Command{
 		Usage: "flags",
-		Run:   func(ctx context.Context, args []string) {},
+		Run:   func(ctx *Context, args []string) {},
 	}
 	cmd.Flags().BoolVar(&boolFlag, "b", false, "bool value")
 	cmd.Flags().StringVar(&stringFlag, "string", "", "string value")
@@ -122,7 +122,7 @@ func TestVersion(t *testing.T) {
 	cmd := &Command{
 		Version: "1.0",
 		Usage:   "mytest",
-		Run:     func(ctx context.Context, args []string) {},
+		Run:     func(ctx *Context, args []string) {},
 	}
 	var buf bytes.Buffer
 	ctx := ContextWithIO(context.Background(), nil, &buf, nil)

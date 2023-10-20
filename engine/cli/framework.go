@@ -38,7 +38,7 @@ type Framework struct {
 // DefaultRunner, and also runs any Initializers.
 func (f *Framework) Initialize() {
 	f.Root = &Command{
-		Run: func(ctx context.Context, args []string) {
+		Run: func(ctx *Context, args []string) {
 			if f.DefaultRunner == f {
 				panic("only runner is cli.Framework")
 			}
@@ -68,10 +68,14 @@ func Execute(ctx context.Context, root *Command, args []string) error {
 	var (
 		stdout io.Writer = os.Stdout
 		stderr io.Writer = os.Stderr
+		ioctx  *Context
 	)
-	if IOFrom(ctx) != nil {
-		stdout = IOFrom(ctx)
-		stderr = IOFrom(ctx).Err()
+	if c, ok := ctx.(*Context); ok {
+		stdout = c
+		stderr = c
+		ioctx = c
+	} else {
+		ioctx = ContextWithIO(ctx, os.Stdin, stdout, stderr)
 	}
 
 	var showVersion bool
@@ -106,7 +110,7 @@ func Execute(ctx context.Context, root *Command, args []string) error {
 		return nil
 	}
 
-	cmd.Run(ctx, f.Args())
+	cmd.Run(ioctx, f.Args())
 	return nil
 }
 
@@ -120,7 +124,7 @@ func Export(fn interface{}, use string) *Command {
 	return &Command{
 		Usage: use,
 		Args:  ExactArgs(t.NumIn()),
-		Run: func(ctx context.Context, args []string) {
+		Run: func(ctx *Context, args []string) {
 			var in []reflect.Value
 			for n := 0; n < t.NumIn(); n++ {
 				switch t.In(n).Kind() {

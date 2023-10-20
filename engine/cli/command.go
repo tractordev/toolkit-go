@@ -2,7 +2,6 @@ package cli
 
 import (
 	"bytes"
-	"context"
 	"flag"
 	"fmt"
 	"strings"
@@ -50,7 +49,7 @@ type Command struct {
 	Args PositionalArgs
 
 	// Run is the function that performs the command
-	Run func(ctx context.Context, args []string)
+	Run func(ctx *Context, args []string)
 
 	commands []*Command
 	parent   *Command
