@@ -2,7 +2,6 @@ package mountablefs
 
 import (
 	"errors"
-	"fmt"
 	"io/fs"
 	"path/filepath"
 	"strings"
@@ -102,7 +101,7 @@ func (host *FS) Chmod(name string, mode fs.FileMode) error  {
 		Chmod(name string, mode fs.FileMode) error
 	})
 	if !ok {
-		return fmt.Errorf("chmod: %w", errors.ErrUnsupported)
+		return &fs.PathError{Op: "chmod", Path: name, Err: errors.ErrUnsupported}
 	}
 	return chmodableFS.Chmod(trimMountPoint(name, prefix), mode)
 }
@@ -123,7 +122,7 @@ func (host *FS) Chown(name string, uid, gid int) error  {
 		Chown(name string, uid, gid int) error
 	})
 	if !ok {
-		return fmt.Errorf("chown: %w", errors.ErrUnsupported)
+		return &fs.PathError{Op: "chown", Path: name, Err: errors.ErrUnsupported}
 	}
 	return chownableFS.Chown(trimMountPoint(name, prefix), uid, gid)
 }
@@ -144,7 +143,7 @@ func (host *FS) Chtimes(name string, atime time.Time, mtime time.Time) error  {
 		Chtimes(name string, atime time.Time, mtime time.Time) error
 	})
 	if !ok {
-		return fmt.Errorf("chtimes: %w", errors.ErrUnsupported)
+		return &fs.PathError{Op: "chtimes", Path: name, Err: errors.ErrUnsupported}
 	}
 	return chtimesableFS.Chtimes(trimMountPoint(name, prefix), atime, mtime)
 }
@@ -166,7 +165,7 @@ func (host *FS) Create(name string) (fs.File, error)  {
 		Create(name string) (fs.File, error)
 	})
 	if !ok {
-		return nil, fmt.Errorf("create: %w", errors.ErrUnsupported)
+		return nil, &fs.PathError{Op: "create", Path: name, Err: errors.ErrUnsupported}
 	}
 	return createableFS.Create(trimMountPoint(name, prefix))
 }
@@ -187,7 +186,7 @@ func (host *FS) Mkdir(name string, perm fs.FileMode) error  {
 		Mkdir(name string, perm fs.FileMode) error
 	})
 	if !ok {
-		return fmt.Errorf("mkdir: %w", errors.ErrUnsupported)
+		return &fs.PathError{Op: "mkdir", Path: name, Err: errors.ErrUnsupported}
 	}
 	return mkdirableFS.Mkdir(trimMountPoint(name, prefix), perm)
 }
@@ -208,7 +207,7 @@ func (host *FS) MkdirAll(path string, perm fs.FileMode) error  {
 		MkdirAll(path string, perm fs.FileMode) error
 	})
 	if !ok {
-		return fmt.Errorf("mkdir_all: %w", errors.ErrUnsupported)
+		return &fs.PathError{Op: "mkdir_all", Path: path, Err: errors.ErrUnsupported}
 	}
 	return mkdirableFS.MkdirAll(trimMountPoint(path, prefix), perm)
 }
@@ -306,7 +305,7 @@ func (host *FS) Rename(oldname, newname string) error  {
 		Rename(oldname, newname string) error
 	})
 	if !ok {
-		return fmt.Errorf("rename: %w", errors.ErrUnsupported)
+		return &fs.PathError{Op: "rename", Path: oldname+" -> "+newname, Err: errors.ErrUnsupported}
 	}
 	return renameableFS.Rename(trimMountPoint(oldname, prefix), trimMountPoint(newname, prefix))
 }
