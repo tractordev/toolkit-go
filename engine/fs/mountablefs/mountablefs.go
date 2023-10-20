@@ -382,21 +382,3 @@ func (host *FS) Rename(oldname, newname string) error {
 	}
 	return renameableFS.Rename(trimMountPoint(oldname, prefix), trimMountPoint(newname, prefix))
 }
-
-// Stat is unecessary since fs.Stat calls Open, which will return a
-// File from the correct filesystem anyway. Leaving this here in case
-// it's useful in the future.
-// func (host *FS) Stat(name string) (fs.FileInfo, error)  {
-//  name = cleanPath(name)
-// 	var fsys fs.FS
-// 	prefix := ""
-
-// 	if found, mount := host.isPathInMount(name); found {
-// 		fsys = mount.fsys
-// 		prefix = mount.mountPoint
-// 	} else {
-// 		fsys = host.FS
-// 	}
-
-// 	return fs.Stat(fsys, trimMountPoint(name, prefix))
-// }
