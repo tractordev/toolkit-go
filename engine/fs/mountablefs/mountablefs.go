@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
+	"time"
 
 	"tractor.dev/toolkit-go/engine/fs/fsutil"
 )
@@ -78,13 +79,126 @@ func trimMountPoint(path string, mntPoint string) string {
 	return filepath.Clean(strings.TrimPrefix(result, string(filepath.Separator)))
 }
 
-// TODO:
-// func (host *FS) Chmod(name string, mode fs.FileMode) error  {}
-// func (host *FS) Chown(name string, uid, gid int) error  {}
-// func (host *FS) Chtimes(name string, atime time.Time, mtime time.Time) error  {}
-// func (host *FS) Create(name string) (fs.File, error)  {}
-// func (host *FS) Mkdir(name string, perm fs.FileMode) error  {}
-// func (host *FS) MkdirAll(path string, perm fs.FileMode) error  {}
+func (host *FS) Chmod(name string, mode fs.FileMode) error  {
+	var fsys fs.FS
+	prefix := ""
+
+	if found, mount := host.isPathInMount(name); found {
+		fsys = mount.fsys
+		prefix = mount.mountPoint
+	} else {
+		fsys = host.FS
+	}
+
+	chmodableFS, ok := fsys.(interface {
+		Chmod(name string, mode fs.FileMode) error
+	})
+	if !ok {
+		return fmt.Errorf("chmod: %w", errors.ErrUnsupported)
+	}
+	return chmodableFS.Chmod(trimMountPoint(name, prefix), mode)
+}
+
+func (host *FS) Chown(name string, uid, gid int) error  {
+	var fsys fs.FS
+	prefix := ""
+
+	if found, mount := host.isPathInMount(name); found {
+		fsys = mount.fsys
+		prefix = mount.mountPoint
+	} else {
+		fsys = host.FS
+	}
+
+	chownableFS, ok := fsys.(interface {
+		Chown(name string, uid, gid int) error
+	})
+	if !ok {
+		return fmt.Errorf("chown: %w", errors.ErrUnsupported)
+	}
+	return chownableFS.Chown(trimMountPoint(name, prefix), uid, gid)
+}
+
+func (host *FS) Chtimes(name string, atime time.Time, mtime time.Time) error  {
+	var fsys fs.FS
+	prefix := ""
+
+	if found, mount := host.isPathInMount(name); found {
+		fsys = mount.fsys
+		prefix = mount.mountPoint
+	} else {
+		fsys = host.FS
+	}
+
+	chtimesableFS, ok := fsys.(interface {
+		Chtimes(name string, atime time.Time, mtime time.Time) error
+	})
+	if !ok {
+		return fmt.Errorf("chtimes: %w", errors.ErrUnsupported)
+	}
+	return chtimesableFS.Chtimes(trimMountPoint(name, prefix), atime, mtime)
+}
+
+
+func (host *FS) Create(name string) (fs.File, error)  {
+	var fsys fs.FS
+	prefix := ""
+
+	if found, mount := host.isPathInMount(name); found {
+		fsys = mount.fsys
+		prefix = mount.mountPoint
+	} else {
+		fsys = host.FS
+	}
+
+	createableFS, ok := fsys.(interface {
+		Create(name string) (fs.File, error)
+	})
+	if !ok {
+		return nil, fmt.Errorf("create: %w", errors.ErrUnsupported)
+	}
+	return createableFS.Create(trimMountPoint(name, prefix))
+}
+
+func (host *FS) Mkdir(name string, perm fs.FileMode) error  {
+	var fsys fs.FS
+	prefix := ""
+
+	if found, mount := host.isPathInMount(name); found {
+		fsys = mount.fsys
+		prefix = mount.mountPoint
+	} else {
+		fsys = host.FS
+	}
+
+	mkdirableFS, ok := fsys.(interface {
+		Mkdir(name string, perm fs.FileMode) error
+	})
+	if !ok {
+		return fmt.Errorf("mkdir: %w", errors.ErrUnsupported)
+	}
+	return mkdirableFS.Mkdir(trimMountPoint(name, prefix), perm)
+}
+
+func (host *FS) MkdirAll(path string, perm fs.FileMode) error  {
+	var fsys fs.FS
+	prefix := ""
+
+	if found, mount := host.isPathInMount(path); found {
+		fsys = mount.fsys
+		prefix = mount.mountPoint
+	} else {
+		fsys = host.FS
+	}
+
+	mkdirableFS, ok := fsys.(interface {
+		MkdirAll(path string, perm fs.FileMode) error
+	})
+	if !ok {
+		return fmt.Errorf("mkdir_all: %w", errors.ErrUnsupported)
+	}
+	return mkdirableFS.MkdirAll(trimMountPoint(path, prefix), perm)
+}
 
 func (host *FS) Open(name string) (fs.File, error)  {
 	if !fs.ValidPath(name) { // TODO: may be redundant
@@ -183,16 +297,19 @@ func (host *FS) Rename(oldname, newname string) error  {
 	return renameableFS.Rename(trimMountPoint(oldname, prefix), trimMountPoint(newname, prefix))
 }
 
-func (host *FS) Stat(name string) (fs.FileInfo, error)  {
-	var fsys fs.FS
-	prefix := ""
+// Stat is unecessary since fs.Stat calls Open, which will return a
+// File from the correct filesystem anyway. Leaving this here in case 
+// it's useful in the future.
+// func (host *FS) Stat(name string) (fs.FileInfo, error)  {
+// 	var fsys fs.FS
+// 	prefix := ""
 
-	if found, mount := host.isPathInMount(name); found {
-		fsys = mount.fsys
-		prefix = mount.mountPoint
-	} else {
-		fsys = host.FS
-	}
+// 	if found, mount := host.isPathInMount(name); found {
+// 		fsys = mount.fsys
+// 		prefix = mount.mountPoint
+// 	} else {
+// 		fsys = host.FS
+// 	}
 
-	return fs.Stat(fsys, trimMountPoint(name, prefix))
-}
+// 	return fs.Stat(fsys, trimMountPoint(name, prefix))
+// }
