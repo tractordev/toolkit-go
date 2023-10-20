@@ -13,7 +13,7 @@ import (
 )
 
 type mountedFSDir struct {
-	fsys fs.FS
+	fsys       fs.FS
 	mountPoint string
 }
 
@@ -58,8 +58,8 @@ func (host *FS) Unmount(path string) error {
 }
 
 func remove(s []mountedFSDir, i int) []mountedFSDir {
-    s[i] = s[len(s)-1]
-    return s[:len(s)-1]
+	s[i] = s[len(s)-1]
+	return s[:len(s)-1]
 }
 
 func (host *FS) isPathInMount(path string) (bool, *mountedFSDir) {
@@ -78,7 +78,7 @@ func cleanPath(p string) string {
 func trimMountPoint(path string, mntPoint string) string {
 	result := strings.TrimPrefix(path, mntPoint)
 	result = strings.TrimPrefix(result, string(filepath.Separator))
-	
+
 	if result == "" {
 		return "."
 	} else {
@@ -86,7 +86,7 @@ func trimMountPoint(path string, mntPoint string) string {
 	}
 }
 
-func (host *FS) Chmod(name string, mode fs.FileMode) error  {
+func (host *FS) Chmod(name string, mode fs.FileMode) error {
 	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
@@ -107,7 +107,7 @@ func (host *FS) Chmod(name string, mode fs.FileMode) error  {
 	return chmodableFS.Chmod(trimMountPoint(name, prefix), mode)
 }
 
-func (host *FS) Chown(name string, uid, gid int) error  {
+func (host *FS) Chown(name string, uid, gid int) error {
 	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
@@ -128,7 +128,7 @@ func (host *FS) Chown(name string, uid, gid int) error  {
 	return chownableFS.Chown(trimMountPoint(name, prefix), uid, gid)
 }
 
-func (host *FS) Chtimes(name string, atime time.Time, mtime time.Time) error  {
+func (host *FS) Chtimes(name string, atime time.Time, mtime time.Time) error {
 	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
@@ -149,8 +149,7 @@ func (host *FS) Chtimes(name string, atime time.Time, mtime time.Time) error  {
 	return chtimesableFS.Chtimes(trimMountPoint(name, prefix), atime, mtime)
 }
 
-
-func (host *FS) Create(name string) (fs.File, error)  {
+func (host *FS) Create(name string) (fs.File, error) {
 	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
@@ -171,7 +170,7 @@ func (host *FS) Create(name string) (fs.File, error)  {
 	return createableFS.Create(trimMountPoint(name, prefix))
 }
 
-func (host *FS) Mkdir(name string, perm fs.FileMode) error  {
+func (host *FS) Mkdir(name string, perm fs.FileMode) error {
 	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
@@ -192,7 +191,7 @@ func (host *FS) Mkdir(name string, perm fs.FileMode) error  {
 	return mkdirableFS.Mkdir(trimMountPoint(name, prefix), perm)
 }
 
-func (host *FS) MkdirAll(path string, perm fs.FileMode) error  {
+func (host *FS) MkdirAll(path string, perm fs.FileMode) error {
 	path = cleanPath(path)
 	var fsys fs.FS
 	prefix := ""
@@ -213,7 +212,7 @@ func (host *FS) MkdirAll(path string, perm fs.FileMode) error  {
 	return mkdirableFS.MkdirAll(trimMountPoint(path, prefix), perm)
 }
 
-func (host *FS) Open(name string) (fs.File, error)  {
+func (host *FS) Open(name string) (fs.File, error) {
 	name = cleanPath(name)
 	if found, mount := host.isPathInMount(name); found {
 		return mount.fsys.Open(trimMountPoint(name, mount.mountPoint))
@@ -222,7 +221,7 @@ func (host *FS) Open(name string) (fs.File, error)  {
 	return host.FS.Open(name)
 }
 
-func (host *FS) OpenFile(name string, flag int, perm fs.FileMode) (fs.File, error)  {
+func (host *FS) OpenFile(name string, flag int, perm fs.FileMode) (fs.File, error) {
 	if found, mount := host.isPathInMount(name); found {
 		return fsutil.OpenFile(mount.fsys, trimMountPoint(name, mount.mountPoint), flag, perm)
 	} else {
@@ -235,7 +234,7 @@ type removableFS interface {
 	Remove(name string) error
 }
 
-func (host *FS) Remove(name string) error  {
+func (host *FS) Remove(name string) error {
 	name = cleanPath(name)
 	var fsys fs.FS
 	prefix := ""
@@ -258,7 +257,7 @@ func (host *FS) Remove(name string) error  {
 	}
 }
 
-func (host *FS) RemoveAll(path string) error  {
+func (host *FS) RemoveAll(path string) error {
 	path = cleanPath(path)
 	var fsys fs.FS
 	prefix := ""
@@ -299,10 +298,8 @@ func (host *FS) RemoveAll(path string) error  {
 	return rmAllFS.RemoveAll(trimMountPoint(path, prefix))
 }
 
-
-
-// RemoveAll removes path and any children it contains. It removes everything 
-// it can but returns the first error it encounters. If the path does not exist, 
+// RemoveAll removes path and any children it contains. It removes everything
+// it can but returns the first error it encounters. If the path does not exist,
 // RemoveAll returns nil (no error). If there is an error, it will be of type *PathError.
 // Additionally, this function errors if attempting to remove a mountpoint.
 func removeAll(fsys removableFS, path string, mntPoints []string) error {
@@ -330,7 +327,7 @@ func rm_r(fsys removableFS, path string, mntPoints []string) error {
 		if entries, err := fs.ReadDir(fsys, path); err == nil {
 			for _, entry := range entries {
 				entryPath := filepath.Join(path, entry.Name())
-				
+
 				if err := rm_r(fsys, entryPath, mntPoints); err != nil {
 					return err
 				}
@@ -344,11 +341,10 @@ func rm_r(fsys removableFS, path string, mntPoints []string) error {
 		}
 	}
 
-
 	return fsys.Remove(path)
 }
 
-func (host *FS) Rename(oldname, newname string) error  {
+func (host *FS) Rename(oldname, newname string) error {
 	oldname = cleanPath(oldname)
 	newname = cleanPath(newname)
 	var fsys fs.FS
@@ -358,18 +354,21 @@ func (host *FS) Rename(oldname, newname string) error  {
 	if found, oldMount := host.isPathInMount(oldname); found {
 		if found, newMount := host.isPathInMount(newname); found {
 			if oldMount != newMount {
-				return &fs.PathError{Op: "rename", Path: oldname+" -> "+newname, Err: syscall.EXDEV}		
+				return &fs.PathError{Op: "rename", Path: oldname + " -> " + newname, Err: syscall.EXDEV}
 			}
 
-			// TODO: error if trying to rename mountPoint?
+			if oldname == oldMount.mountPoint || newname == newMount.mountPoint {
+				return &fs.PathError{Op: "rename", Path: oldname + " -> " + newname, Err: syscall.EBUSY}
+			}
+
 			fsys = newMount.fsys
 			prefix = newMount.mountPoint
 		} else {
-			return &fs.PathError{Op: "rename", Path: oldname+" -> "+newname, Err: syscall.EXDEV}		
-		}	
+			return &fs.PathError{Op: "rename", Path: oldname + " -> " + newname, Err: syscall.EXDEV}
+		}
 	} else {
 		if found, _ := host.isPathInMount(newname); found {
-			return &fs.PathError{Op: "rename", Path: oldname+" -> "+newname, Err: syscall.EXDEV}		
+			return &fs.PathError{Op: "rename", Path: oldname + " -> " + newname, Err: syscall.EXDEV}
 		}
 
 		fsys = host.FS
@@ -379,13 +378,13 @@ func (host *FS) Rename(oldname, newname string) error  {
 		Rename(oldname, newname string) error
 	})
 	if !ok {
-		return &fs.PathError{Op: "rename", Path: oldname+" -> "+newname, Err: errors.ErrUnsupported}
+		return &fs.PathError{Op: "rename", Path: oldname + " -> " + newname, Err: errors.ErrUnsupported}
 	}
 	return renameableFS.Rename(trimMountPoint(oldname, prefix), trimMountPoint(newname, prefix))
 }
 
 // Stat is unecessary since fs.Stat calls Open, which will return a
-// File from the correct filesystem anyway. Leaving this here in case 
+// File from the correct filesystem anyway. Leaving this here in case
 // it's useful in the future.
 // func (host *FS) Stat(name string) (fs.FileInfo, error)  {
 //  name = cleanPath(name)
