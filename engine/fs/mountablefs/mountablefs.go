@@ -26,22 +26,22 @@ func New(fsys fs.FS) *FS {
 	return &FS{FS: fsys, mounts: make([]mountedFSDir, 0, 1)}
 }
 
-func (host *FS) Mount(fsys fs.FS, dir_path string) error {
-	dir_path = cleanPath(dir_path)
+func (host *FS) Mount(fsys fs.FS, dirPath string) error {
+	dirPath = cleanPath(dirPath)
 
-	fi, err := fs.Stat(host, dir_path)
+	fi, err := fs.Stat(host, dirPath)
 	if err != nil {
 		return err
 	}
 
 	if !fi.IsDir() {
-		return &fs.PathError{Op: "mount", Path: dir_path, Err: fs.ErrInvalid}
+		return &fs.PathError{Op: "mount", Path: dirPath, Err: fs.ErrInvalid}
 	}
-	if found, _ := host.isPathInMount(dir_path); found {
-		return &fs.PathError{Op: "mount", Path: dir_path, Err: fs.ErrExist}
+	if found, _ := host.isPathInMount(dirPath); found {
+		return &fs.PathError{Op: "mount", Path: dirPath, Err: fs.ErrExist}
 	}
 
-	host.mounts = append(host.mounts, mountedFSDir{fsys: fsys, mountPoint: dir_path})
+	host.mounts = append(host.mounts, mountedFSDir{fsys: fsys, mountPoint: dirPath})
 	return nil
 }
 
@@ -207,7 +207,7 @@ func (host *FS) MkdirAll(path string, perm fs.FileMode) error {
 		MkdirAll(path string, perm fs.FileMode) error
 	})
 	if !ok {
-		return &fs.PathError{Op: "mkdir_all", Path: path, Err: errors.ErrUnsupported}
+		return &fs.PathError{Op: "mkdirAll", Path: path, Err: errors.ErrUnsupported}
 	}
 	return mkdirableFS.MkdirAll(trimMountPoint(path, prefix), perm)
 }
@@ -264,7 +264,7 @@ func (host *FS) RemoveAll(path string) error {
 
 	if found, mount := host.isPathInMount(path); found {
 		if path == mount.mountPoint {
-			return &fs.PathError{Op: "remove_all", Path: path, Err: syscall.EBUSY}
+			return &fs.PathError{Op: "removeAll", Path: path, Err: syscall.EBUSY}
 		}
 
 		fsys = mount.fsys
@@ -292,7 +292,7 @@ func (host *FS) RemoveAll(path string) error {
 		if rmFS, ok := fsys.(removableFS); ok {
 			return removeAll(rmFS, path, nil)
 		} else {
-			return &fs.PathError{Op: "remove_all", Path: path, Err: errors.ErrUnsupported}
+			return &fs.PathError{Op: "removeAll", Path: path, Err: errors.ErrUnsupported}
 		}
 	}
 	return rmAllFS.RemoveAll(trimMountPoint(path, prefix))
@@ -309,11 +309,11 @@ func removeAll(fsys removableFS, path string, mntPoints []string) error {
 		return err
 	}
 
-	return rm_r(fsys, path, mntPoints)
+	return rmRecurse(fsys, path, mntPoints)
 
 }
 
-func rm_r(fsys removableFS, path string, mntPoints []string) error {
+func rmRecurse(fsys removableFS, path string, mntPoints []string) error {
 	if mntPoints != nil && slices.Contains(mntPoints, path) {
 		return &fs.PathError{Op: "remove", Path: path, Err: syscall.EBUSY}
 	}
@@ -328,7 +328,7 @@ func rm_r(fsys removableFS, path string, mntPoints []string) error {
 			for _, entry := range entries {
 				entryPath := filepath.Join(path, entry.Name())
 
-				if err := rm_r(fsys, entryPath, mntPoints); err != nil {
+				if err := rmRecurse(fsys, entryPath, mntPoints); err != nil {
 					return err
 				}
 
