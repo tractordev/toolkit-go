@@ -2,13 +2,13 @@ package mountablefs
 
 import (
 	"errors"
-	"io/fs"
 	"path/filepath"
 	"slices"
 	"strings"
 	"syscall"
 	"time"
 
+	"tractor.dev/toolkit-go/engine/fs"
 	"tractor.dev/toolkit-go/engine/fs/fsutil"
 )
 
@@ -18,12 +18,12 @@ type mountedFSDir struct {
 }
 
 type FS struct {
-	fs.FS
+	fs.MutableFS
 	mounts []mountedFSDir
 }
 
-func New(fsys fs.FS) *FS {
-	return &FS{FS: fsys, mounts: make([]mountedFSDir, 0, 1)}
+func New(fsys fs.MutableFS) *FS {
+	return &FS{MutableFS: fsys, mounts: make([]mountedFSDir, 0, 1)}
 }
 
 func (host *FS) Mount(fsys fs.FS, dirPath string) error {
@@ -95,7 +95,7 @@ func (host *FS) Chmod(name string, mode fs.FileMode) error {
 		fsys = mount.fsys
 		prefix = mount.mountPoint
 	} else {
-		fsys = host.FS
+		fsys = host.MutableFS
 	}
 
 	chmodableFS, ok := fsys.(interface {
@@ -116,7 +116,7 @@ func (host *FS) Chown(name string, uid, gid int) error {
 		fsys = mount.fsys
 		prefix = mount.mountPoint
 	} else {
-		fsys = host.FS
+		fsys = host.MutableFS
 	}
 
 	chownableFS, ok := fsys.(interface {
@@ -137,7 +137,7 @@ func (host *FS) Chtimes(name string, atime time.Time, mtime time.Time) error {
 		fsys = mount.fsys
 		prefix = mount.mountPoint
 	} else {
-		fsys = host.FS
+		fsys = host.MutableFS
 	}
 
 	chtimesableFS, ok := fsys.(interface {
@@ -158,7 +158,7 @@ func (host *FS) Create(name string) (fs.File, error) {
 		fsys = mount.fsys
 		prefix = mount.mountPoint
 	} else {
-		fsys = host.FS
+		fsys = host.MutableFS
 	}
 
 	createableFS, ok := fsys.(interface {
@@ -179,7 +179,7 @@ func (host *FS) Mkdir(name string, perm fs.FileMode) error {
 		fsys = mount.fsys
 		prefix = mount.mountPoint
 	} else {
-		fsys = host.FS
+		fsys = host.MutableFS
 	}
 
 	mkdirableFS, ok := fsys.(interface {
@@ -200,7 +200,7 @@ func (host *FS) MkdirAll(path string, perm fs.FileMode) error {
 		fsys = mount.fsys
 		prefix = mount.mountPoint
 	} else {
-		fsys = host.FS
+		fsys = host.MutableFS
 	}
 
 	mkdirableFS, ok := fsys.(interface {
@@ -218,14 +218,14 @@ func (host *FS) Open(name string) (fs.File, error) {
 		return mount.fsys.Open(trimMountPoint(name, mount.mountPoint))
 	}
 
-	return host.FS.Open(name)
+	return host.MutableFS.Open(name)
 }
 
 func (host *FS) OpenFile(name string, flag int, perm fs.FileMode) (fs.File, error) {
 	if found, mount := host.isPathInMount(name); found {
 		return fsutil.OpenFile(mount.fsys, trimMountPoint(name, mount.mountPoint), flag, perm)
 	} else {
-		return fsutil.OpenFile(host.FS, name, flag, perm)
+		return fsutil.OpenFile(host.MutableFS, name, flag, perm)
 	}
 }
 
@@ -247,7 +247,7 @@ func (host *FS) Remove(name string) error {
 		fsys = mount.fsys
 		prefix = mount.mountPoint
 	} else {
-		fsys = host.FS
+		fsys = host.MutableFS
 	}
 
 	if removableFS, ok := fsys.(removableFS); ok {
@@ -270,7 +270,7 @@ func (host *FS) RemoveAll(path string) error {
 		fsys = mount.fsys
 		prefix = mount.mountPoint
 	} else {
-		fsys = host.FS
+		fsys = host.MutableFS
 		// check if path contains any mountpoints, and call a custom removeAll
 		// if it does.
 		var mntPoints []string
@@ -371,7 +371,7 @@ func (host *FS) Rename(oldname, newname string) error {
 			return &fs.PathError{Op: "rename", Path: oldname + " -> " + newname, Err: syscall.EXDEV}
 		}
 
-		fsys = host.FS
+		fsys = host.MutableFS
 	}
 
 	renameableFS, ok := fsys.(interface {
