@@ -28,6 +28,24 @@ var (
 	Stat               = iofs.Stat
 )
 
+const (
+	ModeDir        = iofs.ModeDir
+	ModeAppend     = iofs.ModeAppend
+	ModeExclusive  = iofs.ModeExclusive
+	ModeTemporary  = iofs.ModeTemporary
+	ModeSymlink    = iofs.ModeSymlink
+	ModeDevice     = iofs.ModeDevice
+	ModeNamedPipe  = iofs.ModeNamedPipe
+	ModeSocket     = iofs.ModeSocket
+	ModeSetuid     = iofs.ModeSetuid
+	ModeSetgid     = iofs.ModeSetgid
+	ModeCharDevice = iofs.ModeCharDevice
+	ModeSticky     = iofs.ModeSticky
+	ModeIrregular  = iofs.ModeIrregular
+	ModeType       = iofs.ModeType
+	ModePerm       = iofs.ModePerm
+)
+
 type (
 	DirEntry    = iofs.DirEntry
 	FS          = iofs.FS
