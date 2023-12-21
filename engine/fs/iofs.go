@@ -28,22 +28,6 @@ var (
 	Stat               = iofs.Stat
 )
 
-type (
-	DirEntry    = iofs.DirEntry
-	FS          = iofs.FS
-	File        = iofs.File
-	FileInfo    = iofs.FileInfo
-	FileMode    = iofs.FileMode
-	GlobFS      = iofs.GlobFS
-	PathError   = iofs.PathError
-	ReadDirFS   = iofs.ReadDirFS
-	ReadDirFile = iofs.ReadDirFile
-	ReadFileFS  = iofs.ReadFileFS
-	StatFS      = iofs.StatFS
-	SubFS       = iofs.SubFS
-	WalkDirFunc = iofs.WalkDirFunc
-)
-
 const (
 	ModeDir        = iofs.ModeDir
 	ModeAppend     = iofs.ModeAppend
@@ -60,4 +44,20 @@ const (
 	ModeIrregular  = iofs.ModeIrregular
 	ModeType       = iofs.ModeType
 	ModePerm       = iofs.ModePerm
+)
+
+type (
+	DirEntry    = iofs.DirEntry
+	FS          = iofs.FS
+	File        = iofs.File
+	FileInfo    = iofs.FileInfo
+	FileMode    = iofs.FileMode
+	GlobFS      = iofs.GlobFS
+	PathError   = iofs.PathError
+	ReadDirFS   = iofs.ReadDirFS
+	ReadDirFile = iofs.ReadDirFile
+	ReadFileFS  = iofs.ReadFileFS
+	StatFS      = iofs.StatFS
+	SubFS       = iofs.SubFS
+	WalkDirFunc = iofs.WalkDirFunc
 )

@@ -1,6 +1,7 @@
 package watchfs
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"log"
@@ -174,7 +175,10 @@ func (f *FS) Watch(name string, cfg *Config) (*Watch, error) {
 	if wfs, ok := f.FS.(interface {
 		Watch(name string, cfg *Config) (*Watch, error)
 	}); ok {
-		return wfs.Watch(name, cfg)
+		w, err := wfs.Watch(name, cfg)
+		if err == nil || !errors.Is(err, errors.ErrUnsupported) {
+			return w, err
+		}
 	}
 
 	if !f.watcher.IsRunning() {
