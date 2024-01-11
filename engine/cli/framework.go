@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"reflect"
 	"strconv"
@@ -37,16 +36,7 @@ type Framework struct {
 // Initialize sets up a Root command that simply runs the
 // DefaultRunner, and also runs any Initializers.
 func (f *Framework) Initialize() {
-	f.Root = &Command{
-		Run: func(ctx *Context, args []string) {
-			if f.DefaultRunner == f {
-				panic("only runner is cli.Framework")
-			}
-			if err := f.DefaultRunner.Run(ctx); err != nil {
-				log.Fatal(err)
-			}
-		},
-	}
+	f.Root = &Command{}
 	for _, i := range f.Initializers {
 		i.InitializeCLI(f.Root)
 	}
