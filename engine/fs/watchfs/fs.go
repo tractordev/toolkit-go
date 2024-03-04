@@ -81,6 +81,23 @@ type Watch struct {
 	unwatch func(*Watch)
 }
 
+// NewWatch is for building your own WatchFS implementation.
+// Use the returned chan Event for sending events and the
+// chan bool for waiting for a close.
+func NewWatch(path string, cfg Config) (*Watch, chan Event, chan bool) {
+	inbox := make(chan Event)
+	closer := make(chan bool)
+	unwatch := func(*Watch) {
+		close(closer)
+	}
+	return &Watch{
+		path:    path,
+		cfg:     cfg,
+		inbox:   inbox,
+		unwatch: unwatch,
+	}, inbox, closer
+}
+
 func (w *Watch) Iter() <-chan Event {
 	return w.inbox
 }

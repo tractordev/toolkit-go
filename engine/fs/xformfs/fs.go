@@ -36,6 +36,10 @@ func (xfs *FS) Transform(suffix string, fn func(dst io.Writer, src io.Reader) er
 	})
 }
 
+func (xfs *FS) Stat(name string) (fs.FileInfo, error) {
+	return fs.Stat(xfs.FS, name)
+}
+
 func (xfs *FS) Watch(name string, cfg *watchfs.Config) (*watchfs.Watch, error) {
 	wfs, ok := xfs.FS.(watchfs.WatchFS)
 	if !ok {
