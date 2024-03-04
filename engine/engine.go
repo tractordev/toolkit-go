@@ -155,6 +155,14 @@ func Run(units ...Unit) {
 	// make main unit global accessible
 	Main = asm.Main()
 
+	// if main has Run use it
+	if r, ok := asm.Main().(Runner); ok {
+		if err := r.Run(context.Background()); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+
 	// find a runner; should always be the cli.Framework
 	for i := len(asm.Units()) - 1; i >= 0; i-- {
 		u := asm.Units()[i]
