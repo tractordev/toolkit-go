@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"sync"
-	"syscall"
 )
 
 // Decoder decodes messages given an io.Reader
@@ -28,7 +27,7 @@ func (dec *Decoder) Decode() (Message, error) {
 	_, err := io.ReadFull(dec.r, msgNum[:])
 	if err != nil {
 		var syscallErr *os.SyscallError
-		if errors.As(err, &syscallErr) && syscallErr.Err == syscall.ECONNRESET { // syscall.ECONNRESET not supported by tinygo 0.28.1
+		if errors.As(err, &syscallErr) { //&& syscallErr.Err == syscall.ECONNRESET { // syscall.ECONNRESET not supported by tinygo 0.28.1
 			return nil, io.EOF
 		}
 		return nil, err

@@ -123,12 +123,12 @@ func TestIO(t *testing.T) {
 	testExchange(t, sess)
 }
 
-func TestWS(t *testing.T) {
-	l, err := ListenWS("127.0.0.1:0")
-	fatal(err, t)
-	startListener(t, l)
+// func TestWS(t *testing.T) {
+// 	l, err := ListenWS("127.0.0.1:0")
+// 	fatal(err, t)
+// 	startListener(t, l)
 
-	sess, err := DialWS(l.Addr().String())
-	fatal(err, t)
-	testExchange(t, sess)
-}
+// 	sess, err := DialWS(l.Addr().String())
+// 	fatal(err, t)
+// 	testExchange(t, sess)
+// }

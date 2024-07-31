@@ -35,6 +35,11 @@ func (a *app) run(didFinish func()) {
 	delegate := &appkit.ApplicationDelegate{}
 	delegate.SetApplicationShouldTerminateAfterLastWindowClosed(func(sender appkit.Application) bool {
 		return !a.Options.Agent
+		// for demo
+		// if os.Getenv("MSOCK") != "" {
+		// 	return false
+		// }
+		// return true
 	})
 	delegate.SetApplicationDidFinishLaunching(func(notification foundation.Notification) {
 		sharedApp.ActivateIgnoringOtherApps(true) // not if accessory?

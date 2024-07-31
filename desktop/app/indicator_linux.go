@@ -10,9 +10,30 @@ import (
 	"tractor.dev/toolkit-go/desktop/menu"
 )
 
+type Indicator struct {
+	Icon  []byte
+	Items []menu.Item
+}
+
 var globalTrayId = 0
 
-func newIndicator(icon []byte, items []menu.Item) {
+func (i *Indicator) Unload() {
+	// todo
+}
+
+func (i *Indicator) SetMenu(m menu.Menu) {
+	i.Items = nil
+	// i.StatusItem.SetMenu(m)
+	// TODO
+}
+
+func (i *Indicator) SetItems(items []menu.Item) {
+	i.Items = items
+	// i.StatusItem.SetMenu(menu.New(items))
+	// TODO
+}
+
+func (i *Indicator) Load() {
 	//
 	// NOTE(nick): it seems like libappindicator warns about the "tmp" directory:
 	//
@@ -24,7 +45,7 @@ func newIndicator(icon []byte, items []menu.Item) {
 		return
 	}
 
-	_, err = f.Write(icon)
+	_, err = f.Write(i.Icon)
 	if err != nil {
 		log.Println("[NewIndicator] Failed to create write icon bytes!")
 		return
@@ -38,7 +59,7 @@ func newIndicator(icon []byte, items []menu.Item) {
 
 	trayIconPath := f.Name()
 
-	menu := menu.New(items)
+	menu := menu.New(i.Items)
 	linux.Indicator_New(trayId, trayIconPath, menu.Menu)
 
 	linux.SetGlobalMenuCallback(func(menuId int) {

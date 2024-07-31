@@ -36,10 +36,15 @@ func (m *menu) unload() {
 	}
 }
 
-func (m *menu) reload(items []Item) {
+func (m *menu) load() {
 	// @Cleanup: maybe just dynamically create the win32 menu each time it's needed?
-	m.popupMenu = createMenu(true, items)
-	m.menu = createMenu(false, items)
+	// m.popupMenu = createMenu(true, items)
+	// m.menu = createMenu(false, items)
+	// TODO: finish this
+}
+
+func (m *menu) AddItem(item Item) {
+	// TODO
 }
 
 func (m *menu) popup() int {

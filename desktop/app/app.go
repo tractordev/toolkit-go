@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"log"
+	"sync/atomic"
 
 	"tractor.dev/toolkit-go/desktop"
 )
@@ -32,7 +33,11 @@ type App struct {
 	app
 
 	// obj      manifold.Node
-	launched bool
+	launched atomic.Bool
+}
+
+func (a *App) IsLaunched() bool {
+	return a.launched.Load()
 }
 
 func (a *App) Activate(ctx context.Context) error {
@@ -72,9 +77,10 @@ func (a *App) Reload() {
 }
 
 func (a *App) Run(didFinish func()) {
-	if a.launched {
+	if a.launched.Load() {
 		log.Println("application already launched")
 		return
 	}
+	a.launched.Store(true)
 	a.run(didFinish)
 }

@@ -21,16 +21,15 @@ func (m *menu) unload() {
 	}
 }
 
-func (m *menu) reload(items []Item) {
+func (m *menu) load() {
 	menu := appkit.NewMenu()
 	menu.SetAutoenablesItems(true)
-
-	for _, i := range items {
-		menu.AddItem(newMenuItem(&i))
-	}
-
 	m.Menu = &menu
 	m.Menu.Retain()
+}
+
+func (m *menu) AddItem(item Item) {
+	m.Menu.AddItem(newMenuItem(&item))
 }
 
 func (m *menu) popup() int {
@@ -53,11 +52,7 @@ func newMenuItem(i *Item) appkit.MenuItem {
 	}
 
 	item := appkit.NewMenuItem()
-	title := i.Title
-	// if title == "" && i.obj != nil {
-	// 	title = entity.Name(i.obj)
-	// }
-	item.SetTitle(title)
+	item.SetTitle(i.Title)
 	item.SetTag(i.ID)
 	item.SetEnabled(!i.Disabled)
 	// item.SetToolTip(i.Tooltip)
@@ -80,29 +75,21 @@ func newMenuItem(i *Item) appkit.MenuItem {
 
 	if !i.Disabled && len(i.SubMenu) == 0 {
 		// special item titles
-		if title == "Quit" {
+		if i.Title == "Quit" {
 			item.SetTarget(appkit.Application_SharedApplication())
 			item.SetAction(objc.Sel("terminate:"))
 
-		} else if i.OnClick != nil {
+		} else {
 			action.Set(item, action.Handler(func(sender objc.Object) {
-				i.OnClick()
+				i.Execute()
 			}))
-
 		}
-		// else if i.obj != nil {
-		// 	action.Set(item, action.Handler(func(sender objc.Object) {
-		// 		if err := node.Activate(context.Background(), i.obj); err != nil {
-		// 			log.Println(err)
-		// 		}
-		// 	}))
-		// }
 	}
 
-	items := subItems(*i)
+	items := i.SubItems()
 	if len(items) > 0 {
 		sub := appkit.NewMenu()
-		sub.SetTitle(title)
+		sub.SetTitle(i.Title)
 		sub.SetAutoenablesItems(true)
 		for _, i := range items {
 			sub.AddItem(newMenuItem(&i))

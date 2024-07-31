@@ -1,6 +1,8 @@
 package desktop
 
 import (
+	"os"
+
 	"github.com/progrium/darwinkit/macos/appkit"
 )
 
@@ -16,4 +18,5 @@ func start() {
 func stop() {
 	app := appkit.Application_SharedApplication()
 	app.Terminate(nil)
+	os.Exit(0)
 }

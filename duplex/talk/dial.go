@@ -18,7 +18,7 @@ func init() {
 	Dialers = map[string]Dialer{
 		"tcp":  mux.DialTCP,
 		"unix": mux.DialUnix,
-		"ws":   mux.DialWS,
+		// "ws":   mux.DialWS,
 		"stdio": func(_ string) (mux.Session, error) {
 			return mux.DialStdio()
 		},

@@ -123,8 +123,9 @@ func fromFunc(fn reflect.Value) rpc.Handler {
 			params = append(params, c)
 		} else if expectsChanParam {
 			// TODO: somehow pass buffer via CallHeader?
-			ch = reflect.MakeChan(chanType, 512).Interface() // not supported by tinygo 0.28.1
-			params = append(params, ch)
+			_ = chanType
+			//ch = reflect.MakeChan(chanType, 512).Interface() // not supported by tinygo 0.28.1
+			//params = append(params, ch)
 		}
 		ret, err := Call(fn.Interface(), params)
 		if err != nil {

@@ -91,8 +91,8 @@ func TestProxyCloseDst(t *testing.T) {
 	if err != nil &&
 		!errors.Is(err, net.ErrClosed) &&
 		!errors.Is(err, io.EOF) &&
-		!errors.Is(err, syscall.EPIPE) &&
-		!errors.Is(err, syscall.ECONNRESET) {
+		!errors.Is(err, syscall.EPIPE) { //&&
+		//!errors.Is(err, syscall.ECONNRESET) {
 		t.Fatal("unexpected channel error:", err)
 	}
 

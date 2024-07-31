@@ -38,7 +38,7 @@ type Options struct {
 
 func New(opts Options) *Window {
 	w := &Window{window: window{Options: opts}}
-	w.Reload()
+	//w.Reload()
 	return w
 }
 
@@ -46,10 +46,7 @@ func New(opts Options) *Window {
 // 	w.com = com
 // }
 
-func (w Window) Reload() {
+func (w *Window) Reload() {
 	w.Unload()
-	// if w.com != nil && !entity.ComponentEnabled(w.com) {
-	// 	return
-	// }
 	w.Load()
 }

@@ -15,9 +15,14 @@ func (m *menu) unload() {
 	}
 }
 
-func (m *menu) reload(items []Item) {
-	m.Menu = createMenu(items)
+func (m *menu) load() {
+	// TODO: finish this
+	//m.Menu = createMenu(items)
 	//m.Menu.Retain()
+}
+
+func (m *menu) AddItem(item Item) {
+	// TODO
 }
 
 func (m *menu) popup() int {
