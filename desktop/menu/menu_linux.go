@@ -9,9 +9,9 @@ type menu struct {
 }
 
 func (m *menu) unload() {
-	if m.Menu != nil {
+	if m.Menu.Handle != nil {
 		m.Menu.Destroy()
-		m.Menu = nil
+		m.Menu.Handle = nil
 	}
 }
 
