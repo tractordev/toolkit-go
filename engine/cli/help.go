@@ -117,7 +117,14 @@ func (c *CommandHelp) HasFlags() bool {
 func (c *CommandHelp) FlagUsages() string {
 	var sb strings.Builder
 	c.Flags().VisitAll(func(f *flag.Flag) {
-		fmt.Fprintf(&sb, "  -%s", f.Name) // Two spaces before -; see next two comments.
+		// Two spaces before - or --; see next two comments.
+		// Use - for single letter flags, -- for longer
+		if len(f.Name) == 1 {
+			fmt.Fprintf(&sb, "  -%s", f.Name)
+		} else {
+			fmt.Fprintf(&sb, "  --%s", f.Name)
+		}
+
 		name, usage := flag.UnquoteUsage(f)
 		if len(name) > 0 {
 			sb.WriteString(" ")
