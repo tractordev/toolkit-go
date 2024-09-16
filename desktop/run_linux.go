@@ -7,6 +7,7 @@ import (
 )
 
 func init() {
+	linux.SetAllCFuncs()
 	linux.OS_Init()
 }
 
