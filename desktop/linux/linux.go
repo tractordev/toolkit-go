@@ -417,8 +417,9 @@ func (webview *Webview) SetSettings(config WebviewSetings) {
 func (webview *Webview) Eval(js string) {
 	cjs := C.CString(js)
 	defer C.free(unsafe.Pointer(cjs))
+	var length C.gssize = C.gssize(C.strlen(cjs))
 
-	C.webkit_web_view_run_javascript(webview.Handle, cjs, nil, nil, nil)
+	C.webkit_web_view_evaluate_javascript(webview.Handle, cjs, length, nil, nil, nil, nil, nil)
 }
 
 func (webview *Webview) SetHtml(html string, baseUri string) {

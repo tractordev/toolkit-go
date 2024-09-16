@@ -2,6 +2,7 @@
 #include <JavaScriptCore/JavaScript.h>
 #include <webkit2/webkit2.h>
 #include <libayatana-appindicator/app-indicator.h>
+#include <string.h>
 
 extern void go_menu_callback(GtkMenuItem *,int);
 
@@ -11,19 +12,19 @@ extern void go_event_callback(GtkWindow *window, GdkEvent *event, int arg);
 
 
 static void _g_signal_connect(GtkWidget *item, char *action, void *callback, int user) {
-  g_signal_connect(item, action, G_CALLBACK(callback), (void *)user);
+  g_signal_connect(item, action, G_CALLBACK(callback), (void *)&user);
 }
 
 static bool gtk_window_set_transparent(GtkWindow *window, int transparent) {
   if (transparent)
   {
-    gtk_widget_set_app_paintable(window, TRUE);
+    gtk_widget_set_app_paintable(GTK_WIDGET(window), TRUE);
 
     GdkScreen *screen = gdk_screen_get_default();
     GdkVisual *visual = gdk_screen_get_rgba_visual(screen);
 
     if (visual != NULL && gdk_screen_is_composited(screen)) {
-      gtk_widget_set_visual(window, visual);
+      gtk_widget_set_visual(GTK_WIDGET(window), visual);
       return true;
     }
 
@@ -31,8 +32,8 @@ static bool gtk_window_set_transparent(GtkWindow *window, int transparent) {
   }
   else
   {
-    gtk_widget_set_app_paintable(window, FALSE);
-    gtk_widget_set_visual(window, NULL);
+    gtk_widget_set_app_paintable(GTK_WIDGET(window), FALSE);
+    gtk_widget_set_visual(GTK_WIDGET(window), NULL);
   }
 }
 
