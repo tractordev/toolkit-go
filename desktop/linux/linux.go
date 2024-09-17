@@ -15,7 +15,12 @@ import (
 /*
 #cgo linux pkg-config: gtk+-3.0 webkit2gtk-4.1 ayatana-appindicator3-0.1
 
-#include "linux.h"
+#include <stdint.h>
+#include <gtk/gtk.h>
+#include <JavaScriptCore/JavaScript.h>
+#include <webkit2/webkit2.h>
+#include <libayatana-appindicator/app-indicator.h>
+#include <string.h>
 */
 import "C"
 
@@ -132,6 +137,18 @@ const (
 
 var (
 	LibCFree func (unsafe.Pointer)
+)
+
+var (
+	GSignalConnectData func (
+		instance *C.struct__GtkWidget,
+		detailed_signal *C.char,
+		c_handler uintptr,
+		data unsafe.Pointer,
+		//These two last arguments are ignored, so they only have generic types here
+		destroy_data unsafe.Pointer,
+		connect_flags uint32,
+	)
 )
 
 var (
@@ -277,6 +294,8 @@ func SetAllCFuncs() {
 	//LibC functions
 	purego.RegisterLibFunc(&LibCFree, libc, "free")
 
+	purego.RegisterLibFunc(&GSignalConnectData, libgtk, "g_signal_connect_data")
+
 	//Gtk functions
 	purego.RegisterLibFunc(&GtkMain, libgtk, "gtk_main")
 	purego.RegisterLibFunc(&GtkInitCheck, libgtk, "gtk_init_check")
@@ -408,6 +427,16 @@ func GtkWebViewSetTransparent(webview *C.struct__WebKitWebView, transparent bool
 func StringFromJsResult(result *C.struct__WebKitJavascriptResult) *C.char {
 	value := WebkitJavascriptResultGetJsValue(result)
 	return JscValueToString(value)
+}
+
+// A simple go implementation of `g_signal_connect`
+func g_signal_connect(
+	instance *C.struct__GtkWidget,
+	detailed_signal *C.char,
+	c_handler uintptr,
+	data unsafe.Pointer,
+) {
+	GSignalConnectData(instance, detailed_signal, c_handler, data, nil, 0);
 }
 
 //
@@ -622,8 +651,6 @@ func (window *Window) SetIconFromBytes(icon []byte) bool {
 // https://docs.gtk.org/gdk3/union.Event.html
 // https://api.gtkd.org/gdk.c.types.GdkEventType.html
 
-//export go_event_callback
-//TODO callbacks
 func go_event_callback(window *C.struct__GtkWindow, event *C.union__GdkEvent, arg C.int) {
 	if globalEventCallback != nil {
 		eventType := *(*C.int)(unsafe.Pointer(event))
@@ -686,8 +713,7 @@ func (window *Window) BindEventCallback(userData int) {
 	cevent := C.CString("event")
 	defer LibCFree(unsafe.Pointer(cevent))
 
-	//TODO
-	C._g_signal_connect(Window_GTK_WIDGET(window.Handle), cevent, C.go_event_callback, C.int(userData))
+	g_signal_connect(Window_GTK_WIDGET(window.Handle), cevent, purego.NewCallback(go_event_callback), unsafe.Pointer(&userData))
 }
 
 func SetGlobalEventCallback(callback Event_Callback) {
@@ -704,7 +730,7 @@ func (webview *Webview) RegisterCallback(name string, callback func(result strin
 	defer LibCFree(unsafe.Pointer(cexternal))
 
 	index := wc_register(callback)
-	C._g_signal_connect(WebKitUserContentManager_GTK_WIDGET(manager), cevent, C.go_webview_callback, C.int(index))
+	g_signal_connect(WebKitUserContentManager_GTK_WIDGET(manager), cevent, purego.NewCallback(go_webview_callback), unsafe.Pointer(&index))
 	WebkitUserContentManagerRegisterScriptMessageHandler(manager, cexternal)
 
 	return int(index)
@@ -923,7 +949,7 @@ func MenuItem_New(id int, title string, disabled bool, checked bool, separator b
 		cactivate := C.CString("activate")
 		defer LibCFree(unsafe.Pointer(cactivate))
 
-		C._g_signal_connect(widget, cactivate, C.go_menu_callback, C.int(id))
+		g_signal_connect(widget, cactivate, purego.NewCallback(go_menu_callback), unsafe.Pointer(&id))
 
 		GtkWidgetShow(widget)
 	}
@@ -941,7 +967,6 @@ func (item *MenuItem) SetSubmenu(child Menu) {
 	GtkMenuItemSetSubmenu(item.Handle, Menu_GTK_WIDGET(child.Handle))
 }
 
-//export go_menu_callback
 func go_menu_callback(item *C.struct__GtkMenuItem, menuId C.int) {
 	if globalMenuCallback != nil {
 		globalMenuCallback(int(menuId))
@@ -985,7 +1010,6 @@ func wc_unregister(i int) {
 	delete(wc_fns, i)
 }
 
-//export go_webview_callback
 func go_webview_callback(manager *C.struct__WebKitUserContentManager, result *C.struct__WebKitJavascriptResult, arg C.int) {
 	fn := wc_lookup(int(arg))
 	cstr := StringFromJsResult(result)
