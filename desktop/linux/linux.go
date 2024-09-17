@@ -183,6 +183,8 @@ var (
     GtkWindowSetKeepAbove             func (window *C.struct__GtkWindow, setting bool)
     GtkWindowSetResizable             func (window *C.struct__GtkWindow, resizable bool)
     GtkWindowSetTitle                 func (window *C.struct__GtkWindow, title *C.char)
+	GtkWidgetSetAppPaintable          func(window *C.struct__GtkWidget, app_paintable bool)
+	GtkWidgetSetVisual          	  func(window *C.struct__GtkWindow, visual *C.struct__GdkVisual)
 )
 
 var (
@@ -202,6 +204,8 @@ var (
     GdkMonitorIsPrimary               func(monitor *C.struct__GdkMonitor) bool
     GdkPixbufNewFromFile          	  func(filename *C.char, err **C.struct__GError) *C.struct__GdkPixbuf
     GdkWindowGetGeometry          	  func(window *C.struct__GdkWindow, x, y, width, height *C.int)
+	GdkScreenGetRgbaVisual            func(window *C.struct__GdkScreen) *C.struct__GdkVisual
+	GdkScreenIsComposited             func(screen *C.struct__GdkScreen) bool
 )
 
 var (
@@ -232,6 +236,12 @@ var (
     WebkitWebViewLoadHtml                                   func(web_view *C.struct__WebKitWebView, content *C.char, base_uri *C.char)
     WebkitWebViewLoadUri                                    func(web_view *C.struct__WebKitWebView, uri *C.char)
     WebkitWebViewNew                                        func() *C.struct__GtkWidget
+	WebkitWebViewSetBackgroundColor							func(web_view *C.struct__WebKitWebView, rgba *C.struct__GdkRGBA)
+	WebkitJavascriptResultGetJsValue						func(js_result *C.struct__WebKitJavascriptResult) *C.struct__JSCValue
+)
+
+var (
+	JscValueToString		func (*C.struct__JSCValue) *C.char
 )
 
 
@@ -247,6 +257,10 @@ func GetCLibPath() string {
 
 func GetWebkitGtkLibbPath() string {
 	return "/usr/lib/libwebkit2gtk-4.1.so"
+}
+
+func GetJSCLibPath() string {
+	return "/usr/lib/libjavascriptcoregtk-4.1.so"
 }
 
 func SetAllCFuncs() {
@@ -303,6 +317,8 @@ func SetAllCFuncs() {
 	purego.RegisterLibFunc(&GtkWindowSetTitle, libgtk, "gtk_window_set_title")
 	purego.RegisterLibFunc(&GtkWindowUnfullscreen, libgtk, "gtk_window_unfullscreen")
 	purego.RegisterLibFunc(&GtkWindowUnmaximize, libgtk, "gtk_window_unmaximize")
+	purego.RegisterLibFunc(&GtkWidgetSetAppPaintable, libgtk, "gtk_widget_set_app_paintable")
+	purego.RegisterLibFunc(&GtkWidgetSetVisual, libgtk, "gtk_widget_set_visual")
 
 	//Gdk functions
 	purego.RegisterLibFunc(&GdkScreenGetRootWindow, libgtk, "gdk_screen_get_root_window")
@@ -318,6 +334,8 @@ func SetAllCFuncs() {
 	purego.RegisterLibFunc(&GdkMonitorIsPrimary, libgtk, "gdk_monitor_is_primary")
 	purego.RegisterLibFunc(&GdkPixbufNewFromFile, libgtk, "gdk_pixbuf_new_from_file")
 	purego.RegisterLibFunc(&GdkWindowGetGeometry, libgtk, "gdk_window_get_geometry")
+	purego.RegisterLibFunc(&GdkScreenGetRgbaVisual, libgtk, "gdk_screen_get_rgba_visual")
+	purego.RegisterLibFunc(&GdkScreenIsComposited, libgtk, "gdk_screen_is_composited")
 
 
 	libwebgtk, err := purego.Dlopen(GetWebkitGtkLibbPath(), purego.RTLD_NOW|purego.RTLD_GLOBAL)
@@ -337,12 +355,59 @@ func SetAllCFuncs() {
 	purego.RegisterLibFunc(&WebkitWebViewLoadHtml, libwebgtk, "webkit_web_view_load_html")
 	purego.RegisterLibFunc(&WebkitWebViewLoadUri, libwebgtk, "webkit_web_view_load_uri")
 	purego.RegisterLibFunc(&WebkitWebViewNew, libwebgtk, "webkit_web_view_new")
+	purego.RegisterLibFunc(&WebkitWebViewSetBackgroundColor, libwebgtk, "webkit_web_view_set_background_color")
+	purego.RegisterLibFunc(&WebkitJavascriptResultGetJsValue, libwebgtk, "webkit_javascript_result_get_js_value")
 
+	libjsc, err := purego.Dlopen(GetJSCLibPath(), purego.RTLD_NOW|purego.RTLD_GLOBAL)
+	if err != nil {
+		panic(err)
+	}
 
+	//LibJavascriptCore functions
+	purego.RegisterLibFunc(&JscValueToString, libwebgtk, "jsc_value_to_string")
 
 	//TODO where and when to close files
 	purego.Dlclose(libc)
 	purego.Dlclose(libgtk)
+	purego.Dlclose(libwebgtk)
+	purego.Dlclose(libjsc)
+}
+
+/*
+* User defined Gtk functions
+*/
+func GtkWindowSetTransparent(window *C.struct__GtkWindow, transparent bool) {
+	fmt.Println("setting transparent")
+	if transparent {
+		GtkWidgetSetAppPaintable(Window_GTK_WIDGET(window), true)
+		screen := GdkScreenGetDefault()
+		visual := GdkScreenGetRgbaVisual(screen)
+
+		if visual != nil && GdkScreenIsComposited(screen) {
+			GtkWidgetSetVisual(window, visual)
+		}
+	} else {
+		GtkWidgetSetAppPaintable(Window_GTK_WIDGET(window), false)
+		GtkWidgetSetVisual(window, nil)
+	}
+}
+
+func GtkWebViewSetTransparent(webview *C.struct__WebKitWebView, transparent bool) {
+	color := C.struct__GdkRGBA{}
+	color.red = 1.0
+	color.green = 1.0
+	color.blue = 1.0
+	color.alpha = 1.0
+
+	if transparent {
+		color.alpha = 0
+	}
+}
+
+//TODO handle strings's memory here
+func StringFromJsResult(result *C.struct__WebKitJavascriptResult) *C.char {
+	value := WebkitJavascriptResultGetJsValue(result)
+	return JscValueToString(value)
 }
 
 //
@@ -396,9 +461,8 @@ func (window *Window) Destroy() {
 	}
 }
 
-//TODO transfer linux.h to purego
 func (window *Window) SetTransparent(transparent bool) {
-	C.gtk_window_set_transparent(window.Handle, toCBool(transparent))
+	GtkWindowSetTransparent(window.Handle, transparent)
 }
 
 func (window *Window) SetTitle(title string) {
@@ -717,7 +781,7 @@ func (webview *Webview) AddScript(js string) {
 }
 
 func (webview *Webview) SetTransparent(transparent bool) {
-	C.gtk_webview_set_transparent(webview.Handle, toCBool(transparent))
+	GtkWebViewSetTransparent(webview.Handle, transparent)
 }
 
 // https://docs.gtk.org/gdk3/class.Monitor.html
@@ -924,7 +988,7 @@ func wc_unregister(i int) {
 //export go_webview_callback
 func go_webview_callback(manager *C.struct__WebKitUserContentManager, result *C.struct__WebKitJavascriptResult, arg C.int) {
 	fn := wc_lookup(int(arg))
-	cstr := C.string_from_js_result(result)
+	cstr := StringFromJsResult(result)
 	if fn != nil {
 		fn(C.GoString(cstr))
 	}

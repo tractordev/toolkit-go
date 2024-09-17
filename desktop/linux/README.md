@@ -16,9 +16,11 @@ sudo apt install \
 
 ## TODO
 
-Use purego!
-Locate library files dynamically.
-Make sure the strings passed to purego are null terminated.
-Handle callbacks in purego.
-Move linux.h into linux.go with purego functions.
-Go through every C.* call and update them to purego (i.e C.CString).
+- Use purego!
+- Locate library files dynamically.
+- Make sure the strings passed to purego are [null terminated](https://pkg.go.dev/github.com/jwijenbergh/purego#hdr-Memory-RegisterFunc).
+- Handle memory of strings in general
+- Handle callbacks in purego.
+- Move linux.h into linux.go with purego functions.
+- Go through every C.* call and update them to purego (i.e C.CString).
+- Remove cgo types
