@@ -49,13 +49,13 @@ type Monitor struct {
 }
 
 type Size struct {
-	Width  int
-	Height int
+	Width  int32
+	Height int32
 }
 
 type Position struct {
-	X int
-	Y int
+	X int32
+	Y int32
 }
 
 type Rectangle struct {
@@ -63,7 +63,7 @@ type Rectangle struct {
 	Size     Size
 }
 
-type EventType int
+type EventType int32
 
 const (
 	None EventType = iota
@@ -76,14 +76,14 @@ const (
 type Event struct {
 	Type     EventType
 	Window   Window
-	UserData int
+	UserData int32
 
 	Position Position
 	Size     Size
 	FocusIn  bool
 }
 
-type Menu_Callback func(menuId int)
+type Menu_Callback func(menuId int32)
 
 var globalMenuCallback Menu_Callback
 
@@ -165,12 +165,13 @@ var (
 	GtkWidgetHide   				  func (widget *C.GtkWidget)
 	GtkWidgetDestroy 				  func (widget *C.GtkWidget)
 	GtkWindowSetDecorated 			  func (window *C.GtkWindow, setting bool)
+	//TODO
 	GtkWindowGetSize 				  func (window *C.GtkWindow, width *C.int, height *C.int)
 	GtkCheckMenuItemNewWithLabel      func (label string) *C.GtkWidget
     GtkCheckMenuItemSetActive         func (checkMenuItem *C.GtkCheckMenuItem, is_active bool)
 	//GdkAtom is basically a pointer to 'struct _GdkAtom' (gdktypes.h)
     GtkClipboardGet                   func (selection C.GdkAtom) *C.GtkClipboard
-    GtkClipboardSetText               func (clipboard *C.GtkClipboard, text string, length int)
+    GtkClipboardSetText               func (clipboard *C.GtkClipboard, text string, length int32)
     GtkClipboardWaitForText           func (clipboard *C.GtkClipboard) string
     GtkMenuItemNewWithLabel           func (label string) *C.GtkWidget
     GtkMenuItemSetSubmenu             func (menu_item *C.GtkMenuItem, submenu *C.GtkWidget)
@@ -184,11 +185,12 @@ var (
     GtkWindowIconify                  func (window *C.GtkWindow)
     GtkWindowFullscreen               func (window *C.GtkWindow)
     GtkWindowUnfullscreen             func (window *C.GtkWindow)
+	//TODO
     GtkWindowGetPosition              func (window *C.GtkWindow, x, y *C.int)
     GtkWindowMaximize                 func (window *C.GtkWindow)
     GtkWindowUnmaximize               func (window *C.GtkWindow)
-    GtkWindowMove                     func (window *C.GtkWindow, x, y int)
-    GtkWindowResize                   func (window *C.GtkWindow, width, height int)
+    GtkWindowMove                     func (window *C.GtkWindow, x, y int32)
+    GtkWindowResize                   func (window *C.GtkWindow, width, height int32)
     GtkWindowSetGeometryHints         func (
 		window *C.GtkWindow,
 		geometry_widget *C.GtkWidget,
@@ -206,18 +208,19 @@ var (
     GdkScreenGetRootWindow            func (window *C.GdkScreen) *C.GdkWindow
 	GdkScreenGetDefault				  func () *C.GdkScreen
 	GdkDisplayGetDefault          	  func() *C.GdkDisplay
-    GdkDisplayGetMonitor          	  func(display *C.GdkDisplay, monitorNum C.int) *C.GdkMonitor
-    GdkDisplayGetNMonitors        	  func(display *C.GdkDisplay) C.int
+    GdkDisplayGetMonitor          	  func(display *C.GdkDisplay, monitorNum int32) *C.GdkMonitor
+    GdkDisplayGetNMonitors        	  func(display *C.GdkDisplay) int32
 	//GdkRectangle is not always a struct, and in this case it's a typedef to a definition in cairo
 	//so C. prefix is not used here
 	//TODO once cgo is completely out, these defitions will follow. So this won't even matter, probably.
     GdkMonitorGetGeometry         	  func(monitor *C.GdkMonitor, rect *C.GdkRectangle)
     GdkMonitorGetManufacturer      	  func(monitor *C.GdkMonitor) string
     GdkMonitorGetModel                func(monitor *C.GdkMonitor) string
-    GdkMonitorGetRefreshRate          func(monitor *C.GdkMonitor) int
-    GdkMonitorGetScaleFactor          func(monitor *C.GdkMonitor) int
+    GdkMonitorGetRefreshRate          func(monitor *C.GdkMonitor) int32
+    GdkMonitorGetScaleFactor          func(monitor *C.GdkMonitor) int32
     GdkMonitorIsPrimary               func(monitor *C.GdkMonitor) bool
     GdkPixbufNewFromFile          	  func(filename string, err **C.GError) *C.GdkPixbuf
+	//TODO
     GdkWindowGetGeometry          	  func(window *C.GdkWindow, x, y, width, height *C.int)
 	GdkScreenGetRgbaVisual            func(window *C.GdkScreen) *C.GdkVisual
 	GdkScreenIsComposited             func(screen *C.GdkScreen) bool
@@ -239,7 +242,7 @@ var (
     WebkitWebViewEvaluateJavascript                         func(
 		web_view *C.WebKitWebView,
 		script string,
-		length int,
+		length int32,
 		//ignoring these atm, so they don't have string type
 		world_name unsafe.Pointer,
 		source_uri unsafe.Pointer,
@@ -508,8 +511,8 @@ func (window *Window) GetSize() Size {
 	height := C.int(0)
 	GtkWindowGetSize(window.Handle, &width, &height)
 
-	result.Width = int(width)
-	result.Height = int(height)
+	result.Width = int32(width)
+	result.Height = int32(height)
 
 	return result
 }
@@ -521,8 +524,8 @@ func (window *Window) GetPosition() Position {
 	y := C.int(0)
 	GtkWindowGetPosition(window.Handle, &x, &y)
 
-	result.X = int(x)
-	result.Y = int(y)
+	result.X = int32(x)
+	result.Y = int32(y)
 
 	return result
 }
@@ -531,15 +534,15 @@ func (window *Window) SetResizable(resizable bool) {
 	GtkWindowSetResizable(window.Handle, resizable)
 }
 
-func (window *Window) SetSize(width int, height int) {
+func (window *Window) SetSize(width int32, height int32) {
 	GtkWindowResize(window.Handle, width, height)
 }
 
-func (window *Window) SetPosition(x int, y int) {
+func (window *Window) SetPosition(x int32, y int32) {
 	GtkWindowMove(window.Handle, x, y)
 }
 
-func (window *Window) SetMinSize(width int, height int) {
+func (window *Window) SetMinSize(width int32, height int32) {
 	//TODO
 	g := C.GdkGeometry{}
 	g.min_width = C.int(width)
@@ -547,7 +550,7 @@ func (window *Window) SetMinSize(width int, height int) {
 	GtkWindowSetGeometryHints(window.Handle, nil, &g, GDK_HINT_MIN_SIZE)
 }
 
-func (window *Window) SetMaxSize(width int, height int) {
+func (window *Window) SetMaxSize(width int32, height int32) {
 	g := C.GdkGeometry{}
 	g.max_width = C.int(width)
 	g.max_height = C.int(height)
@@ -600,8 +603,8 @@ func (window *Window) Center() {
 	GdkWindowGetGeometry(root, nil, nil, &screenWidth, &screenHeight)
 
 	nextPos := Position{
-		X: (int(screenWidth) - size.Width) / 2,
-		Y: (int(screenHeight) - size.Height) / 2,
+		X: (int32(screenWidth) - size.Width) / 2,
+		Y: (int32(screenHeight) - size.Height) / 2,
 	}
 
 	window.SetPosition(nextPos.X, nextPos.Y)
@@ -648,7 +651,7 @@ func go_event_callback(window *C.GtkWindow, event *C.GdkEvent, arg C.int) {
 
 		result := Event{}
 		result.Window.Handle = window
-		result.UserData = int(arg)
+		result.UserData = int32(arg)
 
 		if eventType == C.GDK_DELETE {
 			result.Type = Delete
@@ -663,8 +666,8 @@ func go_event_callback(window *C.GtkWindow, event *C.GdkEvent, arg C.int) {
 			configure := (*C.GdkEventConfigure)(unsafe.Pointer(event))
 
 			result.Type = Configure
-			result.Position = Position{X: int(configure.x), Y: int(configure.y)}
-			result.Size = Size{Width: int(configure.width), Height: int(configure.height)}
+			result.Position = Position{X: int32(configure.x), Y: int32(configure.y)}
+			result.Size = Size{Width: int32(configure.width), Height: int32(configure.height)}
 		}
 
 		/*
@@ -750,7 +753,8 @@ func (webview *Webview) SetSettings(config WebviewSetings) {
 }
 
 func (webview *Webview) Eval(js string) {
-	WebkitWebViewEvaluateJavascript(webview.Handle, js, len(js), nil, nil, nil, nil, nil)
+	//TODO int to int32 is lossy cast careful!
+	WebkitWebViewEvaluateJavascript(webview.Handle, js, int32(len(js)), nil, nil, nil, nil, nil)
 }
 
 func (webview *Webview) SetHtml(html string, baseUri string) {
@@ -798,7 +802,7 @@ func Monitors() []Monitor {
 	result := make([]Monitor, n)
 
 	for i := 0; i < n; i++ {
-		monitor := GdkDisplayGetMonitor(display, C.int(i))
+		monitor := GdkDisplayGetMonitor(display, int32(i))
 
 		result[i] = Monitor{
 			Handle: monitor,
@@ -813,8 +817,8 @@ func (monitor *Monitor) Geometry() Rectangle {
 	GdkMonitorGetGeometry(monitor.Handle, &rect)
 
 	return Rectangle{
-		Position: Position{X: int(rect.x), Y: int(rect.y)},
-		Size:     Size{Width: int(rect.width), Height: int(rect.height)},
+		Position: Position{X: int32(rect.x), Y: int32(rect.y)},
+		Size:     Size{Width: int32(rect.width), Height: int32(rect.height)},
 	}
 }
 
@@ -933,7 +937,7 @@ func (item *MenuItem) SetSubmenu(child Menu) {
 
 func go_menu_callback(item *C.GtkMenuItem, menuId C.int) {
 	if globalMenuCallback != nil {
-		globalMenuCallback(int(menuId))
+		globalMenuCallback(int32(menuId))
 	}
 }
 

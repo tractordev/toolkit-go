@@ -61,10 +61,10 @@ func (i *Indicator) Load() {
 	//menu := menu.New(i.Items)
 	//linux.Indicator_New(trayId, trayIconPath, menu.Menu)
 
-	linux.SetGlobalMenuCallback(func(menuId int) {
+	linux.SetGlobalMenuCallback(func(menuId int32) {
 		event.Emit(event.Event{
 			Type:     event.MenuItem,
-			MenuItem: menuId,
+			MenuItem: int(menuId),
 		})
 	})
 }
