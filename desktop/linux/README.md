@@ -22,3 +22,6 @@ sudo apt install \
 - Handle memory of strings in general
 - Go through every C.* call and update them to purego (i.e C.CString).
 - Remove cgo types
+- Handle appindicator, in gtk if possible.
+
+- Testing?

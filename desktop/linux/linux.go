@@ -752,9 +752,6 @@ func (webview *Webview) SetSettings(config WebviewSetings) {
 }
 
 func (webview *Webview) Eval(js string) {
-	cjs := C.CString(js)
-	defer LibCFree(unsafe.Pointer(cjs))
-
 	WebkitWebViewEvaluateJavascript(webview.Handle, js, len(js), nil, nil, nil, nil, nil)
 }
 
@@ -846,31 +843,32 @@ func (monitor *Monitor) IsPrimary() bool {
 // Indicator
 //
 
-func Indicator_New(id string, pngIconPath string, menu Menu) Indicator {
-	cid := C.CString(id)
-	defer LibCFree(unsafe.Pointer(cid))
-
-	handle := C.app_indicator_new(cid, C.CString(""), C.APP_INDICATOR_CATEGORY_APPLICATION_STATUS)
-	C.app_indicator_set_status(handle, C.APP_INDICATOR_STATUS_ACTIVE)
-
-	//app_indicator_set_title(global_app_indicator, title);
-	//app_indicator_set_label(global_app_indicator, title, "");
-
-	if len(pngIconPath) > 0 {
-		cIconPath := C.CString(pngIconPath)
-		defer LibCFree(unsafe.Pointer(cIconPath))
-
-		C.app_indicator_set_icon_full(handle, cIconPath, C.CString(""))
-	}
-
-	if menu.Handle != nil {
-		C.app_indicator_set_menu(handle, menu.Handle)
-	}
-
-	result := Indicator{}
-	result.Handle = handle
-	return result
-}
+//TODO
+//func Indicator_New(id string, pngIconPath string, menu Menu) Indicator {
+//	cid := C.CString(id)
+//	defer LibCFree(unsafe.Pointer(cid))
+//
+//	handle := C.app_indicator_new(cid, C.CString(""), C.APP_INDICATOR_CATEGORY_APPLICATION_STATUS)
+//	C.app_indicator_set_status(handle, C.APP_INDICATOR_STATUS_ACTIVE)
+//
+//	//app_indicator_set_title(global_app_indicator, title);
+//	//app_indicator_set_label(global_app_indicator, title, "");
+//
+//	if len(pngIconPath) > 0 {
+//		cIconPath := C.CString(pngIconPath)
+//		defer LibCFree(unsafe.Pointer(cIconPath))
+//
+//		C.app_indicator_set_icon_full(handle, cIconPath, C.CString(""))
+//	}
+//
+//	if menu.Handle != nil {
+//		C.app_indicator_set_menu(handle, menu.Handle)
+//	}
+//
+//	result := Indicator{}
+//	result.Handle = handle
+//	return result
+//}
 
 func Menu_New() Menu {
 	result := Menu{}
