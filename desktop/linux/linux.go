@@ -142,7 +142,7 @@ var (
 var (
 	GSignalConnectData func (
 		instance *C.struct__GtkWidget,
-		detailed_signal *C.char,
+		detailed_signal string,
 		c_handler uintptr,
 		data unsafe.Pointer,
 		//These two last arguments are ignored, so they only have generic types here
@@ -154,7 +154,6 @@ var (
 var (
 	//TODO put these in lexical order
 	//TODO indentation
-	//TODO convert all *C.char to string
 	//TODO transfer types as well
 	//TODO using 'struct__' is not needed because most are typedefs to structs
 	GtkMain 						  func ()
@@ -168,13 +167,13 @@ var (
 	GtkWidgetDestroy 				  func (widget *C.struct__GtkWidget)
 	GtkWindowSetDecorated 			  func (window *C.struct__GtkWindow, setting bool)
 	GtkWindowGetSize 				  func (window *C.struct__GtkWindow, width *C.int, height *C.int)
-	GtkCheckMenuItemNewWithLabel      func (label *C.char) *C.struct__GtkWidget
+	GtkCheckMenuItemNewWithLabel      func (label string) *C.struct__GtkWidget
     GtkCheckMenuItemSetActive         func (checkMenuItem *C.struct__GtkCheckMenuItem, is_active bool)
 	//GdkAtom is basically a pointer to 'struct _GdkAtom' (gdktypes.h)
     GtkClipboardGet                   func (selection C.GdkAtom) *C.struct__GtkClipboard
-    GtkClipboardSetText               func (clipboard *C.struct__GtkClipboard, text *C.char, length int)
-    GtkClipboardWaitForText           func (clipboard *C.struct__GtkClipboard) *C.char
-    GtkMenuItemNewWithLabel           func (label *C.char) *C.struct__GtkWidget
+    GtkClipboardSetText               func (clipboard *C.struct__GtkClipboard, text string, length int)
+    GtkClipboardWaitForText           func (clipboard *C.struct__GtkClipboard) string
+    GtkMenuItemNewWithLabel           func (label string) *C.struct__GtkWidget
     GtkMenuItemSetSubmenu             func (menu_item *C.struct__GtkMenuItem, submenu *C.struct__GtkWidget)
     GtkMenuNew                        func () *C.struct__GtkWidget
     GtkMenuShellAppend                func (menu_shell *C.struct__GtkMenuShell, child *C.struct__GtkWidget)
@@ -199,7 +198,7 @@ var (
     GtkWindowSetIcon                  func (window *C.struct__GtkWindow, icon *C.struct__GdkPixbuf)
     GtkWindowSetKeepAbove             func (window *C.struct__GtkWindow, setting bool)
     GtkWindowSetResizable             func (window *C.struct__GtkWindow, resizable bool)
-    GtkWindowSetTitle                 func (window *C.struct__GtkWindow, title *C.char)
+    GtkWindowSetTitle                 func (window *C.struct__GtkWindow, title string)
 	GtkWidgetSetAppPaintable          func(window *C.struct__GtkWidget, app_paintable bool)
 	GtkWidgetSetVisual          	  func(window *C.struct__GtkWindow, visual *C.struct__GdkVisual)
 )
@@ -214,12 +213,12 @@ var (
 	//so C.struct__ prefix is not used here
 	//TODO once cgo is completely out, these defitions will follow. So this won't even matter, probably.
     GdkMonitorGetGeometry         	  func(monitor *C.struct__GdkMonitor, rect *C.GdkRectangle)
-    GdkMonitorGetManufacturer      	  func(monitor *C.struct__GdkMonitor) *C.char
-    GdkMonitorGetModel                func(monitor *C.struct__GdkMonitor) *C.char
+    GdkMonitorGetManufacturer      	  func(monitor *C.struct__GdkMonitor) string
+    GdkMonitorGetModel                func(monitor *C.struct__GdkMonitor) string
     GdkMonitorGetRefreshRate          func(monitor *C.struct__GdkMonitor) int
     GdkMonitorGetScaleFactor          func(monitor *C.struct__GdkMonitor) int
     GdkMonitorIsPrimary               func(monitor *C.struct__GdkMonitor) bool
-    GdkPixbufNewFromFile          	  func(filename *C.char, err **C.struct__GError) *C.struct__GdkPixbuf
+    GdkPixbufNewFromFile          	  func(filename string, err **C.struct__GError) *C.struct__GdkPixbuf
     GdkWindowGetGeometry          	  func(window *C.struct__GdkWindow, x, y, width, height *C.int)
 	GdkScreenGetRgbaVisual            func(window *C.struct__GdkScreen) *C.struct__GdkVisual
 	GdkScreenIsComposited             func(screen *C.struct__GdkScreen) bool
@@ -230,35 +229,36 @@ var (
     WebkitSettingsSetEnableWriteConsoleMessagesToStdout   	func(settings *C.struct__WebKitSettings, enable bool)
     WebkitSettingsSetJavascriptCanAccessClipboard           func(settings *C.struct__WebKitSettings, enable bool)
     WebkitUserContentManagerAddScript                       func(manager *C.struct__WebKitUserContentManager, script *C.struct__WebKitUserScript)
-    WebkitUserContentManagerRegisterScriptMessageHandler    func(manager *C.struct__WebKitUserContentManager, name *C.char) bool
+    WebkitUserContentManagerRegisterScriptMessageHandler    func(manager *C.struct__WebKitUserContentManager, name string) bool
     WebkitUserScriptNew                                     func(
-		source *C.char,
+		source string,
 	 	injected_frames uint32,
 	 	injected_time uint32,
-		allow_list *C.char,
-		block_list *C.char,
+		allow_list []string,
+		block_list []string,
 	) *C.struct__WebKitUserScript
     WebkitWebViewEvaluateJavascript                         func(
 		web_view *C.struct__WebKitWebView,
-		script *C.char,
+		script string,
 		length int,
-		world_name *C.char,
-		source_uri *C.char,
+		//ignoring these atm, so they don't have string type
+		world_name unsafe.Pointer,
+		source_uri unsafe.Pointer,
 		cancellable *C.struct__GCancellable,
 		callback *C.struct__GAsyncReadyCallback,
 		user_data unsafe.Pointer,
 	)
     WebkitWebViewGetSettings                                func(web_view *C.struct__WebKitWebView) *C.struct__WebKitSettings
     WebkitWebViewGetUserContentManager                      func(web_view *C.struct__WebKitWebView) *C.struct__WebKitUserContentManager
-    WebkitWebViewLoadHtml                                   func(web_view *C.struct__WebKitWebView, content *C.char, base_uri *C.char)
-    WebkitWebViewLoadUri                                    func(web_view *C.struct__WebKitWebView, uri *C.char)
+    WebkitWebViewLoadHtml                                   func(web_view *C.struct__WebKitWebView, content string, base_uri string)
+    WebkitWebViewLoadUri                                    func(web_view *C.struct__WebKitWebView, uri string)
     WebkitWebViewNew                                        func() *C.struct__GtkWidget
 	WebkitWebViewSetBackgroundColor							func(web_view *C.struct__WebKitWebView, rgba *C.struct__GdkRGBA)
 	WebkitJavascriptResultGetJsValue						func(js_result *C.struct__WebKitJavascriptResult) *C.struct__JSCValue
 )
 
 var (
-	JscValueToString		func (*C.struct__JSCValue) *C.char
+	JscValueToString		func (*C.struct__JSCValue) string
 )
 
 
@@ -424,7 +424,7 @@ func GtkWebViewSetTransparent(webview *C.struct__WebKitWebView, transparent bool
 }
 
 //TODO handle strings's memory here
-func StringFromJsResult(result *C.struct__WebKitJavascriptResult) *C.char {
+func StringFromJsResult(result *C.struct__WebKitJavascriptResult) string {
 	value := WebkitJavascriptResultGetJsValue(result)
 	return JscValueToString(value)
 }
@@ -432,7 +432,7 @@ func StringFromJsResult(result *C.struct__WebKitJavascriptResult) *C.char {
 // A simple go implementation of `g_signal_connect`
 func g_signal_connect(
 	instance *C.struct__GtkWidget,
-	detailed_signal *C.char,
+	detailed_signal string,
 	c_handler uintptr,
 	data unsafe.Pointer,
 ) {
@@ -495,11 +495,7 @@ func (window *Window) SetTransparent(transparent bool) {
 }
 
 func (window *Window) SetTitle(title string) {
-	//TODO
-	ctitle := C.CString(title)
-	defer LibCFree(unsafe.Pointer(ctitle))
-
-	GtkWindowSetTitle(window.Handle, ctitle)
+	GtkWindowSetTitle(window.Handle, title)
 }
 
 func (window *Window) SetDecorated(decorated bool) {
@@ -633,10 +629,7 @@ func (window *Window) SetIconFromBytes(icon []byte) bool {
 	}
 
 	iconPath := f.Name()
-	cpath := C.CString(iconPath)
-	defer LibCFree(unsafe.Pointer(cpath))
-
-	buffer := GdkPixbufNewFromFile(cpath, nil)
+	buffer := GdkPixbufNewFromFile(iconPath, nil)
 
 	if buffer != nil {
 		GtkWindowSetIcon(window.Handle, buffer)
@@ -710,10 +703,7 @@ func go_event_callback(window *C.struct__GtkWindow, event *C.union__GdkEvent, ar
 }
 
 func (window *Window) BindEventCallback(userData int) {
-	cevent := C.CString("event")
-	defer LibCFree(unsafe.Pointer(cevent))
-
-	g_signal_connect(Window_GTK_WIDGET(window.Handle), cevent, purego.NewCallback(go_event_callback), unsafe.Pointer(&userData))
+	g_signal_connect(Window_GTK_WIDGET(window.Handle), "event", purego.NewCallback(go_event_callback), unsafe.Pointer(&userData))
 }
 
 func SetGlobalEventCallback(callback Event_Callback) {
@@ -723,15 +713,11 @@ func SetGlobalEventCallback(callback Event_Callback) {
 func (webview *Webview) RegisterCallback(name string, callback func(result string)) int {
 	manager := WebkitWebViewGetUserContentManager(webview.Handle)
 
-	cevent := C.CString(fmt.Sprintf("script-message-received::%s", name))
-	defer LibCFree(unsafe.Pointer(cevent))
-
-	cexternal := C.CString(name)
-	defer LibCFree(unsafe.Pointer(cexternal))
+	event := fmt.Sprintf("script-message-received::%s", name)
 
 	index := wc_register(callback)
-	g_signal_connect(WebKitUserContentManager_GTK_WIDGET(manager), cevent, purego.NewCallback(go_webview_callback), unsafe.Pointer(&index))
-	WebkitUserContentManagerRegisterScriptMessageHandler(manager, cexternal)
+	g_signal_connect(WebKitUserContentManager_GTK_WIDGET(manager), event, purego.NewCallback(go_webview_callback), unsafe.Pointer(&index))
+	WebkitUserContentManagerRegisterScriptMessageHandler(manager, name)
 
 	return int(index)
 }
@@ -769,34 +755,22 @@ func (webview *Webview) Eval(js string) {
 	cjs := C.CString(js)
 	defer LibCFree(unsafe.Pointer(cjs))
 
-	WebkitWebViewEvaluateJavascript(webview.Handle, cjs, len(js), nil, nil, nil, nil, nil)
+	WebkitWebViewEvaluateJavascript(webview.Handle, js, len(js), nil, nil, nil, nil, nil)
 }
 
 func (webview *Webview) SetHtml(html string, baseUri string) {
-	chtml := C.CString(html)
-	defer LibCFree(unsafe.Pointer(chtml))
-
-	cbaseUri := C.CString(baseUri)
-	defer LibCFree(unsafe.Pointer(cbaseUri))
-
-	WebkitWebViewLoadHtml(webview.Handle, chtml, cbaseUri)
+	WebkitWebViewLoadHtml(webview.Handle, html, baseUri)
 }
 
 func (webview *Webview) Navigate(url string) {
-	curl := C.CString(url)
-	defer LibCFree(unsafe.Pointer(curl))
-
-	WebkitWebViewLoadUri(webview.Handle, curl)
+	WebkitWebViewLoadUri(webview.Handle, url)
 }
 
 func (webview *Webview) AddScript(js string) {
 	manager := WebkitWebViewGetUserContentManager(webview.Handle)
 
-	cjs := C.CString(js)
-	defer LibCFree(unsafe.Pointer(cjs))
-
 	script := WebkitUserScriptNew(
-		cjs,
+		js,
 		WEBKIT_USER_CONTENT_INJECT_TOP_FRAME,
 		WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START,
 		nil,
@@ -854,8 +828,8 @@ func (monitor *Monitor) ScaleFactor() int {
 }
 
 func (monitor *Monitor) Name() string {
-	manufacturer := C.GoString(GdkMonitorGetManufacturer(monitor.Handle))
-	model := C.GoString(GdkMonitorGetModel(monitor.Handle))
+	manufacturer := GdkMonitorGetManufacturer(monitor.Handle)
+	model := GdkMonitorGetModel(monitor.Handle)
 	return manufacturer + " " + model
 }
 
@@ -918,15 +892,12 @@ func MenuItem_New(id int, title string, disabled bool, checked bool, separator b
 		widget = GtkSeparatorMenuItemNew()
 		GtkWidgetShow(widget)
 	} else {
-		ctitle := C.CString(title)
-		defer LibCFree(unsafe.Pointer(ctitle))
-
 		if checked {
-			widget = GtkCheckMenuItemNewWithLabel(ctitle)
+			widget = GtkCheckMenuItemNewWithLabel(title)
 
 			GtkCheckMenuItemSetActive(CheckMenuItem_FromWidget(widget), checked)
 		} else {
-			widget = GtkCheckMenuItemNewWithLabel(ctitle)
+			widget = GtkCheckMenuItemNewWithLabel(title)
 		}
 
 		GtkWidgetSetSensitive(widget, !disabled)
@@ -946,10 +917,7 @@ func MenuItem_New(id int, title string, disabled bool, checked bool, separator b
 		   gtk_widget_add_accelerator(item, "activate", accel_group, GDK_KEY_F7, 0, GTK_ACCEL_VISIBLE);
 		*/
 
-		cactivate := C.CString("activate")
-		defer LibCFree(unsafe.Pointer(cactivate))
-
-		g_signal_connect(widget, cactivate, purego.NewCallback(go_menu_callback), unsafe.Pointer(&id))
+		g_signal_connect(widget, "activate", purego.NewCallback(go_menu_callback), unsafe.Pointer(&id))
 
 		GtkWidgetShow(widget)
 	}
@@ -1012,28 +980,22 @@ func wc_unregister(i int) {
 
 func go_webview_callback(manager *C.struct__WebKitUserContentManager, result *C.struct__WebKitJavascriptResult, arg C.int) {
 	fn := wc_lookup(int(arg))
-	cstr := StringFromJsResult(result)
+	str := StringFromJsResult(result)
 	if fn != nil {
-		fn(C.GoString(cstr))
+		fn(str)
 	}
-	C.g_free((C.gpointer)(unsafe.Pointer(cstr)))
 }
 
 func OS_GetClipboardText() string {
 	//TODO Resolve this macro
 	clipboard := GtkClipboardGet(C.GDK_SELECTION_CLIPBOARD)
-	text := GtkClipboardWaitForText(clipboard)
-
-	return C.GoString(text)
+	return GtkClipboardWaitForText(clipboard)
 }
 
 func OS_SetClipboardText(text string) bool {
-	ctext := C.CString(text)
-	defer LibCFree(unsafe.Pointer(ctext))
-
 	clipboard := GtkClipboardGet(C.GDK_SELECTION_CLIPBOARD)
 
-	GtkClipboardSetText(clipboard, ctext, -1)
+	GtkClipboardSetText(clipboard, text, -1)
 
 	// @Incomplete: is there a way to check if set_text succeeded?
 	return true
@@ -1042,21 +1004,6 @@ func OS_SetClipboardText(text string) bool {
 //
 // Helpers
 //
-
-func toCBool(value bool) C.int {
-	if value {
-		return C.int(1)
-	}
-	return C.int(0)
-}
-
-func fromCBool(value C.int) bool {
-	if int(value) == 0 {
-		return false
-	}
-
-	return true
-}
 
 func Menu_GTK_WIDGET(it *C.struct__GtkMenu) *C.struct__GtkWidget {
 	return (*C.struct__GtkWidget)(unsafe.Pointer(it))
