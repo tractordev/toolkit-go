@@ -397,7 +397,7 @@ func SetAllCFuncs() {
 func GtkWindowSetTransparent(window *C.GtkWindow, transparent bool) {
 	fmt.Println("setting transparent")
 	if transparent {
-		GtkWidgetSetAppPaintable(Window_GTK_WIDGET(window), true)
+		GtkWidgetSetAppPaintable(cast[C.GtkWidget](window), true)
 		screen := GdkScreenGetDefault()
 		visual := GdkScreenGetRgbaVisual(screen)
 
@@ -405,7 +405,7 @@ func GtkWindowSetTransparent(window *C.GtkWindow, transparent bool) {
 			GtkWidgetSetVisual(window, visual)
 		}
 	} else {
-		GtkWidgetSetAppPaintable(Window_GTK_WIDGET(window), false)
+		GtkWidgetSetAppPaintable(cast[C.GtkWidget](window), false)
 		GtkWidgetSetVisual(window, nil)
 	}
 }
@@ -453,14 +453,14 @@ func PollEvents() {
 
 func Window_New() Window {
 	result := Window{}
-	result.Handle = Window_FromWidget(GtkWindowNew(GTK_WINDOW_TOPLEVEL))
+	result.Handle = cast[C.GtkWindow](GtkWindowNew(GTK_WINDOW_TOPLEVEL))
 	return result
 }
 
 func Webview_New() Webview {
 	result := Webview{}
 	//TODO cast in go
-	result.Handle = Webview_FromWidget(WebkitWebViewNew())
+	result.Handle = cast[C.WebKitWebView](WebkitWebViewNew())
 	return result
 }
 
@@ -469,21 +469,21 @@ func (window *Window) Pointer() uintptr {
 }
 
 func (window *Window) AddWebview(webview Webview) {
-	GtkContainerAdd(Window_GTK_CONTAINER(window.Handle), Webview_GTK_WIDGET(webview.Handle))
-	GtkWidgetGrabFocus(Webview_GTK_WIDGET(webview.Handle))
+	GtkContainerAdd(cast[C.GtkContainer](window.Handle), cast[C.GtkWidget](webview.Handle))
+	GtkWidgetGrabFocus(cast[C.GtkWidget](webview.Handle))
 }
 
 func (window *Window) Show() {
-	GtkWidgetShowAll(Window_GTK_WIDGET(window.Handle))
+	GtkWidgetShowAll(cast[C.GtkWidget](window.Handle))
 }
 
 func (window *Window) Hide() {
-	GtkWidgetHide(Window_GTK_WIDGET(window.Handle))
+	GtkWidgetHide(cast[C.GtkWidget](window.Handle))
 }
 
 func (window *Window) Destroy() {
 	if window.Handle != nil {
-		GtkWidgetDestroy(Window_GTK_WIDGET(window.Handle))
+		GtkWidgetDestroy(cast[C.GtkWidget](window.Handle))
 		window.Handle = nil
 	}
 }
@@ -560,11 +560,11 @@ func (window *Window) SetAlwaysOnTop(always bool) {
 
 func (window *Window) Focus() {
 	//TODO
-	GtkWidgetGrabFocus(Window_GTK_WIDGET(window.Handle))
+	GtkWidgetGrabFocus(cast[C.GtkWidget](window.Handle))
 }
 
 func (window *Window) IsVisible() bool {
-	return GtkWidgetIsVisible(Window_GTK_WIDGET(window.Handle))
+	return GtkWidgetIsVisible(cast[C.GtkWidget](window.Handle))
 }
 
 func (window *Window) SetMinimized(minimized bool) {
@@ -701,7 +701,7 @@ func go_event_callback(window *C.GtkWindow, event *C.GdkEvent, arg C.int) {
 }
 
 func (window *Window) BindEventCallback(userData int) {
-	g_signal_connect(Window_GTK_WIDGET(window.Handle), "event", purego.NewCallback(go_event_callback), unsafe.Pointer(&userData))
+	g_signal_connect(cast[C.GtkWidget](window.Handle), "event", purego.NewCallback(go_event_callback), unsafe.Pointer(&userData))
 }
 
 func SetGlobalEventCallback(callback Event_Callback) {
@@ -714,7 +714,7 @@ func (webview *Webview) RegisterCallback(name string, callback func(result strin
 	event := fmt.Sprintf("script-message-received::%s", name)
 
 	index := wc_register(callback)
-	g_signal_connect(WebKitUserContentManager_GTK_WIDGET(manager), event, purego.NewCallback(go_webview_callback), unsafe.Pointer(&index))
+	g_signal_connect(cast[C.GtkWidget](manager), event, purego.NewCallback(go_webview_callback), unsafe.Pointer(&index))
 	WebkitUserContentManagerRegisterScriptMessageHandler(manager, name)
 
 	return int(index)
@@ -728,7 +728,7 @@ func (webview *Webview) UnregisterCallback(callback int) {
 
 func (webview *Webview) Destroy() {
 	if webview.Handle != nil {
-		GtkWidgetDestroy(Webview_GTK_WIDGET(webview.Handle))
+		GtkWidgetDestroy(cast[C.GtkWidget](webview.Handle))
 		webview.Handle = nil
 	}
 }
@@ -870,13 +870,13 @@ func (monitor *Monitor) IsPrimary() bool {
 
 func Menu_New() Menu {
 	result := Menu{}
-	result.Handle = Menu_FromWidget(GtkMenuNew())
+	result.Handle = cast[C.GtkMenu](GtkMenuNew())
 	return result
 }
 
 func (menu *Menu) Destroy() {
 	if menu.Handle != nil {
-		GtkWidgetDestroy(Menu_GTK_WIDGET(menu.Handle))
+		GtkWidgetDestroy(cast[C.GtkWidget](menu.Handle))
 		menu.Handle = nil
 	}
 }
@@ -891,7 +891,7 @@ func MenuItem_New(id int, title string, disabled bool, checked bool, separator b
 		if checked {
 			widget = GtkCheckMenuItemNewWithLabel(title)
 
-			GtkCheckMenuItemSetActive(CheckMenuItem_FromWidget(widget), checked)
+			GtkCheckMenuItemSetActive(cast[C.GtkCheckMenuItem](widget), checked)
 		} else {
 			widget = GtkCheckMenuItemNewWithLabel(title)
 		}
@@ -919,16 +919,16 @@ func MenuItem_New(id int, title string, disabled bool, checked bool, separator b
 	}
 
 	result := MenuItem{}
-	result.Handle = MenuItem_FromWidget(widget)
+	result.Handle = cast[C.GtkMenuItem](widget)
 	return result
 }
 
 func (menu *Menu) AppendItem(item MenuItem) {
-	GtkMenuShellAppend(Menu_GTK_MENU_SHELL(menu.Handle), MenuItem_GTK_WIDGET(item.Handle))
+	GtkMenuShellAppend((*C.GtkMenuShell)(unsafe.Pointer(menu.Handle)), cast[C.GtkWidget](item.Handle))
 }
 
 func (item *MenuItem) SetSubmenu(child Menu) {
-	GtkMenuItemSetSubmenu(item.Handle, Menu_GTK_WIDGET(child.Handle))
+	GtkMenuItemSetSubmenu(item.Handle, cast[C.GtkWidget](child.Handle))
 }
 
 func go_menu_callback(item *C.GtkMenuItem, menuId C.int) {
@@ -997,54 +997,7 @@ func OS_SetClipboardText(text string) bool {
 	return true
 }
 
-//
-// Helpers
-//
-
-func Menu_GTK_WIDGET(it *C.GtkMenu) *C.GtkWidget {
-	return (*C.GtkWidget)(unsafe.Pointer(it))
-}
-
-func Menu_FromWidget(it *C.GtkWidget) *C.GtkMenu {
-	return (*C.GtkMenu)(unsafe.Pointer(it))
-}
-
-func Menu_GTK_MENU_SHELL(it *C.GtkMenu) *C.GtkMenuShell {
-	return (*C.GtkMenuShell)(unsafe.Pointer(it))
-}
-
-func MenuItem_GTK_WIDGET(it *C.GtkMenuItem) *C.GtkWidget {
-	return (*C.GtkWidget)(unsafe.Pointer(it))
-}
-
-func MenuItem_FromWidget(it *C.GtkWidget) *C.GtkMenuItem {
-	return (*C.GtkMenuItem)(unsafe.Pointer(it))
-}
-
-func CheckMenuItem_FromWidget(it *C.GtkWidget) *C.GtkCheckMenuItem {
-	return (*C.GtkCheckMenuItem)(unsafe.Pointer(it))
-}
-
-func Window_FromWidget(it *C.GtkWidget) *C.GtkWindow {
-	return (*C.GtkWindow)(unsafe.Pointer(it))
-}
-
-func Webview_FromWidget(it *C.GtkWidget) *C.WebKitWebView {
-	return (*C.WebKitWebView)(unsafe.Pointer(it))
-}
-
-func Window_GTK_WIDGET(it *C.GtkWindow) *C.GtkWidget {
-	return (*C.GtkWidget)(unsafe.Pointer(it))
-}
-
-func Window_GTK_CONTAINER(it *C.GtkWindow) *C.GtkContainer {
-	return (*C.GtkContainer)(unsafe.Pointer(it))
-}
-
-func Webview_GTK_WIDGET(it *C.WebKitWebView) *C.GtkWidget {
-	return (*C.GtkWidget)(unsafe.Pointer(it))
-}
-
-func WebKitUserContentManager_GTK_WIDGET(it *C.WebKitUserContentManager) *C.GtkWidget {
-	return (*C.GtkWidget)(unsafe.Pointer(it))
+// Cast Helper
+func cast[To any, From any](it *From) *To {
+	return (*To)(unsafe.Pointer(it))
 }
