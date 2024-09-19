@@ -276,7 +276,7 @@ var (
 //TODO make these dynamically find libraries
 //Find out if it's statically linkable
 func GetGTKPath() string {
-	return "/usr/lib/libgtk-3.so"
+	return "libgtk-3.so"
 }
 
 func GetCLibPath() string {
@@ -284,15 +284,15 @@ func GetCLibPath() string {
 }
 
 func GetWebkitGtkLibbPath() string {
-	return "/usr/lib/libwebkit2gtk-4.1.so"
+	return "libwebkit2gtk-4.1.so"
 }
 
 func GetJSCLibPath() string {
-	return "/usr/lib/libjavascriptcoregtk-4.1.so"
+	return "libjavascriptcoregtk-4.1.so"
 }
 
 func GetAppIndicatorLibPath() string {
-	return "/usr/lib/libayatana-appindicator3.so.1"
+	return "libayatana-appindicator3.so.1"
 }
 
 func SetAllCFuncs() {
