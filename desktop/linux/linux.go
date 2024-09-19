@@ -545,6 +545,8 @@ func (window *Window) GetPosition() Position {
 	return result
 }
 
+//TODO this works as intended but user shall be aware of gtk_window_set_resizable's behavior
+//https://stackoverflow.com/a/3582628
 func (window *Window) SetResizable(resizable bool) {
 	GtkWindowSetResizable(window.Handle, resizable)
 }
