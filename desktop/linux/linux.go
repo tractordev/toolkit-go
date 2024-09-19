@@ -26,6 +26,8 @@ import "C"
 
 type Window struct {
 	Handle *C.GtkWindow
+	MaxSize Size
+	MinSize Size
 }
 
 type Webview struct {
@@ -560,19 +562,33 @@ func (window *Window) SetPosition(x int32, y int32) {
 }
 
 func (window *Window) SetMinSize(width int32, height int32) {
-	//TODO so far no cleaner way to send a struct pointer pointing to data in go
-	g := C.GdkGeometry{}
-	g.min_width = C.int(width)
-	g.min_height = C.int(height)
-	GtkWindowSetGeometryHints(window.Handle, nil, &g, GDK_HINT_MIN_SIZE)
+	window.MinSize.Width = width;
+	window.MinSize.Height = height;
+	window.setGeometry()
 }
 
 func (window *Window) SetMaxSize(width int32, height int32) {
-	//TODO
+	window.MaxSize.Width = width;
+	window.MaxSize.Height = height;
+	window.setGeometry()
+}
+
+func (window *Window) setGeometry() {
 	g := C.GdkGeometry{}
-	g.max_width = C.int(width)
-	g.max_height = C.int(height)
-	GtkWindowSetGeometryHints(window.Handle, nil, &g, GDK_HINT_MAX_SIZE)
+	var flags uint32 = 0
+	if window.MaxSize.Width != 0 && window.MaxSize.Height != 0 {
+		g.max_width = C.int(window.MaxSize.Width)
+		g.max_height = C.int(window.MaxSize.Height)
+		flags = flags | GDK_HINT_MAX_SIZE
+	}
+	if window.MinSize.Width != 0 && window.MinSize.Height != 0 {
+		g.min_width = C.int(window.MinSize.Width)
+		g.min_height = C.int(window.MinSize.Width)
+		flags = flags | GDK_HINT_MIN_SIZE
+	}
+	//TODO so far no cleaner way to send a struct pointer pointing to data in go
+	GtkWindowSetGeometryHints(window.Handle, nil, &g, flags)
+
 }
 
 func (window *Window) SetAlwaysOnTop(always bool) {
