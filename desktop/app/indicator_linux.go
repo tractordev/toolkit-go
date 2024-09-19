@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -54,12 +55,12 @@ func (i *Indicator) Load() {
 	//defer os.Remove(f.Name())
 
 	globalTrayId += 1
-	//trayId := fmt.Sprintf("tray_%d", globalTrayId)
+	trayId := fmt.Sprintf("tray_%d", globalTrayId)
 
-	//trayIconPath := f.Name()
+	trayIconPath := f.Name()
 
-	//menu := menu.New(i.Items)
-	//linux.Indicator_New(trayId, trayIconPath, menu.Menu)
+	menu := menu.New(i.Items)
+	linux.Indicator_New(trayId, trayIconPath, menu.Menu)
 
 	linux.SetGlobalMenuCallback(func(menuId int32) {
 		event.Emit(event.Event{

@@ -263,6 +263,15 @@ var (
 	JscValueToString		func (*C.JSCValue) string
 )
 
+var (
+	AppIndicatorNew					func (id string, icon_name string, category C.AppIndicatorCategory) *C.AppIndicator
+	AppIndicatorSetStatus			func (self *C.AppIndicator, status C.AppIndicatorStatus)
+	AppIndicatorSetTitle			func (self *C.AppIndicator, title string)
+	AppIndicatorSetLabel			func (self *C.AppIndicator, label string, guide string)
+	AppIndicatorSetMenu				func (self *C.AppIndicator, menu *C.GtkMenu)
+	AppIndicatorSetIconFull			func (self *C.AppIndicator, icon_name string, icon_desc string)
+)
+
 
 //TODO make these dynamically find libraries
 //Find out if it's statically linkable
@@ -280,6 +289,10 @@ func GetWebkitGtkLibbPath() string {
 
 func GetJSCLibPath() string {
 	return "/usr/lib/libjavascriptcoregtk-4.1.so"
+}
+
+func GetAppIndicatorLibPath() string {
+	return "/usr/lib/libayatana-appindicator3.so.1"
 }
 
 func SetAllCFuncs() {
@@ -387,11 +400,26 @@ func SetAllCFuncs() {
 	//LibJavascriptCore functions
 	purego.RegisterLibFunc(&JscValueToString, libwebgtk, "jsc_value_to_string")
 
+	libind, err := purego.Dlopen(GetAppIndicatorLibPath(), purego.RTLD_NOW|purego.RTLD_GLOBAL)
+	if err != nil {
+		panic(err)
+	}
+
+	//LibAppIndicator functions
+	purego.RegisterLibFunc(&AppIndicatorNew, libind, "app_indicator_new")
+	purego.RegisterLibFunc(&AppIndicatorSetStatus, libind, "app_indicator_set_status")
+	purego.RegisterLibFunc(&AppIndicatorSetTitle, libind, "app_indicator_set_title")
+	purego.RegisterLibFunc(&AppIndicatorSetLabel, libind, "app_indicator_set_label")
+	purego.RegisterLibFunc(&AppIndicatorSetMenu, libind, "app_indicator_set_menu")
+	purego.RegisterLibFunc(&AppIndicatorSetIconFull, libind, "app_indicator_set_icon_full")
+
+
 	//TODO where and when to close files
 	purego.Dlclose(libc)
 	purego.Dlclose(libgtk)
 	purego.Dlclose(libwebgtk)
 	purego.Dlclose(libjsc)
+	purego.Dlclose(libind)
 }
 
 /*
@@ -833,32 +861,22 @@ func (monitor *Monitor) IsPrimary() bool {
 // Indicator
 //
 
-//TODO
-//func Indicator_New(id string, pngIconPath string, menu Menu) Indicator {
-//	cid := C.CString(id)
-//	defer LibCFree(unsafe.Pointer(cid))
-//
-//	handle := C.app_indicator_new(cid, C.CString(""), C.APP_INDICATOR_CATEGORY_APPLICATION_STATUS)
-//	C.app_indicator_set_status(handle, C.APP_INDICATOR_STATUS_ACTIVE)
-//
-//	//app_indicator_set_title(global_app_indicator, title);
-//	//app_indicator_set_label(global_app_indicator, title, "");
-//
-//	if len(pngIconPath) > 0 {
-//		cIconPath := C.CString(pngIconPath)
-//		defer LibCFree(unsafe.Pointer(cIconPath))
-//
-//		C.app_indicator_set_icon_full(handle, cIconPath, C.CString(""))
-//	}
-//
-//	if menu.Handle != nil {
-//		C.app_indicator_set_menu(handle, menu.Handle)
-//	}
-//
-//	result := Indicator{}
-//	result.Handle = handle
-//	return result
-//}
+func Indicator_New(id string, pngIconPath string, menu Menu) Indicator {
+	handle := AppIndicatorNew(id, "", C.APP_INDICATOR_CATEGORY_APPLICATION_STATUS)
+	AppIndicatorSetStatus(handle, C.APP_INDICATOR_STATUS_ACTIVE)
+
+	if len(pngIconPath) > 0 {
+		AppIndicatorSetIconFull(handle, pngIconPath, "")
+	}
+
+	if menu.Handle != nil {
+		AppIndicatorSetMenu(handle, menu.Handle)
+	}
+
+	result := Indicator{}
+	result.Handle = handle
+	return result
+}
 
 func Menu_New() Menu {
 	result := Menu{}
