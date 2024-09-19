@@ -23,5 +23,6 @@ sudo apt install \
 - Go through every C.* call and update them to purego (i.e C.CString).
 - Remove cgo types
 - Handle appindicator, in gtk if possible.
+- Test purego without cgo
 
 - Testing?

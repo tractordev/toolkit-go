@@ -166,7 +166,7 @@ var (
 	GtkWidgetDestroy 				  func (widget *C.GtkWidget)
 	GtkWindowSetDecorated 			  func (window *C.GtkWindow, setting bool)
 	//TODO
-	GtkWindowGetSize 				  func (window *C.GtkWindow, width *C.int, height *C.int)
+	GtkWindowGetSize 				  func (window *C.GtkWindow, width, height *int32)
 	GtkCheckMenuItemNewWithLabel      func (label string) *C.GtkWidget
     GtkCheckMenuItemSetActive         func (checkMenuItem *C.GtkCheckMenuItem, is_active bool)
 	//GdkAtom is basically a pointer to 'struct _GdkAtom' (gdktypes.h)
@@ -186,7 +186,7 @@ var (
     GtkWindowFullscreen               func (window *C.GtkWindow)
     GtkWindowUnfullscreen             func (window *C.GtkWindow)
 	//TODO
-    GtkWindowGetPosition              func (window *C.GtkWindow, x, y *C.int)
+    GtkWindowGetPosition              func (window *C.GtkWindow, x, y *int32)
     GtkWindowMaximize                 func (window *C.GtkWindow)
     GtkWindowUnmaximize               func (window *C.GtkWindow)
     GtkWindowMove                     func (window *C.GtkWindow, x, y int32)
@@ -221,7 +221,7 @@ var (
     GdkMonitorIsPrimary               func(monitor *C.GdkMonitor) bool
     GdkPixbufNewFromFile          	  func(filename string, err **C.GError) *C.GdkPixbuf
 	//TODO
-    GdkWindowGetGeometry          	  func(window *C.GdkWindow, x, y, width, height *C.int)
+    GdkWindowGetGeometry          	  func(window *C.GdkWindow, x, y, width, height *int32)
 	GdkScreenGetRgbaVisual            func(window *C.GdkScreen) *C.GdkVisual
 	GdkScreenIsComposited             func(screen *C.GdkScreen) bool
 )
@@ -506,27 +506,14 @@ func (window *Window) SetDecorated(decorated bool) {
 func (window *Window) GetSize() Size {
 	result := Size{}
 
-	//TODO
-	width := C.int(0)
-	height := C.int(0)
-	GtkWindowGetSize(window.Handle, &width, &height)
-
-	result.Width = int32(width)
-	result.Height = int32(height)
-
+	GtkWindowGetSize(window.Handle, &result.Width, &result.Height)
 	return result
 }
 
 func (window *Window) GetPosition() Position {
 	result := Position{}
 
-	x := C.int(0)
-	y := C.int(0)
-	GtkWindowGetPosition(window.Handle, &x, &y)
-
-	result.X = int32(x)
-	result.Y = int32(y)
-
+	GtkWindowGetPosition(window.Handle, &result.X, &result.Y)
 	return result
 }
 
@@ -543,7 +530,7 @@ func (window *Window) SetPosition(x int32, y int32) {
 }
 
 func (window *Window) SetMinSize(width int32, height int32) {
-	//TODO
+	//TODO so far no cleaner way to send a struct pointer pointing to data in go
 	g := C.GdkGeometry{}
 	g.min_width = C.int(width)
 	g.min_height = C.int(height)
@@ -551,6 +538,7 @@ func (window *Window) SetMinSize(width int32, height int32) {
 }
 
 func (window *Window) SetMaxSize(width int32, height int32) {
+	//TODO
 	g := C.GdkGeometry{}
 	g.max_width = C.int(width)
 	g.max_height = C.int(height)
@@ -598,13 +586,13 @@ func (window *Window) Center() {
 	size := window.GetSize()
 	root := GdkScreenGetRootWindow(GdkScreenGetDefault())
 
-	screenWidth := C.int(0)
-	screenHeight := C.int(0)
+	screenWidth := int32(0)
+	screenHeight := int32(0)
 	GdkWindowGetGeometry(root, nil, nil, &screenWidth, &screenHeight)
 
 	nextPos := Position{
-		X: (int32(screenWidth) - size.Width) / 2,
-		Y: (int32(screenHeight) - size.Height) / 2,
+		X: (screenWidth - size.Width) / 2,
+		Y: (screenHeight - size.Height) / 2,
 	}
 
 	window.SetPosition(nextPos.X, nextPos.Y)
@@ -645,13 +633,13 @@ func (window *Window) SetIconFromBytes(icon []byte) bool {
 // https://docs.gtk.org/gdk3/union.Event.html
 // https://api.gtkd.org/gdk.c.types.GdkEventType.html
 
-func go_event_callback(window *C.GtkWindow, event *C.GdkEvent, arg C.int) {
+func go_event_callback(window *C.GtkWindow, event *int32, arg int32) {
 	if globalEventCallback != nil {
-		eventType := *(*C.int)(unsafe.Pointer(event))
+		eventType := *event
 
 		result := Event{}
 		result.Window.Handle = window
-		result.UserData = int32(arg)
+		result.UserData = arg
 
 		if eventType == C.GDK_DELETE {
 			result.Type = Delete
@@ -935,9 +923,9 @@ func (item *MenuItem) SetSubmenu(child Menu) {
 	GtkMenuItemSetSubmenu(item.Handle, cast[C.GtkWidget](child.Handle))
 }
 
-func go_menu_callback(item *C.GtkMenuItem, menuId C.int) {
+func go_menu_callback(item *C.GtkMenuItem, menuId int32) {
 	if globalMenuCallback != nil {
-		globalMenuCallback(int32(menuId))
+		globalMenuCallback(menuId)
 	}
 }
 
@@ -978,7 +966,7 @@ func wc_unregister(i int) {
 	delete(wc_fns, i)
 }
 
-func go_webview_callback(manager *C.WebKitUserContentManager, result *C.WebKitJavascriptResult, arg C.int) {
+func go_webview_callback(manager *C.WebKitUserContentManager, result *C.WebKitJavascriptResult, arg int32) {
 	fn := wc_lookup(int(arg))
 	str := StringFromJsResult(result)
 	if fn != nil {
