@@ -202,7 +202,7 @@ func (w *Window) GetOuterPosition() Position {
 }
 
 func (w *Window) GetOuterSize() Size {
-	size := w.win.GetSize()
+	size := w.win.GetOuterSize()
 	return Size{
 		Width:  float64(size.Width),
 		Height: float64(size.Height),
@@ -210,8 +210,11 @@ func (w *Window) GetOuterSize() Size {
 }
 
 func (w *Window) GetInnerSize() Size {
-	// TODO(nick): implement me
-	return w.GetOuterSize()
+	size := w.win.GetSize()
+	return Size{
+		Width:  float64(size.Width),
+		Height: float64(size.Height),
+	}
 }
 
 var ptrLookup sync.Map

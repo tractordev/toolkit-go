@@ -204,6 +204,7 @@ var (
     GtkWindowSetTitle                 func (window *C.GtkWindow, title string)
 	GtkWidgetSetAppPaintable          func(window *C.GtkWidget, app_paintable bool)
 	GtkWidgetSetVisual          	  func(window *C.GtkWindow, visual *C.GdkVisual)
+	GtkWidgetGetWindow				  func(widget *C.GtkWidget) *C.GdkWindow
 )
 
 var (
@@ -226,6 +227,7 @@ var (
     GdkWindowGetGeometry          	  func(window *C.GdkWindow, x, y, width, height *int32)
 	GdkScreenGetRgbaVisual            func(window *C.GdkScreen) *C.GdkVisual
 	GdkScreenIsComposited             func(screen *C.GdkScreen) bool
+	GdkWindowGetFrameExtends		  func(window *C.GdkWindow, rect *C.GdkRectangle)
 )
 
 var (
@@ -355,6 +357,7 @@ func SetAllCFuncs() {
 	purego.RegisterLibFunc(&GtkWindowUnmaximize, libgtk, "gtk_window_unmaximize")
 	purego.RegisterLibFunc(&GtkWidgetSetAppPaintable, libgtk, "gtk_widget_set_app_paintable")
 	purego.RegisterLibFunc(&GtkWidgetSetVisual, libgtk, "gtk_widget_set_visual")
+	purego.RegisterLibFunc(&GtkWidgetGetWindow, libgtk, "gtk_widget_get_window")
 
 	//Gdk functions
 	purego.RegisterLibFunc(&GdkScreenGetRootWindow, libgtk, "gdk_screen_get_root_window")
@@ -372,6 +375,7 @@ func SetAllCFuncs() {
 	purego.RegisterLibFunc(&GdkWindowGetGeometry, libgtk, "gdk_window_get_geometry")
 	purego.RegisterLibFunc(&GdkScreenGetRgbaVisual, libgtk, "gdk_screen_get_rgba_visual")
 	purego.RegisterLibFunc(&GdkScreenIsComposited, libgtk, "gdk_screen_is_composited")
+	purego.RegisterLibFunc(&GdkWindowGetFrameExtends, libgtk, "gdk_window_get_frame_extents")
 
 
 	libwebgtk, err := purego.Dlopen(GetWebkitGtkLibbPath(), purego.RTLD_NOW|purego.RTLD_GLOBAL)
@@ -539,6 +543,17 @@ func (window *Window) GetSize() Size {
 	GtkWindowGetSize(window.Handle, &result.Width, &result.Height)
 	return result
 }
+
+func (window *Window) GetOuterSize() Size {
+	gdk_window := GtkWidgetGetWindow(cast[C.GtkWidget](window.Handle))
+	frame_extends := C.GdkRectangle{}
+	GdkWindowGetFrameExtends(gdk_window, &frame_extends)
+	return Size{
+		Width: int32(frame_extends.width),
+		Height: int32(frame_extends.height),
+	}
+}
+
 
 func (window *Window) GetPosition() Position {
 	result := Position{}
