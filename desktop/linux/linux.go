@@ -65,6 +65,21 @@ type Rectangle struct {
 	Size     Size
 }
 
+type GdkGeometry struct {
+	min_width	int32
+	min_height	int32
+	max_width	int32
+	max_height	int32
+	base_width	int32
+	base_height	int32
+	width_inc	int32
+	height_inc	int32
+	min_aspect	float64
+	max_aspect	float64
+	win_gravity	uint32
+	_		[4]byte
+}
+
 type EventType int32
 
 const (
@@ -196,7 +211,7 @@ var (
     GtkWindowSetGeometryHints         func (
 		window *C.GtkWindow,
 		geometry_widget *C.GtkWidget,
-		geometry *C.GdkGeometry,
+		geometry *GdkGeometry,
 		geom_mask uint32)
     GtkWindowSetIcon                  func (window *C.GtkWindow, icon *C.GdkPixbuf)
     GtkWindowSetKeepAbove             func (window *C.GtkWindow, setting bool)
@@ -589,19 +604,18 @@ func (window *Window) SetMaxSize(width int32, height int32) {
 }
 
 func (window *Window) setGeometry() {
-	g := C.GdkGeometry{}
+	g := GdkGeometry{}
 	var flags uint32 = 0
 	if window.MaxSize.Width != 0 && window.MaxSize.Height != 0 {
-		g.max_width = C.int(window.MaxSize.Width)
-		g.max_height = C.int(window.MaxSize.Height)
+		g.max_width = window.MaxSize.Width
+		g.max_height = window.MaxSize.Height
 		flags = flags | GDK_HINT_MAX_SIZE
 	}
 	if window.MinSize.Width != 0 && window.MinSize.Height != 0 {
-		g.min_width = C.int(window.MinSize.Width)
-		g.min_height = C.int(window.MinSize.Width)
+		g.min_width = window.MinSize.Width
+		g.min_height = window.MinSize.Width
 		flags = flags | GDK_HINT_MIN_SIZE
 	}
-	//TODO so far no cleaner way to send a struct pointer pointing to data in go
 	GtkWindowSetGeometryHints(window.Handle, nil, &g, flags)
 
 }
