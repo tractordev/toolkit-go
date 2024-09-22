@@ -317,7 +317,9 @@ var (
 	GtkCheckMenuItemNewWithLabel      func (label string) unsafe.Pointer
     GtkCheckMenuItemSetActive         func (checkMenuItem unsafe.Pointer, is_active bool)
 	//GdkAtom is basically a pointer to 'struct _GdkAtom' (gdktypes.h)
-    GtkClipboardGet                   func (selection C.GdkAtom) unsafe.Pointer
+	//unsafe.Pointer is used in its place and gdk_atom_intern will be used to get the atoms for strings
+	//here since there is no way to use macros like GDK_SELECTION_CLIPBOARD
+    GtkClipboardGet                   func (selection unsafe.Pointer) unsafe.Pointer
     GtkClipboardSetText               func (clipboard unsafe.Pointer, text string, length int32)
     GtkClipboardWaitForText           func (clipboard unsafe.Pointer) string
     GtkMenuItemNewWithLabel           func (label string) unsafe.Pointer
@@ -370,6 +372,7 @@ var (
 	GdkScreenGetRgbaVisual            func(window unsafe.Pointer) unsafe.Pointer
 	GdkScreenIsComposited             func(screen unsafe.Pointer) bool
 	GdkWindowGetFrameExtends		  func(window unsafe.Pointer, rect *GdkRectangle)
+	GdkAtomIntern					  func(atom_name string, only_if_exists bool) unsafe.Pointer
 )
 
 var (
@@ -518,6 +521,7 @@ func SetAllCFuncs() {
 	purego.RegisterLibFunc(&GdkScreenGetRgbaVisual, libgtk, "gdk_screen_get_rgba_visual")
 	purego.RegisterLibFunc(&GdkScreenIsComposited, libgtk, "gdk_screen_is_composited")
 	purego.RegisterLibFunc(&GdkWindowGetFrameExtends, libgtk, "gdk_window_get_frame_extents")
+	purego.RegisterLibFunc(&GdkAtomIntern, libgtk, "gdk_atom_intern")
 
 
 	libwebgtk, err := purego.Dlopen(GetWebkitGtkLibbPath(), purego.RTLD_NOW|purego.RTLD_GLOBAL)
@@ -1175,13 +1179,12 @@ func go_webview_callback(manager unsafe.Pointer, result unsafe.Pointer, arg int3
 }
 
 func OS_GetClipboardText() string {
-	//TODO Resolve this macro
-	clipboard := GtkClipboardGet(C.GDK_SELECTION_CLIPBOARD)
+	clipboard := GtkClipboardGet(GdkAtomIntern("CLIPBOARD", true))
 	return GtkClipboardWaitForText(clipboard)
 }
 
 func OS_SetClipboardText(text string) bool {
-	clipboard := GtkClipboardGet(C.GDK_SELECTION_CLIPBOARD)
+	clipboard := GtkClipboardGet(GdkAtomIntern("CLIPBOARD", true))
 
 	GtkClipboardSetText(clipboard, text, -1)
 
