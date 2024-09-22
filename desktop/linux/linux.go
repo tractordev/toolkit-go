@@ -80,6 +80,13 @@ type GdkGeometry struct {
 	_		[4]byte
 }
 
+type GdkRectangle struct {
+	x		int32
+	y		int32
+	width	int32
+	height	int32
+}
+
 type EventType int32
 
 const (
@@ -231,7 +238,7 @@ var (
 	//GdkRectangle is not always a struct, and in this case it's a typedef to a definition in cairo
 	//so C. prefix is not used here
 	//TODO once cgo is completely out, these defitions will follow. So this won't even matter, probably.
-    GdkMonitorGetGeometry         	  func(monitor unsafe.Pointer, rect *C.GdkRectangle)
+    GdkMonitorGetGeometry         	  func(monitor unsafe.Pointer, rect *GdkRectangle)
     GdkMonitorGetManufacturer      	  func(monitor unsafe.Pointer) string
     GdkMonitorGetModel                func(monitor unsafe.Pointer) string
     GdkMonitorGetRefreshRate          func(monitor unsafe.Pointer) int32
@@ -242,8 +249,7 @@ var (
     GdkWindowGetGeometry          	  func(window unsafe.Pointer, x, y, width, height *int32)
 	GdkScreenGetRgbaVisual            func(window unsafe.Pointer) unsafe.Pointer
 	GdkScreenIsComposited             func(screen unsafe.Pointer) bool
-	//TODO
-	GdkWindowGetFrameExtends		  func(window unsafe.Pointer, rect *C.GdkRectangle)
+	GdkWindowGetFrameExtends		  func(window unsafe.Pointer, rect *GdkRectangle)
 )
 
 var (
@@ -562,7 +568,7 @@ func (window *Window) GetSize() Size {
 
 func (window *Window) GetOuterSize() Size {
 	gdk_window := GtkWidgetGetWindow(window.Handle)
-	frame_extends := C.GdkRectangle{}
+	frame_extends := GdkRectangle{}
 	GdkWindowGetFrameExtends(gdk_window, &frame_extends)
 	return Size{
 		Width: int32(frame_extends.width),
@@ -877,7 +883,7 @@ func Monitors() []Monitor {
 }
 
 func (monitor *Monitor) Geometry() Rectangle {
-	rect := C.GdkRectangle{}
+	rect := GdkRectangle{}
 	GdkMonitorGetGeometry(monitor.Handle, &rect)
 
 	return Rectangle{
