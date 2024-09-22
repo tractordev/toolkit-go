@@ -87,6 +87,13 @@ type GdkRectangle struct {
 	height	int32
 }
 
+type GdkRGBA struct {
+	red		int32
+	green	int32
+	blue	int32
+	alpha	int32
+}
+
 type EventType int32
 
 const (
@@ -374,7 +381,7 @@ var (
     WebkitWebViewLoadHtml                                   func(web_view unsafe.Pointer, content string, base_uri string)
     WebkitWebViewLoadUri                                    func(web_view unsafe.Pointer, uri string)
     WebkitWebViewNew                                        func() unsafe.Pointer
-	WebkitWebViewSetBackgroundColor							func(web_view unsafe.Pointer, rgba unsafe.Pointer)
+	WebkitWebViewSetBackgroundColor							func(web_view unsafe.Pointer, rgba *GdkRGBA)
 	WebkitJavascriptResultGetJsValue						func(js_result unsafe.Pointer) unsafe.Pointer
 )
 
@@ -563,7 +570,7 @@ func GtkWindowSetTransparent(window unsafe.Pointer, transparent bool) {
 }
 
 func GtkWebViewSetTransparent(webview unsafe.Pointer, transparent bool) {
-	color := C.GdkRGBA{}
+	color := GdkRGBA{}
 	color.red = 1.0
 	color.green = 1.0
 	color.blue = 1.0
@@ -572,6 +579,8 @@ func GtkWebViewSetTransparent(webview unsafe.Pointer, transparent bool) {
 	if transparent {
 		color.alpha = 0
 	}
+
+	WebkitWebViewSetBackgroundColor(webview, &color);
 }
 
 func StringFromJsResult(result unsafe.Pointer) string {

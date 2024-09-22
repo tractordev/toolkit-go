@@ -20,6 +20,7 @@ sudo apt install \
 - Go through every C.* call and update them to purego (i.e C.CString).
 - Remove cgo types
 - Test purego without cgo
+- Transparency call are succesful but no effect?
 
 - Testing?
   - All api.
