@@ -12,18 +12,6 @@ import (
 	"github.com/ebitengine/purego"
 )
 
-/*
-#cgo linux pkg-config: gtk+-3.0 webkit2gtk-4.1 ayatana-appindicator3-0.1
-
-#include <stdint.h>
-#include <gtk/gtk.h>
-#include <JavaScriptCore/JavaScript.h>
-#include <webkit2/webkit2.h>
-#include <libayatana-appindicator/app-indicator.h>
-#include <string.h>
-*/
-import "C"
-
 type Window struct {
 	Handle unsafe.Pointer
 	MaxSize Size
@@ -421,6 +409,14 @@ var (
 	AppIndicatorSetIconFull			func (self unsafe.Pointer, icon_name string, icon_desc string)
 )
 
+var (
+	libc	uintptr
+	libgtk 	uintptr
+	libwebgtk	uintptr
+	libjsc	uintptr
+	libind	uintptr
+)
+
 
 //TODO make these dynamically find libraries
 //Find out if it's statically linkable
@@ -444,16 +440,31 @@ func GetAppIndicatorLibPath() string {
 	return "libayatana-appindicator3.so.1"
 }
 
-func SetAllCFuncs() {
-	libc, err := purego.Dlopen(GetCLibPath(), purego.RTLD_NOW|purego.RTLD_GLOBAL)
-	if err != nil {
-		panic(err)
+func LoadLibraries() {
+	load := func(libPathFunc func() string) uintptr {
+		lib, err := purego.Dlopen(libPathFunc(), purego.RTLD_NOW|purego.RTLD_GLOBAL)
+		if err != nil {
+			panic(err)
+		}
+		return lib
 	}
 
-	libgtk, err := purego.Dlopen(GetGTKPath(), purego.RTLD_NOW|purego.RTLD_GLOBAL)
-	if err != nil {
-		panic(err)
-	}
+	libc = load(GetCLibPath)
+	libgtk = load(GetGTKPath)
+	libwebgtk = load(GetWebkitGtkLibbPath)
+	libjsc = load(GetJSCLibPath)
+	libind = load(GetAppIndicatorLibPath)
+}
+
+func UnloadLibraries() {
+	purego.Dlclose(libc)
+	purego.Dlclose(libgtk)
+	purego.Dlclose(libwebgtk)
+	purego.Dlclose(libjsc)
+	purego.Dlclose(libind)
+}
+
+func SetAllCFuncs() {
 
 	//LibC functions
 	purego.RegisterLibFunc(&LibCFree, libc, "free")
@@ -523,11 +534,6 @@ func SetAllCFuncs() {
 	purego.RegisterLibFunc(&GdkWindowGetFrameExtends, libgtk, "gdk_window_get_frame_extents")
 	purego.RegisterLibFunc(&GdkAtomIntern, libgtk, "gdk_atom_intern")
 
-
-	libwebgtk, err := purego.Dlopen(GetWebkitGtkLibbPath(), purego.RTLD_NOW|purego.RTLD_GLOBAL)
-	if err != nil {
-		panic(err)
-	}
 	//Webkit functions
 	purego.RegisterLibFunc(&WebkitSettingsSetEnableDeveloperExtras, libwebgtk, "webkit_settings_set_enable_developer_extras")
 	purego.RegisterLibFunc(&WebkitSettingsSetEnableWriteConsoleMessagesToStdout, libwebgtk, "webkit_settings_set_enable_write_console_messages_to_stdout")
@@ -544,18 +550,8 @@ func SetAllCFuncs() {
 	purego.RegisterLibFunc(&WebkitWebViewSetBackgroundColor, libwebgtk, "webkit_web_view_set_background_color")
 	purego.RegisterLibFunc(&WebkitJavascriptResultGetJsValue, libwebgtk, "webkit_javascript_result_get_js_value")
 
-	libjsc, err := purego.Dlopen(GetJSCLibPath(), purego.RTLD_NOW|purego.RTLD_GLOBAL)
-	if err != nil {
-		panic(err)
-	}
-
 	//LibJavascriptCore functions
-	purego.RegisterLibFunc(&JscValueToString, libwebgtk, "jsc_value_to_string")
-
-	libind, err := purego.Dlopen(GetAppIndicatorLibPath(), purego.RTLD_NOW|purego.RTLD_GLOBAL)
-	if err != nil {
-		panic(err)
-	}
+	purego.RegisterLibFunc(&JscValueToString, libjsc, "jsc_value_to_string")
 
 	//LibAppIndicator functions
 	purego.RegisterLibFunc(&AppIndicatorNew, libind, "app_indicator_new")
@@ -564,14 +560,6 @@ func SetAllCFuncs() {
 	purego.RegisterLibFunc(&AppIndicatorSetLabel, libind, "app_indicator_set_label")
 	purego.RegisterLibFunc(&AppIndicatorSetMenu, libind, "app_indicator_set_menu")
 	purego.RegisterLibFunc(&AppIndicatorSetIconFull, libind, "app_indicator_set_icon_full")
-
-
-	//TODO where and when to close files
-	purego.Dlclose(libc)
-	purego.Dlclose(libgtk)
-	purego.Dlclose(libwebgtk)
-	purego.Dlclose(libjsc)
-	purego.Dlclose(libind)
 }
 
 /*

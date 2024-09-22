@@ -7,6 +7,7 @@ import (
 )
 
 func init() {
+	linux.LoadLibraries()
 	linux.SetAllCFuncs()
 	linux.OS_Init()
 }
@@ -25,5 +26,6 @@ func start() {
 }
 
 func stop() {
+	linux.UnloadLibraries()
 	isRunning.Store(false)
 }
