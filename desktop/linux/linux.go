@@ -94,6 +94,26 @@ type GdkRGBA struct {
 	alpha	int32
 }
 
+type GdkEventConfigure struct {
+	_type		int32
+	window		unsafe.Pointer
+	send_event	int8
+	x			int32
+	y			int32
+	width		int32
+	height		int32
+	_		[4]byte
+}
+
+type GdkEventWindowState struct {
+	_type			int32
+	window			unsafe.Pointer
+	send_event		int8
+	changed_mask		uint32
+	new_window_state	uint32
+	_			[4]byte
+}
+
 type EventType int32
 
 const (
@@ -816,7 +836,11 @@ func (window *Window) SetIconFromBytes(icon []byte) bool {
 
 // https://docs.gtk.org/gdk3/union.Event.html
 // https://api.gtkd.org/gdk.c.types.GdkEventType.html
-
+// Caution: The parameter @event is a union whose first 4 bytes denoting the type regardles of what
+// it is, this integer is alo present in "all" of the possible fields of the union. This is
+// not a idiomatic go call, the @event is handled more like C raw poitner here.
+// The function will first read that integer and deduce the union type, it will then cast
+// this pointer to one of two possible union fields declared in go.
 func go_event_callback(window unsafe.Pointer, event *int32, arg int32) {
 	if globalEventCallback != nil {
 		eventType := *event
@@ -836,7 +860,8 @@ func go_event_callback(window unsafe.Pointer, event *int32, arg int32) {
 		if eventType == GDK_CONFIGURE {
 			// NOTE(nick): Resize and move event
 			//TODO
-			configure := (*C.GdkEventConfigure)(unsafe.Pointer(event))
+
+			configure := (*GdkEventConfigure)(unsafe.Pointer(event))
 
 			result.Type = Configure
 			result.Position = Position{X: int32(configure.x), Y: int32(configure.y)}
@@ -859,8 +884,7 @@ func go_event_callback(window unsafe.Pointer, event *int32, arg int32) {
 		// to the same window
 		//
 		if eventType == GDK_WINDOW_STATE {
-			// TODO
-			windowState := (*C.GdkEventWindowState)(unsafe.Pointer(event))
+			windowState := (*GdkEventWindowState)(unsafe.Pointer(event))
 
 			// https://docs.gtk.org/gdk3/flags.WindowState.html
 			if windowState.changed_mask&GDK_WINDOW_STATE_FOCUSED > 0 {
