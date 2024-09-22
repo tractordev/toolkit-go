@@ -126,8 +126,8 @@ type WebviewSetings struct {
 
 // GtkWindowType
 const (
-	GTK_WINDOW_TOPLEVEL = 0
-	GTK_WINDOW_POPUP    = 1
+	GTK_WINDOW_TOPLEVEL = iota
+	GTK_WINDOW_POPUP
 )
 
 // GdkWindowHints
@@ -143,17 +143,113 @@ const (
 	GDK_HINT_USER_SIZE   = 1 << 8
 )
 
+// GdkWindowState
+const (
+  GDK_WINDOW_STATE_WITHDRAWN        = 1 << 0
+  GDK_WINDOW_STATE_ICONIFIED        = 1 << 1
+  GDK_WINDOW_STATE_MAXIMIZED        = 1 << 2
+  GDK_WINDOW_STATE_STICKY           = 1 << 3
+  GDK_WINDOW_STATE_FULLSCREEN       = 1 << 4
+  GDK_WINDOW_STATE_ABOVE            = 1 << 5
+  GDK_WINDOW_STATE_BELOW            = 1 << 6
+  GDK_WINDOW_STATE_FOCUSED          = 1 << 7
+  GDK_WINDOW_STATE_TILED            = 1 << 8
+  GDK_WINDOW_STATE_TOP_TILED        = 1 << 9
+  GDK_WINDOW_STATE_TOP_RESIZABLE    = 1 << 10
+  GDK_WINDOW_STATE_RIGHT_TILED      = 1 << 11
+  GDK_WINDOW_STATE_RIGHT_RESIZABLE  = 1 << 12
+  GDK_WINDOW_STATE_BOTTOM_TILED     = 1 << 13
+  GDK_WINDOW_STATE_BOTTOM_RESIZABLE = 1 << 14
+  GDK_WINDOW_STATE_LEFT_TILED       = 1 << 15
+  GDK_WINDOW_STATE_LEFT_RESIZABLE   = 1 << 16
+)
+
+
 // WebKitUserContentInjectedFrames
 const (
-	WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES = 0
-	WEBKIT_USER_CONTENT_INJECT_TOP_FRAME  = 1
+	WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES = iota
+	WEBKIT_USER_CONTENT_INJECT_TOP_FRAME
 )
 
 // WebKitUserScriptInjectionTime
 const (
-	WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START = 0
-	WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_END   = 1
+	WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START = iota
+	WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_END
 )
+
+// AppIndicatorCategory
+
+const (
+    APP_INDICATOR_CATEGORY_APPLICATION_STATUS = iota
+    APP_INDICATOR_CATEGORY_COMMUNICATIONS
+    APP_INDICATOR_CATEGORY_SYSTEM_SERVICES
+    APP_INDICATOR_CATEGORY_HARDWARE
+    APP_INDICATOR_CATEGORY_OTHER
+)
+
+// AppIndicatorStatus
+
+const (
+    APP_INDICATOR_STATUS_PASSIVE = iota
+    APP_INDICATOR_STATUS_ACTIVE
+    APP_INDICATOR_STATUS_ATTENTION
+)
+
+// GdkEventType
+const (
+  GDK_NOTHING		= -1
+  GDK_DELETE		= 0
+  GDK_DESTROY		= 1
+  GDK_EXPOSE		= 2
+  GDK_MOTION_NOTIFY	= 3
+  GDK_BUTTON_PRESS	= 4
+  GDK_2BUTTON_PRESS	= 5
+  GDK_DOUBLE_BUTTON_PRESS = GDK_2BUTTON_PRESS
+  GDK_3BUTTON_PRESS	= 6
+  GDK_TRIPLE_BUTTON_PRESS = GDK_3BUTTON_PRESS
+  GDK_BUTTON_RELEASE	= 7
+  GDK_KEY_PRESS		= 8
+  GDK_KEY_RELEASE	= 9
+  GDK_ENTER_NOTIFY	= 10
+  GDK_LEAVE_NOTIFY	= 11
+  GDK_FOCUS_CHANGE	= 12
+  GDK_CONFIGURE		= 13
+  GDK_MAP				= 14
+  GDK_UNMAP				= 15
+  GDK_PROPERTY_NOTIFY	= 16
+  GDK_SELECTION_CLEAR	= 17
+  GDK_SELECTION_REQUEST = 18
+  GDK_SELECTION_NOTIFY	= 19
+  GDK_PROXIMITY_IN		= 20
+  GDK_PROXIMITY_OUT		= 21
+  GDK_DRAG_ENTER        = 22
+  GDK_DRAG_LEAVE        = 23
+  GDK_DRAG_MOTION       = 24
+  GDK_DRAG_STATUS       = 25
+  GDK_DROP_START        = 26
+  GDK_DROP_FINISHED     = 27
+  GDK_CLIENT_EVENT		= 28
+  GDK_VISIBILITY_NOTIFY = 29
+  GDK_SCROLL            = 31
+  GDK_WINDOW_STATE      = 32
+  GDK_SETTING           = 33
+  GDK_OWNER_CHANGE      = 34
+  GDK_GRAB_BROKEN       = 35
+  GDK_DAMAGE            = 36
+  GDK_TOUCH_BEGIN       = 37
+  GDK_TOUCH_UPDATE      = 38
+  GDK_TOUCH_END         = 39
+  GDK_TOUCH_CANCEL      = 40
+  GDK_TOUCHPAD_SWIPE    = 41
+  GDK_TOUCHPAD_PINCH    = 42
+  GDK_PAD_BUTTON_PRESS  = 43
+  GDK_PAD_BUTTON_RELEASE = 44
+  GDK_PAD_RING          = 45
+  GDK_PAD_STRIP         = 46
+  GDK_PAD_GROUP_MODE    = 47
+  GDK_EVENT_LAST        = 48
+)
+
 
 /*
 * PureGo Gtk Bindings
@@ -235,9 +331,6 @@ var (
 	GdkDisplayGetDefault          	  func() unsafe.Pointer
     GdkDisplayGetMonitor          	  func(display unsafe.Pointer, monitorNum int32) unsafe.Pointer
     GdkDisplayGetNMonitors        	  func(display unsafe.Pointer) int32
-	//GdkRectangle is not always a struct, and in this case it's a typedef to a definition in cairo
-	//so C. prefix is not used here
-	//TODO once cgo is completely out, these defitions will follow. So this won't even matter, probably.
     GdkMonitorGetGeometry         	  func(monitor unsafe.Pointer, rect *GdkRectangle)
     GdkMonitorGetManufacturer      	  func(monitor unsafe.Pointer) string
     GdkMonitorGetModel                func(monitor unsafe.Pointer) string
@@ -290,8 +383,8 @@ var (
 )
 
 var (
-	AppIndicatorNew					func (id string, icon_name string, category C.AppIndicatorCategory) unsafe.Pointer
-	AppIndicatorSetStatus			func (self unsafe.Pointer, status C.AppIndicatorStatus)
+	AppIndicatorNew					func (id string, icon_name string, category uint32) unsafe.Pointer
+	AppIndicatorSetStatus			func (self unsafe.Pointer, status uint32)
 	AppIndicatorSetTitle			func (self unsafe.Pointer, title string)
 	AppIndicatorSetLabel			func (self unsafe.Pointer, label string, guide string)
 	AppIndicatorSetMenu				func (self unsafe.Pointer, menu unsafe.Pointer)
@@ -723,16 +816,17 @@ func go_event_callback(window unsafe.Pointer, event *int32, arg int32) {
 		result.Window.Handle = window
 		result.UserData = arg
 
-		if eventType == C.GDK_DELETE {
+		if eventType == GDK_DELETE {
 			result.Type = Delete
 		}
 
-		if eventType == C.GDK_DESTROY {
+		if eventType == GDK_DESTROY {
 			result.Type = Destroy
 		}
 
-		if eventType == C.GDK_CONFIGURE {
+		if eventType == GDK_CONFIGURE {
 			// NOTE(nick): Resize and move event
+			//TODO
 			configure := (*C.GdkEventConfigure)(unsafe.Pointer(event))
 
 			result.Type = Configure
@@ -755,12 +849,13 @@ func go_event_callback(window unsafe.Pointer, event *int32, arg int32) {
 		// when dragging the window and when pressing super+tab (even if you navigate back)
 		// to the same window
 		//
-		if eventType == C.GDK_WINDOW_STATE {
+		if eventType == GDK_WINDOW_STATE {
+			// TODO
 			windowState := (*C.GdkEventWindowState)(unsafe.Pointer(event))
 
 			// https://docs.gtk.org/gdk3/flags.WindowState.html
-			if windowState.changed_mask&C.GDK_WINDOW_STATE_FOCUSED > 0 {
-				focused := windowState.new_window_state&C.GDK_WINDOW_STATE_FOCUSED > 0
+			if windowState.changed_mask&GDK_WINDOW_STATE_FOCUSED > 0 {
+				focused := windowState.new_window_state&GDK_WINDOW_STATE_FOCUSED > 0
 
 				result.Type = FocusChange
 				result.FocusIn = focused
@@ -916,8 +1011,8 @@ func (monitor *Monitor) IsPrimary() bool {
 //
 
 func Indicator_New(id string, pngIconPath string, menu Menu) Indicator {
-	handle := AppIndicatorNew(id, "", C.APP_INDICATOR_CATEGORY_APPLICATION_STATUS)
-	AppIndicatorSetStatus(handle, C.APP_INDICATOR_STATUS_ACTIVE)
+	handle := AppIndicatorNew(id, "", APP_INDICATOR_CATEGORY_APPLICATION_STATUS)
+	AppIndicatorSetStatus(handle, APP_INDICATOR_STATUS_ACTIVE)
 
 	if len(pngIconPath) > 0 {
 		AppIndicatorSetIconFull(handle, pngIconPath, "")
