@@ -141,128 +141,126 @@ type WebviewSetings struct {
 
 // GtkWindowType
 const (
-	GTK_WINDOW_TOPLEVEL = iota
-	GTK_WINDOW_POPUP
+	GtkWindowToplevel = iota
+	GtkWindowPopup
 )
 
 // GdkWindowHints
 const (
-	GDK_HINT_POS	     = 1 << 0
-	GDK_HINT_MIN_SIZE    = 1 << 1
-	GDK_HINT_MAX_SIZE    = 1 << 2
-	GDK_HINT_BASE_SIZE   = 1 << 3
-	GDK_HINT_ASPECT      = 1 << 4
-	GDK_HINT_RESIZE_INC  = 1 << 5
-	GDK_HINT_WIN_GRAVITY = 1 << 6
-	GDK_HINT_USER_POS    = 1 << 7
-	GDK_HINT_USER_SIZE   = 1 << 8
+	GdkHintPos       = 1 << 0
+	GdkHintMinSize   = 1 << 1
+	GdkHintMaxSize   = 1 << 2
+	GdkHintBaseSize  = 1 << 3
+	GdkHintAspect    = 1 << 4
+	GdkHintResizeInc = 1 << 5
+	GdkHintWinGravity = 1 << 6
+	GdkHintUserPos   = 1 << 7
+	GdkHintUserSize  = 1 << 8
 )
 
 // GdkWindowState
 const (
-  GDK_WINDOW_STATE_WITHDRAWN        = 1 << 0
-  GDK_WINDOW_STATE_ICONIFIED        = 1 << 1
-  GDK_WINDOW_STATE_MAXIMIZED        = 1 << 2
-  GDK_WINDOW_STATE_STICKY           = 1 << 3
-  GDK_WINDOW_STATE_FULLSCREEN       = 1 << 4
-  GDK_WINDOW_STATE_ABOVE            = 1 << 5
-  GDK_WINDOW_STATE_BELOW            = 1 << 6
-  GDK_WINDOW_STATE_FOCUSED          = 1 << 7
-  GDK_WINDOW_STATE_TILED            = 1 << 8
-  GDK_WINDOW_STATE_TOP_TILED        = 1 << 9
-  GDK_WINDOW_STATE_TOP_RESIZABLE    = 1 << 10
-  GDK_WINDOW_STATE_RIGHT_TILED      = 1 << 11
-  GDK_WINDOW_STATE_RIGHT_RESIZABLE  = 1 << 12
-  GDK_WINDOW_STATE_BOTTOM_TILED     = 1 << 13
-  GDK_WINDOW_STATE_BOTTOM_RESIZABLE = 1 << 14
-  GDK_WINDOW_STATE_LEFT_TILED       = 1 << 15
-  GDK_WINDOW_STATE_LEFT_RESIZABLE   = 1 << 16
+	GdkWindowStateWithdrawn       = 1 << 0
+	GdkWindowStateIconified       = 1 << 1
+	GdkWindowStateMaximized       = 1 << 2
+	GdkWindowStateSticky          = 1 << 3
+	GdkWindowStateFullscreen      = 1 << 4
+	GdkWindowStateAbove           = 1 << 5
+	GdkWindowStateBelow           = 1 << 6
+	GdkWindowStateFocused         = 1 << 7
+	GdkWindowStateTiled           = 1 << 8
+	GdkWindowStateTopTiled        = 1 << 9
+	GdkWindowStateTopResizable    = 1 << 10
+	GdkWindowStateRightTiled      = 1 << 11
+	GdkWindowStateRightResizable  = 1 << 12
+	GdkWindowStateBottomTiled     = 1 << 13
+	GdkWindowStateBottomResizable = 1 << 14
+	GdkWindowStateLeftTiled       = 1 << 15
+	GdkWindowStateLeftResizable   = 1 << 16
 )
 
 
 // WebKitUserContentInjectedFrames
 const (
-	WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES = iota
-	WEBKIT_USER_CONTENT_INJECT_TOP_FRAME
+	WebkitUserContentInjectAllFrames = iota
+	WebkitUserContentInjectTopFrame
 )
 
 // WebKitUserScriptInjectionTime
 const (
-	WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START = iota
-	WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_END
+	WebkitUserScriptInjectAtDocumentStart = iota
+	WebkitUserScriptInjectAtDocumentEnd
 )
 
 // AppIndicatorCategory
-
 const (
-    APP_INDICATOR_CATEGORY_APPLICATION_STATUS = iota
-    APP_INDICATOR_CATEGORY_COMMUNICATIONS
-    APP_INDICATOR_CATEGORY_SYSTEM_SERVICES
-    APP_INDICATOR_CATEGORY_HARDWARE
-    APP_INDICATOR_CATEGORY_OTHER
+	AppIndicatorCategoryApplicationStatus = iota
+	AppIndicatorCategoryCommunications
+	AppIndicatorCategorySystemServices
+	AppIndicatorCategoryHardware
+	AppIndicatorCategoryOther
 )
 
 // AppIndicatorStatus
-
 const (
-    APP_INDICATOR_STATUS_PASSIVE = iota
-    APP_INDICATOR_STATUS_ACTIVE
-    APP_INDICATOR_STATUS_ATTENTION
+	AppIndicatorStatusPassive = iota
+	AppIndicatorStatusActive
+	AppIndicatorStatusAttention
 )
 
 // GdkEventType
 const (
-  GDK_NOTHING		= -1
-  GDK_DELETE		= 0
-  GDK_DESTROY		= 1
-  GDK_EXPOSE		= 2
-  GDK_MOTION_NOTIFY	= 3
-  GDK_BUTTON_PRESS	= 4
-  GDK_2BUTTON_PRESS	= 5
-  GDK_DOUBLE_BUTTON_PRESS = GDK_2BUTTON_PRESS
-  GDK_3BUTTON_PRESS	= 6
-  GDK_TRIPLE_BUTTON_PRESS = GDK_3BUTTON_PRESS
-  GDK_BUTTON_RELEASE	= 7
-  GDK_KEY_PRESS		= 8
-  GDK_KEY_RELEASE	= 9
-  GDK_ENTER_NOTIFY	= 10
-  GDK_LEAVE_NOTIFY	= 11
-  GDK_FOCUS_CHANGE	= 12
-  GDK_CONFIGURE		= 13
-  GDK_MAP				= 14
-  GDK_UNMAP				= 15
-  GDK_PROPERTY_NOTIFY	= 16
-  GDK_SELECTION_CLEAR	= 17
-  GDK_SELECTION_REQUEST = 18
-  GDK_SELECTION_NOTIFY	= 19
-  GDK_PROXIMITY_IN		= 20
-  GDK_PROXIMITY_OUT		= 21
-  GDK_DRAG_ENTER        = 22
-  GDK_DRAG_LEAVE        = 23
-  GDK_DRAG_MOTION       = 24
-  GDK_DRAG_STATUS       = 25
-  GDK_DROP_START        = 26
-  GDK_DROP_FINISHED     = 27
-  GDK_CLIENT_EVENT		= 28
-  GDK_VISIBILITY_NOTIFY = 29
-  GDK_SCROLL            = 31
-  GDK_WINDOW_STATE      = 32
-  GDK_SETTING           = 33
-  GDK_OWNER_CHANGE      = 34
-  GDK_GRAB_BROKEN       = 35
-  GDK_DAMAGE            = 36
-  GDK_TOUCH_BEGIN       = 37
-  GDK_TOUCH_UPDATE      = 38
-  GDK_TOUCH_END         = 39
-  GDK_TOUCH_CANCEL      = 40
-  GDK_TOUCHPAD_SWIPE    = 41
-  GDK_TOUCHPAD_PINCH    = 42
-  GDK_PAD_BUTTON_PRESS  = 43
-  GDK_PAD_BUTTON_RELEASE = 44
-  GDK_PAD_RING          = 45
-  GDK_PAD_STRIP         = 46
-  GDK_PAD_GROUP_MODE    = 47
-  GDK_EVENT_LAST        = 48
+	GdkNothing           = -1
+	GdkDelete            = 0
+	GdkDestroy           = 1
+	GdkExpose            = 2
+	GdkMotionNotify      = 3
+	GdkButtonPress       = 4
+	Gdk2ButtonPress      = 5
+	GdkDoubleButtonPress = Gdk2ButtonPress
+	Gdk3ButtonPress      = 6
+	GdkTripleButtonPress = Gdk3ButtonPress
+	GdkButtonRelease     = 7
+	GdkKeyPress          = 8
+	GdkKeyRelease        = 9
+	GdkEnterNotify       = 10
+	GdkLeaveNotify       = 11
+	GdkFocusChange       = 12
+	GdkConfigure         = 13
+	GdkMap               = 14
+	GdkUnmap             = 15
+	GdkPropertyNotify    = 16
+	GdkSelectionClear    = 17
+	GdkSelectionRequest  = 18
+	GdkSelectionNotify   = 19
+	GdkProximityIn       = 20
+	GdkProximityOut      = 21
+	GdkDragEnter         = 22
+	GdkDragLeave         = 23
+	GdkDragMotion        = 24
+	GdkDragStatus        = 25
+	GdkDropStart         = 26
+	GdkDropFinished      = 27
+	GdkClientEvent       = 28
+	GdkVisibilityNotify  = 29
+	GdkScroll            = 31
+	GdkWindowState       = 32
+	GdkSetting           = 33
+	GdkOwnerChange       = 34
+	GdkGrabBroken        = 35
+	GdkDamage            = 36
+	GdkTouchBegin        = 37
+	GdkTouchUpdate       = 38
+	GdkTouchEnd          = 39
+	GdkTouchCancel       = 40
+	GdkTouchpadSwipe     = 41
+	GdkTouchpadPinch     = 42
+	GdkPadButtonPress    = 43
+	GdkPadButtonRelease  = 44
+	GdkPadRing           = 45
+	GdkPadStrip          = 46
+	GdkPadGroupMode      = 47
+	GdkEventLast         = 48
 )
 
 
@@ -626,7 +624,7 @@ func PollEvents() {
 
 func Window_New() Window {
 	result := Window{}
-	result.Handle = GtkWindowNew(GTK_WINDOW_TOPLEVEL)
+	result.Handle = GtkWindowNew(GtkWindowToplevel)
 	return result
 }
 
@@ -730,12 +728,12 @@ func (window *Window) setGeometry() {
 	if window.MaxSize.Width != 0 && window.MaxSize.Height != 0 {
 		g.max_width = window.MaxSize.Width
 		g.max_height = window.MaxSize.Height
-		flags = flags | GDK_HINT_MAX_SIZE
+		flags = flags | GdkHintMaxSize
 	}
 	if window.MinSize.Width != 0 && window.MinSize.Height != 0 {
 		g.min_width = window.MinSize.Width
 		g.min_height = window.MinSize.Width
-		flags = flags | GDK_HINT_MIN_SIZE
+		flags = flags | GdkHintMinSize
 	}
 	GtkWindowSetGeometryHints(window.Handle, nil, &g, flags)
 
@@ -841,15 +839,15 @@ func go_event_callback(window unsafe.Pointer, event *int32, arg int32) {
 		result.Window.Handle = window
 		result.UserData = arg
 
-		if eventType == GDK_DELETE {
+		if eventType == GdkDelete {
 			result.Type = Delete
 		}
 
-		if eventType == GDK_DESTROY {
+		if eventType == GdkDestroy {
 			result.Type = Destroy
 		}
 
-		if eventType == GDK_CONFIGURE {
+		if eventType == GdkConfigure {
 			// NOTE(nick): Resize and move event
 			//TODO
 
@@ -875,12 +873,12 @@ func go_event_callback(window unsafe.Pointer, event *int32, arg int32) {
 		// when dragging the window and when pressing super+tab (even if you navigate back)
 		// to the same window
 		//
-		if eventType == GDK_WINDOW_STATE {
+		if eventType == GdkWindowState {
 			windowState := (*GdkEventWindowState)(unsafe.Pointer(event))
 
 			// https://docs.gtk.org/gdk3/flags.WindowState.html
-			if windowState.changed_mask&GDK_WINDOW_STATE_FOCUSED > 0 {
-				focused := windowState.new_window_state&GDK_WINDOW_STATE_FOCUSED > 0
+			if windowState.changed_mask&GdkWindowStateFocused > 0 {
+				focused := windowState.new_window_state&GdkWindowStateFocused > 0
 
 				result.Type = FocusChange
 				result.FocusIn = focused
@@ -960,8 +958,8 @@ func (webview *Webview) AddScript(js string) {
 
 	script := WebkitUserScriptNew(
 		js,
-		WEBKIT_USER_CONTENT_INJECT_TOP_FRAME,
-		WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START,
+		WebkitUserContentInjectTopFrame,
+		WebkitUserScriptInjectAtDocumentStart,
 		nil,
 		nil,
 	)
@@ -1036,8 +1034,8 @@ func (monitor *Monitor) IsPrimary() bool {
 //
 
 func Indicator_New(id string, pngIconPath string, menu Menu) Indicator {
-	handle := AppIndicatorNew(id, "", APP_INDICATOR_CATEGORY_APPLICATION_STATUS)
-	AppIndicatorSetStatus(handle, APP_INDICATOR_STATUS_ACTIVE)
+	handle := AppIndicatorNew(id, "", AppIndicatorCategoryApplicationStatus)
+	AppIndicatorSetStatus(handle, AppIndicatorStatusActive)
 
 	if len(pngIconPath) > 0 {
 		AppIndicatorSetIconFull(handle, pngIconPath, "")
