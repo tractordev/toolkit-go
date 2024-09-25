@@ -286,10 +286,9 @@ var (
 
 var (
 	//TODO indentation
-	//TODO parameter names
 	//TODO add parameter types in docs
 	GtkCheckMenuItemNewWithLabel      func (label string) unsafe.Pointer
-	GtkCheckMenuItemSetActive         func (checkMenuItem unsafe.Pointer, is_active bool)
+	GtkCheckMenuItemSetActive         func (checkMenuItem unsafe.Pointer, isActive bool)
 	//GdkAtom is basically a pointer to 'struct _GdkAtom' (gdktypes.h)
 	//unsafe.Pointer is used in its place and gdk_atom_intern will be used to get the atoms for strings
 	//here since there is no way to use macros like GDK_SELECTION_CLIPBOARD
@@ -301,16 +300,16 @@ var (
 	GtkMain                           func ()
 	GtkMainIterationDo                func (blocking bool)
 	GtkMenuItemNewWithLabel           func (label string) unsafe.Pointer
-	GtkMenuItemSetSubmenu             func (menu_item unsafe.Pointer, submenu unsafe.Pointer)
+	GtkMenuItemSetSubmenu             func (menuItem unsafe.Pointer, submenu unsafe.Pointer)
 	GtkMenuNew                        func () unsafe.Pointer
-	GtkMenuShellAppend                func (menu_shell unsafe.Pointer, child unsafe.Pointer)
+	GtkMenuShellAppend                func (menuShell unsafe.Pointer, child unsafe.Pointer)
 	GtkSeparatorMenuItemNew           func () unsafe.Pointer
 	GtkWidgetDestroy                  func (widget unsafe.Pointer)
 	GtkWidgetGrabFocus                func (widget unsafe.Pointer)
 	GtkWidgetGetWindow                func (widget unsafe.Pointer) unsafe.Pointer
 	GtkWidgetHide                     func (widget unsafe.Pointer)
 	GtkWidgetIsVisible                func (widget unsafe.Pointer) bool
-	GtkWidgetSetAppPaintable          func (window unsafe.Pointer, app_paintable bool)
+	GtkWidgetSetAppPaintable          func (window unsafe.Pointer, appPaintable bool)
 	GtkWidgetSetSensitive             func (widget unsafe.Pointer, sensitive bool)
 	GtkWidgetSetVisual                func (window unsafe.Pointer, visual unsafe.Pointer)
 	GtkWidgetShow                     func (widget unsafe.Pointer)
@@ -322,14 +321,14 @@ var (
 	GtkWindowIconify                  func (window unsafe.Pointer)
 	GtkWindowMaximize                 func (window unsafe.Pointer)
 	GtkWindowMove                     func (window unsafe.Pointer, x, y int32)
-	GtkWindowNew                      func (window_type uint32) unsafe.Pointer
+	GtkWindowNew                      func (windowType uint32) unsafe.Pointer
 	GtkWindowResize                   func (window unsafe.Pointer, width, height int32)
 	GtkWindowSetDecorated             func (window unsafe.Pointer, setting bool)
 	GtkWindowSetGeometryHints         func (
 		window unsafe.Pointer,
-		geometry_widget unsafe.Pointer,
+		geometryWidget unsafe.Pointer,
 		geometry *GdkGeometry,
-		geom_mask uint32)
+		geomMask uint32)
 	GtkWindowSetIcon                  func (window unsafe.Pointer, icon unsafe.Pointer)
 	GtkWindowSetKeepAbove             func (window unsafe.Pointer, setting bool)
 	GtkWindowSetResizable             func (window unsafe.Pointer, resizable bool)
@@ -339,7 +338,7 @@ var (
 )
 
 var (
-	GdkAtomIntern                     func(atom_name string, only_if_exists bool) unsafe.Pointer
+	GdkAtomIntern                     func(atomName string, onlyIfExists bool) unsafe.Pointer
 	GdkDisplayGetDefault              func() unsafe.Pointer
 	GdkDisplayGetMonitor              func(display unsafe.Pointer, monitorNum int32) unsafe.Pointer
 	GdkDisplayGetNMonitors            func(display unsafe.Pointer) int32
@@ -359,7 +358,7 @@ var (
 )
 
 var (
-	WebkitJavascriptResultGetJsValue                         func(js_result unsafe.Pointer) unsafe.Pointer
+	WebkitJavascriptResultGetJsValue                         func(jsResult unsafe.Pointer) unsafe.Pointer
 	WebkitSettingsSetEnableDeveloperExtras                   func(settings unsafe.Pointer, enable bool)
 	WebkitSettingsSetEnableWriteConsoleMessagesToStdout      func(settings unsafe.Pointer, enable bool)
 	WebkitSettingsSetJavascriptCanAccessClipboard            func(settings unsafe.Pointer, enable bool)
@@ -367,28 +366,28 @@ var (
 	WebkitUserContentManagerRegisterScriptMessageHandler     func(manager unsafe.Pointer, name string) bool
 	WebkitUserScriptNew                                      func(
 		source string,
-		injected_frames uint32,
-		injected_time uint32,
-		allow_list []string,
-		block_list []string,
+		injectedFrames uint32,
+		injectedTime uint32,
+		allowList []string,
+		blockList []string,
 	) unsafe.Pointer
 	WebkitWebViewEvaluateJavascript                          func(
-		web_view unsafe.Pointer,
+		webView unsafe.Pointer,
 		script string,
 		length int32,
 		//ignoring these atm, so they don't have string type
-		world_name unsafe.Pointer,
-		source_uri unsafe.Pointer,
+		worldName unsafe.Pointer,
+		sourceUri unsafe.Pointer,
 		cancellable unsafe.Pointer,
 		callback unsafe.Pointer,
-		user_data unsafe.Pointer,
+		userData unsafe.Pointer,
 	)
-	WebkitWebViewGetSettings                                 func(web_view unsafe.Pointer) unsafe.Pointer
-	WebkitWebViewGetUserContentManager                       func(web_view unsafe.Pointer) unsafe.Pointer
-	WebkitWebViewLoadHtml                                    func(web_view unsafe.Pointer, content string, base_uri string)
-	WebkitWebViewLoadUri                                     func(web_view unsafe.Pointer, uri string)
+	WebkitWebViewGetSettings                                 func(webView unsafe.Pointer) unsafe.Pointer
+	WebkitWebViewGetUserContentManager                       func(webView unsafe.Pointer) unsafe.Pointer
+	WebkitWebViewLoadHtml                                    func(webView unsafe.Pointer, content string, baseUri string)
+	WebkitWebViewLoadUri                                     func(webView unsafe.Pointer, uri string)
 	WebkitWebViewNew                                         func() unsafe.Pointer
-	WebkitWebViewSetBackgroundColor                          func(web_view unsafe.Pointer, rgba *GdkRGBA)
+	WebkitWebViewSetBackgroundColor                          func(webView unsafe.Pointer, rgba *GdkRGBA)
 )
 
 var (
@@ -396,8 +395,8 @@ var (
 )
 
 var (
-	AppIndicatorNew                   func (id string, icon_name string, category uint32) unsafe.Pointer
-	AppIndicatorSetIconFull           func (self unsafe.Pointer, icon_name string, icon_desc string)
+	AppIndicatorNew                   func (id string, iconName string, category uint32) unsafe.Pointer
+	AppIndicatorSetIconFull           func (self unsafe.Pointer, iconName string, iconDesc string)
 	AppIndicatorSetLabel              func (self unsafe.Pointer, label string, guide string)
 	AppIndicatorSetMenu               func (self unsafe.Pointer, menu unsafe.Pointer)
 	AppIndicatorSetStatus             func (self unsafe.Pointer, status uint32)
