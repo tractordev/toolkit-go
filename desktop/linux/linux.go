@@ -283,54 +283,209 @@ var (
 )
 
 var (
-	//TODO add parameter types in docs
+	// GtkCheckMenuItemNewWithLabel: Creates a new GtkCheckMenuItem with a label.
+	// @param label string: the text of the label
+	// Returns GtkWidget*: the new GtkCheckMenuItem
 	GtkCheckMenuItemNewWithLabel func(label string) unsafe.Pointer
+
+	// GtkCheckMenuItemSetActive: Sets the active state of a GtkCheckMenuItem.
+	// @param checkMenuItem GtkCheckMenuItem*: the GtkCheckMenuItem
+	// @param isActive bool: true to set the check menu item active, false to set it inactive
 	GtkCheckMenuItemSetActive    func(checkMenuItem unsafe.Pointer, isActive bool)
-	//GdkAtom is basically a pointer to 'struct _GdkAtom' (gdktypes.h)
-	//unsafe.Pointer is used in its place and gdk_atom_intern will be used to get the atoms for strings
-	//here since there is no way to use macros like GDK_SELECTION_CLIPBOARD
+
+	// GtkClipboardGet: Gets the clipboard object for the given selection.
+	// @param selection GdkAtom: the selection
+	// GdkAtom is basically a pointer to 'struct _GdkAtom' (gdktypes.h)
+	// unsafe.Pointer is used in its place and gdk_atom_intern will be used to get the atoms for strings
+	// here since there is no way to use macros like GDK_SELECTION_CLIPBOARD
+	// Returns GtkClipboard*: the clipboard object for the given selection
 	GtkClipboardGet           func(selection unsafe.Pointer) unsafe.Pointer
+
+	// GtkClipboardSetText: Sets the text of the clipboard.
+	// @param clipboard GtkClipboard*: the clipboard
+	// @param text string: the text to set
+	// @param length int32: the length of the text
 	GtkClipboardSetText       func(clipboard unsafe.Pointer, text string, length int32)
+
+	// GtkClipboardWaitForText: Waits for the text from the clipboard.
+	// @param clipboard GtkClipboard*: the clipboard
+	// Returns string: the text from the clipboard
 	GtkClipboardWaitForText   func(clipboard unsafe.Pointer) string
+
+	// GtkContainerAdd: Adds a widget to a container.
+	// @param container GtkContainer*: the container
+	// @param widget GtkWidget*: the widget to add
 	GtkContainerAdd           func(container unsafe.Pointer, widget unsafe.Pointer)
+
+	// GtkInitCheck: Initializes the GTK library.
+	// @param argc *int: a pointer to the number of command line arguments
+	// @param argv ***char: a pointer to the array of command line arguments
+	// Returns bool: true if initialization succeeded, false otherwise
 	GtkInitCheck              func(argc unsafe.Pointer, argv unsafe.Pointer)
+
+	// GtkMain: Runs the main loop.
 	GtkMain                   func()
-	GtkMainIterationDo        func(blocking bool)
+
+	// GtkMainIterationDo: Runs a single iteration of the main loop.
+	// @param blocking bool: whether to block if no events are pending
+	// Returns bool: true if gtk_main_quit() has been called
+	GtkMainIterationDo        func(blocking bool) bool
+
+	// GtkMenuItemNewWithLabel: Creates a new GtkMenuItem with a label.
+	// @param label string: the text of the label
+	// Returns GtkWidget*: the new GtkMenuItem
 	GtkMenuItemNewWithLabel   func(label string) unsafe.Pointer
+
+	// GtkMenuItemSetSubmenu: Sets the submenu of a GtkMenuItem.
+	// @param menuItem GtkMenuItem*: the GtkMenuItem
+	// @param submenu GtkWidget*: the submenu
 	GtkMenuItemSetSubmenu     func(menuItem unsafe.Pointer, submenu unsafe.Pointer)
+
+	// GtkMenuNew: Creates a new GtkMenu.
+	// Returns GtkWidget*: the new GtkMenu
 	GtkMenuNew                func() unsafe.Pointer
+
+	// GtkMenuShellAppend: Appends a widget to a GtkMenuShell.
+	// @param menuShell GtkMenuShell*: the GtkMenuShell
+	// @param child GtkWidget*: the widget to append
 	GtkMenuShellAppend        func(menuShell unsafe.Pointer, child unsafe.Pointer)
+
+	// GtkSeparatorMenuItemNew: Creates a new GtkSeparatorMenuItem.
+	// Returns GtkWidget*: the new GtkSeparatorMenuItem
 	GtkSeparatorMenuItemNew   func() unsafe.Pointer
+
+	// GtkWidgetDestroy: Destroys a widget.
+	// @param widget GtkWidget*: the widget to destroy
 	GtkWidgetDestroy          func(widget unsafe.Pointer)
+
+	// GtkWidgetGrabFocus: Grabs the focus for a widget.
+	// @param widget GtkWidget*: the widget to grab focus for
 	GtkWidgetGrabFocus        func(widget unsafe.Pointer)
+
+	// GtkWidgetGetWindow: Gets the GdkWindow of a widget.
+	// @param widget GtkWidget*: the widget
+	// Returns GdkWindow*: the GdkWindow of the widget
 	GtkWidgetGetWindow        func(widget unsafe.Pointer) unsafe.Pointer
+
+	// GtkWidgetHide: Hides a widget.
+	// @param widget GtkWidget*: the widget to hide
 	GtkWidgetHide             func(widget unsafe.Pointer)
+
+	// GtkWidgetIsVisible: Checks if a widget is visible.
+	// @param widget GtkWidget*: the widget
+	// Returns bool: true if the widget is visible, false otherwise
 	GtkWidgetIsVisible        func(widget unsafe.Pointer) bool
-	GtkWidgetSetAppPaintable  func(window unsafe.Pointer, appPaintable bool)
+
+	// GtkWidgetSetAppPaintable: Sets whether a widget is app paintable.
+	// @param widget GtkWidget*: the widget
+	// @param appPaintable bool: true to make the widget app paintable, false otherwise
+	GtkWidgetSetAppPaintable  func(widget unsafe.Pointer, appPaintable bool)
+
+	// GtkWidgetSetSensitive: Sets whether a widget is sensitive.
+	// @param widget GtkWidget*: the widget
+	// @param sensitive bool: true to make the widget sensitive, false otherwise
 	GtkWidgetSetSensitive     func(widget unsafe.Pointer, sensitive bool)
+
+	// GtkWidgetSetVisual: Sets the visual of a widget.
+	// @param window GtkWidget*: the widget
+	// @param visual GdkVisual*: the visual to set
 	GtkWidgetSetVisual        func(window unsafe.Pointer, visual unsafe.Pointer)
+
+	// GtkWidgetShow: Shows a widget.
+	// @param widget GtkWidget*: the widget to show
 	GtkWidgetShow             func(widget unsafe.Pointer)
+
+	// GtkWidgetShowAll: Shows a widget and all its children.
+	// @param widget GtkWidget*: the widget to show
 	GtkWidgetShowAll          func(widget unsafe.Pointer)
+
+	// GtkWindowDeiconify: Deiconifies a window.
+	// @param window GtkWindow*: the window to deiconify
 	GtkWindowDeiconify        func(window unsafe.Pointer)
+
+	// GtkWindowFullscreen: Makes a window fullscreen.
+	// @param window GtkWindow*: the window to make fullscreen
 	GtkWindowFullscreen       func(window unsafe.Pointer)
+
+	// GtkWindowGetPosition: Gets the position of a window.
+	// @param window GtkWindow*: the window
+	// @param x *int32: return location for X position
+	// @param y *int32: return location for Y position
 	GtkWindowGetPosition      func(window unsafe.Pointer, x, y *int32)
+
+	// GtkWindowGetSize: Gets the size of a window.
+	// @param window GtkWindow*: the window
+	// @param width *int32: return location for width
+	// @param height *int32: return location for height
 	GtkWindowGetSize          func(window unsafe.Pointer, width, height *int32)
+
+	// GtkWindowIconify: Iconifies a window.
+	// @param window GtkWindow*: the window to iconify
 	GtkWindowIconify          func(window unsafe.Pointer)
+
+	// GtkWindowMaximize: Maximizes a window.
+	// @param window GtkWindow*: the window to maximize
 	GtkWindowMaximize         func(window unsafe.Pointer)
+
+	// GtkWindowMove: Moves a window.
+	// @param window GtkWindow*: the window to move
+	// @param x int32: the X position to move to
+	// @param y int32: the Y position to move to
 	GtkWindowMove             func(window unsafe.Pointer, x, y int32)
+
+	// GtkWindowNew: Creates a new window.
+	// @param windowType GtkWindowType: the type of the window
+	// Returns GtkWidget*: the new window
 	GtkWindowNew              func(windowType uint32) unsafe.Pointer
+
+	// GtkWindowResize: Resizes a window.
+	// @param window GtkWindow*: the window to resize
+	// @param width int32: the new width
+	// @param height int32: the new height
 	GtkWindowResize           func(window unsafe.Pointer, width, height int32)
+
+	// GtkWindowSetDecorated: Sets whether a window is decorated.
+	// @param window GtkWindow*: the window
+	// @param setting bool: true to decorate the window, false otherwise
 	GtkWindowSetDecorated     func(window unsafe.Pointer, setting bool)
+
+	// GtkWindowSetGeometryHints: Sets the geometry hints for a window.
+	// @param window GtkWindow*: the window
+	// @param geometryWidget GtkWidget*: the widget the hints will be applied to
+	// @param geometry *GdkGeometry: the geometry hints
+	// @param geomMask GdkWindowHints: the mask indicating which hints are set
 	GtkWindowSetGeometryHints func(
 		window unsafe.Pointer,
 		geometryWidget unsafe.Pointer,
 		geometry *GdkGeometry,
 		geomMask uint32)
+
+	// GtkWindowSetIcon: Sets the icon for a window.
+	// @param window GtkWindow*: the window
+	// @param icon GdkPixbuf*: the icon
 	GtkWindowSetIcon      func(window unsafe.Pointer, icon unsafe.Pointer)
+
+	// GtkWindowSetKeepAbove: Sets whether a window should be kept above other windows.
+	// @param window GtkWindow*: the window
+	// @param setting bool: true to keep the window above, false otherwise
 	GtkWindowSetKeepAbove func(window unsafe.Pointer, setting bool)
+
+	// GtkWindowSetResizable: Sets whether a window is resizable.
+	// @param window GtkWindow*: the window
+	// @param resizable bool: true to make the window resizable, false otherwise
 	GtkWindowSetResizable func(window unsafe.Pointer, resizable bool)
+
+	// GtkWindowSetTitle: Sets the title of a window.
+	// @param window GtkWindow*: the window
+	// @param title string: the title
 	GtkWindowSetTitle     func(window unsafe.Pointer, title string)
+
+	// GtkWindowUnfullscreen: Unsets the fullscreen state of a window.
+	// @param window GtkWindow*: the window to unfullscreen
 	GtkWindowUnfullscreen func(window unsafe.Pointer)
+
+	// GtkWindowUnmaximize: Unsets the maximized state of a window.
+	// @param window GtkWindow*: the window to unmaximize
 	GtkWindowUnmaximize   func(window unsafe.Pointer)
 )
 
