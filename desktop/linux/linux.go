@@ -581,12 +581,44 @@ var (
 )
 
 var (
+	// WebkitJavascriptResultGetJsValue: Gets the JavaScript value from a WebKitJavascriptResult.
+	// @param jsResult WebKitJavascriptResult*: the JavaScript result
+	// Returns JSValue*: the JavaScript value
 	WebkitJavascriptResultGetJsValue                     func(jsResult unsafe.Pointer) unsafe.Pointer
+	
+	// WebkitSettingsSetEnableDeveloperExtras: Enables or disables developer extras.
+	// @param settings WebKitSettings*: the settings
+	// @param enable bool: true to enable developer extras, false to disable
 	WebkitSettingsSetEnableDeveloperExtras               func(settings unsafe.Pointer, enable bool)
+	
+	// WebkitSettingsSetEnableWriteConsoleMessagesToStdout: Enables or disables writing console messages to stdout.
+	// @param settings WebKitSettings*: the settings
+	// @param enable bool: true to enable writing console messages to stdout, false to disable
 	WebkitSettingsSetEnableWriteConsoleMessagesToStdout  func(settings unsafe.Pointer, enable bool)
+	
+	// WebkitSettingsSetJavascriptCanAccessClipboard: Enables or disables JavaScript access to the clipboard.
+	// @param settings WebKitSettings*: the settings
+	// @param enable bool: true to enable JavaScript access to the clipboard, false to disable
 	WebkitSettingsSetJavascriptCanAccessClipboard        func(settings unsafe.Pointer, enable bool)
+	
+	// WebkitUserContentManagerAddScript: Adds a user script to a WebKitUserContentManager.
+	// @param manager WebKitUserContentManager*: the user content manager
+	// @param script WebKitUserScript*: the user script
 	WebkitUserContentManagerAddScript                    func(manager unsafe.Pointer, script unsafe.Pointer)
+	
+	// WebkitUserContentManagerRegisterScriptMessageHandler: Registers a script message handler with a WebKitUserContentManager.
+	// @param manager WebKitUserContentManager*: the user content manager
+	// @param name string: the name of the message handler
+	// Returns bool: true if the message handler was registered successfully, false otherwise
 	WebkitUserContentManagerRegisterScriptMessageHandler func(manager unsafe.Pointer, name string) bool
+	
+	// WebkitUserScriptNew: Creates a new user script.
+	// @param source string: the source code of the script
+	// @param injectedFrames WebKitUserContentInjectedFrames: where the script should be injected
+	// @param injectedTime WebKitUserScriptInjectionTime: when the script should be injected
+	// @param allowList []string: a list of patterns to match the URLs where the script should be injected
+	// @param blockList []string: a list of patterns to match the URLs where the script should not be injected
+	// Returns WebKitUserScript*: the new user script
 	WebkitUserScriptNew                                  func(
 		source string,
 		injectedFrames uint32,
@@ -594,6 +626,16 @@ var (
 		allowList []string,
 		blockList []string,
 	) unsafe.Pointer
+	
+	// WebkitWebViewEvaluateJavascript: Evaluates JavaScript code in a WebKitWebView.
+	// @param webView WebKitWebView*: the web view
+	// @param script string: the JavaScript code to evaluate
+	// @param length int32: the length of the JavaScript code
+	// @param worldName string: The name of a WebKitScriptWorld or NULL to default
+	// @param sourceUri string: the URI of the script
+	// @param cancellable GCancellable*: optional cancellable object
+	// @param callback GAsyncReadyCallback: the callback to call when the evaluation is complete
+	// @param userData gpointer: user data to pass to the callback
 	WebkitWebViewEvaluateJavascript func(
 		webView unsafe.Pointer,
 		script string,
@@ -605,11 +647,35 @@ var (
 		callback unsafe.Pointer,
 		userData unsafe.Pointer,
 	)
+	
+	// WebkitWebViewGetSettings: Gets the settings of a WebKitWebView.
+	// @param webView WebKitWebView*: the web view
+	// Returns WebKitSettings*: the settings
 	WebkitWebViewGetSettings           func(webView unsafe.Pointer) unsafe.Pointer
+	
+	// WebkitWebViewGetUserContentManager: Gets the user content manager of a WebKitWebView.
+	// @param webView WebKitWebView*: the web view
+	// Returns WebKitUserContentManager*: the user content manager
 	WebkitWebViewGetUserContentManager func(webView unsafe.Pointer) unsafe.Pointer
+	
+	// WebkitWebViewLoadHtml: Loads HTML content into a WebKitWebView.
+	// @param webView WebKitWebView*: the web view
+	// @param content string: the HTML content to load
+	// @param baseUri string: the base URI for the content
 	WebkitWebViewLoadHtml              func(webView unsafe.Pointer, content string, baseUri string)
+	
+	// WebkitWebViewLoadUri: Loads a URI into a WebKitWebView.
+	// @param webView WebKitWebView*: the web view
+	// @param uri string: the URI to load
 	WebkitWebViewLoadUri               func(webView unsafe.Pointer, uri string)
+	
+	// WebkitWebViewNew: Creates a new WebKitWebView.
+	// Returns GtkWidget*: the newly created WebKitWebView widget
 	WebkitWebViewNew                   func() unsafe.Pointer
+	
+	// WebkitWebViewSetBackgroundColor: Sets the background color of a WebKitWebView.
+	// @param webView WebKitWebView*: the web view
+	// @param rgba GdkRGBA*: the background color
 	WebkitWebViewSetBackgroundColor    func(webView unsafe.Pointer, rgba *GdkRGBA)
 )
 
