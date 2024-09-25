@@ -680,6 +680,9 @@ var (
 )
 
 var (
+	// JscValueToString: Converts a JavaScriptCore value to a string.
+	// @param value JSCValue*: the JavaScriptCore value
+	// Returns string: the string representation of the value
 	JscValueToString func(unsafe.Pointer) string
 )
 
