@@ -292,7 +292,7 @@ var (
 	// GtkCheckMenuItemSetActive: Sets the active state of a GtkCheckMenuItem.
 	// @param checkMenuItem GtkCheckMenuItem*: the GtkCheckMenuItem
 	// @param isActive bool: true to set the check menu item active, false to set it inactive
-	GtkCheckMenuItemSetActive    func(checkMenuItem unsafe.Pointer, isActive bool)
+	GtkCheckMenuItemSetActive func(checkMenuItem unsafe.Pointer, isActive bool)
 
 	// GtkClipboardGet: Gets the clipboard object for the given selection.
 	// @param selection GdkAtom: the selection
@@ -300,155 +300,155 @@ var (
 	// unsafe.Pointer is used in its place and gdk_atom_intern will be used to get the atoms for strings
 	// here since there is no way to use macros like GDK_SELECTION_CLIPBOARD
 	// Returns GtkClipboard*: the clipboard object for the given selection
-	GtkClipboardGet           func(selection unsafe.Pointer) unsafe.Pointer
+	GtkClipboardGet func(selection unsafe.Pointer) unsafe.Pointer
 
 	// GtkClipboardSetText: Sets the text of the clipboard.
 	// @param clipboard GtkClipboard*: the clipboard
 	// @param text string: the text to set
 	// @param length int32: the length of the text
-	GtkClipboardSetText       func(clipboard unsafe.Pointer, text string, length int32)
+	GtkClipboardSetText func(clipboard unsafe.Pointer, text string, length int32)
 
 	// GtkClipboardWaitForText: Waits for the text from the clipboard.
 	// @param clipboard GtkClipboard*: the clipboard
 	// Returns string: the text from the clipboard
-	GtkClipboardWaitForText   func(clipboard unsafe.Pointer) string
+	GtkClipboardWaitForText func(clipboard unsafe.Pointer) string
 
 	// GtkContainerAdd: Adds a widget to a container.
 	// @param container GtkContainer*: the container
 	// @param widget GtkWidget*: the widget to add
-	GtkContainerAdd           func(container unsafe.Pointer, widget unsafe.Pointer)
+	GtkContainerAdd func(container unsafe.Pointer, widget unsafe.Pointer)
 
 	// GtkInitCheck: Initializes the GTK library.
 	// @param argc *int: a pointer to the number of command line arguments
 	// @param argv ***char: a pointer to the array of command line arguments
 	// Returns bool: true if initialization succeeded, false otherwise
-	GtkInitCheck              func(argc unsafe.Pointer, argv unsafe.Pointer)
+	GtkInitCheck func(argc unsafe.Pointer, argv unsafe.Pointer)
 
 	// GtkMain: Runs the main loop.
-	GtkMain                   func()
+	GtkMain func()
 
 	// GtkMainIterationDo: Runs a single iteration of the main loop.
 	// @param blocking bool: whether to block if no events are pending
 	// Returns bool: true if gtk_main_quit() has been called
-	GtkMainIterationDo        func(blocking bool) bool
+	GtkMainIterationDo func(blocking bool) bool
 
 	// GtkMenuItemNewWithLabel: Creates a new GtkMenuItem with a label.
 	// @param label string: the text of the label
 	// Returns GtkWidget*: the new GtkMenuItem
-	GtkMenuItemNewWithLabel   func(label string) unsafe.Pointer
+	GtkMenuItemNewWithLabel func(label string) unsafe.Pointer
 
 	// GtkMenuItemSetSubmenu: Sets the submenu of a GtkMenuItem.
 	// @param menuItem GtkMenuItem*: the GtkMenuItem
 	// @param submenu GtkWidget*: the submenu
-	GtkMenuItemSetSubmenu     func(menuItem unsafe.Pointer, submenu unsafe.Pointer)
+	GtkMenuItemSetSubmenu func(menuItem unsafe.Pointer, submenu unsafe.Pointer)
 
 	// GtkMenuNew: Creates a new GtkMenu.
 	// Returns GtkWidget*: the new GtkMenu
-	GtkMenuNew                func() unsafe.Pointer
+	GtkMenuNew func() unsafe.Pointer
 
 	// GtkMenuShellAppend: Appends a widget to a GtkMenuShell.
 	// @param menuShell GtkMenuShell*: the GtkMenuShell
 	// @param child GtkWidget*: the widget to append
-	GtkMenuShellAppend        func(menuShell unsafe.Pointer, child unsafe.Pointer)
+	GtkMenuShellAppend func(menuShell unsafe.Pointer, child unsafe.Pointer)
 
 	// GtkSeparatorMenuItemNew: Creates a new GtkSeparatorMenuItem.
 	// Returns GtkWidget*: the new GtkSeparatorMenuItem
-	GtkSeparatorMenuItemNew   func() unsafe.Pointer
+	GtkSeparatorMenuItemNew func() unsafe.Pointer
 
 	// GtkWidgetDestroy: Destroys a widget.
 	// @param widget GtkWidget*: the widget to destroy
-	GtkWidgetDestroy          func(widget unsafe.Pointer)
+	GtkWidgetDestroy func(widget unsafe.Pointer)
 
 	// GtkWidgetGrabFocus: Grabs the focus for a widget.
 	// @param widget GtkWidget*: the widget to grab focus for
-	GtkWidgetGrabFocus        func(widget unsafe.Pointer)
+	GtkWidgetGrabFocus func(widget unsafe.Pointer)
 
 	// GtkWidgetGetWindow: Gets the GdkWindow of a widget.
 	// @param widget GtkWidget*: the widget
 	// Returns GdkWindow*: the GdkWindow of the widget
-	GtkWidgetGetWindow        func(widget unsafe.Pointer) unsafe.Pointer
+	GtkWidgetGetWindow func(widget unsafe.Pointer) unsafe.Pointer
 
 	// GtkWidgetHide: Hides a widget.
 	// @param widget GtkWidget*: the widget to hide
-	GtkWidgetHide             func(widget unsafe.Pointer)
+	GtkWidgetHide func(widget unsafe.Pointer)
 
 	// GtkWidgetIsVisible: Checks if a widget is visible.
 	// @param widget GtkWidget*: the widget
 	// Returns bool: true if the widget is visible, false otherwise
-	GtkWidgetIsVisible        func(widget unsafe.Pointer) bool
+	GtkWidgetIsVisible func(widget unsafe.Pointer) bool
 
 	// GtkWidgetSetAppPaintable: Sets whether a widget is app paintable.
 	// @param widget GtkWidget*: the widget
 	// @param appPaintable bool: true to make the widget app paintable, false otherwise
-	GtkWidgetSetAppPaintable  func(widget unsafe.Pointer, appPaintable bool)
+	GtkWidgetSetAppPaintable func(widget unsafe.Pointer, appPaintable bool)
 
 	// GtkWidgetSetSensitive: Sets whether a widget is sensitive.
 	// @param widget GtkWidget*: the widget
 	// @param sensitive bool: true to make the widget sensitive, false otherwise
-	GtkWidgetSetSensitive     func(widget unsafe.Pointer, sensitive bool)
+	GtkWidgetSetSensitive func(widget unsafe.Pointer, sensitive bool)
 
 	// GtkWidgetSetVisual: Sets the visual of a widget.
 	// @param window GtkWidget*: the widget
 	// @param visual GdkVisual*: the visual to set
-	GtkWidgetSetVisual        func(window unsafe.Pointer, visual unsafe.Pointer)
+	GtkWidgetSetVisual func(window unsafe.Pointer, visual unsafe.Pointer)
 
 	// GtkWidgetShow: Shows a widget.
 	// @param widget GtkWidget*: the widget to show
-	GtkWidgetShow             func(widget unsafe.Pointer)
+	GtkWidgetShow func(widget unsafe.Pointer)
 
 	// GtkWidgetShowAll: Shows a widget and all its children.
 	// @param widget GtkWidget*: the widget to show
-	GtkWidgetShowAll          func(widget unsafe.Pointer)
+	GtkWidgetShowAll func(widget unsafe.Pointer)
 
 	// GtkWindowDeiconify: Deiconifies a window.
 	// @param window GtkWindow*: the window to deiconify
-	GtkWindowDeiconify        func(window unsafe.Pointer)
+	GtkWindowDeiconify func(window unsafe.Pointer)
 
 	// GtkWindowFullscreen: Makes a window fullscreen.
 	// @param window GtkWindow*: the window to make fullscreen
-	GtkWindowFullscreen       func(window unsafe.Pointer)
+	GtkWindowFullscreen func(window unsafe.Pointer)
 
 	// GtkWindowGetPosition: Gets the position of a window.
 	// @param window GtkWindow*: the window
 	// @param x *int32: return location for X position
 	// @param y *int32: return location for Y position
-	GtkWindowGetPosition      func(window unsafe.Pointer, x, y *int32)
+	GtkWindowGetPosition func(window unsafe.Pointer, x, y *int32)
 
 	// GtkWindowGetSize: Gets the size of a window.
 	// @param window GtkWindow*: the window
 	// @param width *int32: return location for width
 	// @param height *int32: return location for height
-	GtkWindowGetSize          func(window unsafe.Pointer, width, height *int32)
+	GtkWindowGetSize func(window unsafe.Pointer, width, height *int32)
 
 	// GtkWindowIconify: Iconifies a window.
 	// @param window GtkWindow*: the window to iconify
-	GtkWindowIconify          func(window unsafe.Pointer)
+	GtkWindowIconify func(window unsafe.Pointer)
 
 	// GtkWindowMaximize: Maximizes a window.
 	// @param window GtkWindow*: the window to maximize
-	GtkWindowMaximize         func(window unsafe.Pointer)
+	GtkWindowMaximize func(window unsafe.Pointer)
 
 	// GtkWindowMove: Moves a window.
 	// @param window GtkWindow*: the window to move
 	// @param x int32: the X position to move to
 	// @param y int32: the Y position to move to
-	GtkWindowMove             func(window unsafe.Pointer, x, y int32)
+	GtkWindowMove func(window unsafe.Pointer, x, y int32)
 
 	// GtkWindowNew: Creates a new window.
 	// @param windowType GtkWindowType: the type of the window
 	// Returns GtkWidget*: the new window
-	GtkWindowNew              func(windowType uint32) unsafe.Pointer
+	GtkWindowNew func(windowType uint32) unsafe.Pointer
 
 	// GtkWindowResize: Resizes a window.
 	// @param window GtkWindow*: the window to resize
 	// @param width int32: the new width
 	// @param height int32: the new height
-	GtkWindowResize           func(window unsafe.Pointer, width, height int32)
+	GtkWindowResize func(window unsafe.Pointer, width, height int32)
 
 	// GtkWindowSetDecorated: Sets whether a window is decorated.
 	// @param window GtkWindow*: the window
 	// @param setting bool: true to decorate the window, false otherwise
-	GtkWindowSetDecorated     func(window unsafe.Pointer, setting bool)
+	GtkWindowSetDecorated func(window unsafe.Pointer, setting bool)
 
 	// GtkWindowSetGeometryHints: Sets the geometry hints for a window.
 	// @param window GtkWindow*: the window
@@ -464,7 +464,7 @@ var (
 	// GtkWindowSetIcon: Sets the icon for a window.
 	// @param window GtkWindow*: the window
 	// @param icon GdkPixbuf*: the icon
-	GtkWindowSetIcon      func(window unsafe.Pointer, icon unsafe.Pointer)
+	GtkWindowSetIcon func(window unsafe.Pointer, icon unsafe.Pointer)
 
 	// GtkWindowSetKeepAbove: Sets whether a window should be kept above other windows.
 	// @param window GtkWindow*: the window
@@ -479,7 +479,7 @@ var (
 	// GtkWindowSetTitle: Sets the title of a window.
 	// @param window GtkWindow*: the window
 	// @param title string: the title
-	GtkWindowSetTitle     func(window unsafe.Pointer, title string)
+	GtkWindowSetTitle func(window unsafe.Pointer, title string)
 
 	// GtkWindowUnfullscreen: Unsets the fullscreen state of a window.
 	// @param window GtkWindow*: the window to unfullscreen
@@ -487,7 +487,7 @@ var (
 
 	// GtkWindowUnmaximize: Unsets the maximized state of a window.
 	// @param window GtkWindow*: the window to unmaximize
-	GtkWindowUnmaximize   func(window unsafe.Pointer)
+	GtkWindowUnmaximize func(window unsafe.Pointer)
 )
 
 var (
@@ -495,27 +495,27 @@ var (
 	// @param atomName string: the name of the atom
 	// @param onlyIfExists bool: if true, GdkAtomIntern only returns an atom if it already exists
 	// Returns GdkAtom: The atom corresponding to atomName
-	GdkAtomIntern             func(atomName string, onlyIfExists bool) unsafe.Pointer
+	GdkAtomIntern func(atomName string, onlyIfExists bool) unsafe.Pointer
 
 	// GdkDisplayGetDefault: Gets the default display.
 	// Returns GdkDisplay*: the default display
-	GdkDisplayGetDefault      func() unsafe.Pointer
+	GdkDisplayGetDefault func() unsafe.Pointer
 
 	// GdkDisplayGetMonitor: Gets a monitor from a display.
 	// @param display GdkDisplay*: the display
 	// @param monitorNum int32: the monitor number
 	// Returns GdkMonitor*: the monitor
-	GdkDisplayGetMonitor      func(display unsafe.Pointer, monitorNum int32) unsafe.Pointer
+	GdkDisplayGetMonitor func(display unsafe.Pointer, monitorNum int32) unsafe.Pointer
 
 	// GdkDisplayGetNMonitors: Gets the number of monitors from a display.
 	// @param display GdkDisplay*: the display
 	// Returns int32: the number of monitors
-	GdkDisplayGetNMonitors    func(display unsafe.Pointer) int32
+	GdkDisplayGetNMonitors func(display unsafe.Pointer) int32
 
 	// GdkMonitorGetGeometry: Gets the geometry of a monitor.
 	// @param monitor GdkMonitor*: the monitor
 	// @param geometry *GdkRectangle: return location for the monitor geometry
-	GdkMonitorGetGeometry     func(monitor unsafe.Pointer, geometry *GdkRectangle)
+	GdkMonitorGetGeometry func(monitor unsafe.Pointer, geometry *GdkRectangle)
 
 	// GdkMonitorGetManufacturer: Gets the manufacturer of a monitor.
 	// @param monitor GdkMonitor*: the monitor
@@ -525,52 +525,52 @@ var (
 	// GdkMonitorGetModel: Gets the model of a monitor.
 	// @param monitor GdkMonitor*: the monitor
 	// Returns string: the model
-	GdkMonitorGetModel        func(monitor unsafe.Pointer) string
+	GdkMonitorGetModel func(monitor unsafe.Pointer) string
 
 	// GdkMonitorGetRefreshRate: Gets the refresh rate of a monitor.
 	// @param monitor GdkMonitor*: the monitor
 	// Returns int32: the refresh rate in millihertz
-	GdkMonitorGetRefreshRate  func(monitor unsafe.Pointer) int32
+	GdkMonitorGetRefreshRate func(monitor unsafe.Pointer) int32
 
 	// GdkMonitorGetScaleFactor: Gets the scale factor of a monitor.
 	// @param monitor GdkMonitor*: the monitor
 	// Returns int32: the scale factor
-	GdkMonitorGetScaleFactor  func(monitor unsafe.Pointer) int32
+	GdkMonitorGetScaleFactor func(monitor unsafe.Pointer) int32
 
 	// GdkMonitorIsPrimary: Checks if a monitor is the primary monitor.
 	// @param monitor GdkMonitor*: the monitor
 	// Returns bool: true if the monitor is the primary monitor, false otherwise
-	GdkMonitorIsPrimary       func(monitor unsafe.Pointer) bool
+	GdkMonitorIsPrimary func(monitor unsafe.Pointer) bool
 
 	// GdkPixbufNewFromFile: Creates a new pixbuf by loading an image from a file.
 	// @param filename string: the name of the file to load
 	// @param err **GError: return location for a GError
 	// Returns GdkPixbuf*: the new pixbuf
-	GdkPixbufNewFromFile      func(filename string, err *unsafe.Pointer) unsafe.Pointer
+	GdkPixbufNewFromFile func(filename string, err *unsafe.Pointer) unsafe.Pointer
 
 	// GdkScreenGetDefault: Gets the default screen.
 	// Returns GdkScreen*: the default screen
-	GdkScreenGetDefault       func() unsafe.Pointer
+	GdkScreenGetDefault func() unsafe.Pointer
 
 	// GdkScreenGetRootWindow: Gets the root window of a screen.
 	// @param screen GdkScreen*: the screen
 	// Returns GdkWindow*: the root window
-	GdkScreenGetRootWindow    func(screen unsafe.Pointer) unsafe.Pointer
+	GdkScreenGetRootWindow func(screen unsafe.Pointer) unsafe.Pointer
 
 	// GdkScreenGetRgbaVisual: Gets the RGBA visual of a screen.
 	// @param screen GdkScreen*: the screen
 	// Returns GdkVisual*: the RGBA visual
-	GdkScreenGetRgbaVisual    func(screen unsafe.Pointer) unsafe.Pointer
+	GdkScreenGetRgbaVisual func(screen unsafe.Pointer) unsafe.Pointer
 
 	// GdkScreenIsComposited: Checks if a screen is composited.
 	// @param screen GdkScreen*: the screen
 	// Returns bool: true if the screen is composited, false otherwise
-	GdkScreenIsComposited     func(screen unsafe.Pointer) bool
+	GdkScreenIsComposited func(screen unsafe.Pointer) bool
 
 	// GdkWindowGetFrameExtends: Gets the frame extents of a window.
 	// @param window GdkWindow*: the window
 	// @param rect *GdkRectangle: return location for the frame extents
-	GdkWindowGetFrameExtends  func(window unsafe.Pointer, rect *GdkRectangle)
+	GdkWindowGetFrameExtends func(window unsafe.Pointer, rect *GdkRectangle)
 
 	// GdkWindowGetGeometry: Gets the geometry of a window.
 	// @param window GdkWindow*: the window
@@ -578,41 +578,41 @@ var (
 	// @param y *int32: return location for the Y position
 	// @param width *int32: return location for the width
 	// @param height *int32: return location for the height
-	GdkWindowGetGeometry      func(window unsafe.Pointer, x, y, width, height *int32)
+	GdkWindowGetGeometry func(window unsafe.Pointer, x, y, width, height *int32)
 )
 
 var (
 	// WebkitJavascriptResultGetJsValue: Gets the JavaScript value from a WebKitJavascriptResult.
 	// @param jsResult WebKitJavascriptResult*: the JavaScript result
 	// Returns JSValue*: the JavaScript value
-	WebkitJavascriptResultGetJsValue                     func(jsResult unsafe.Pointer) unsafe.Pointer
-	
+	WebkitJavascriptResultGetJsValue func(jsResult unsafe.Pointer) unsafe.Pointer
+
 	// WebkitSettingsSetEnableDeveloperExtras: Enables or disables developer extras.
 	// @param settings WebKitSettings*: the settings
 	// @param enable bool: true to enable developer extras, false to disable
-	WebkitSettingsSetEnableDeveloperExtras               func(settings unsafe.Pointer, enable bool)
-	
+	WebkitSettingsSetEnableDeveloperExtras func(settings unsafe.Pointer, enable bool)
+
 	// WebkitSettingsSetEnableWriteConsoleMessagesToStdout: Enables or disables writing console messages to stdout.
 	// @param settings WebKitSettings*: the settings
 	// @param enable bool: true to enable writing console messages to stdout, false to disable
-	WebkitSettingsSetEnableWriteConsoleMessagesToStdout  func(settings unsafe.Pointer, enable bool)
-	
+	WebkitSettingsSetEnableWriteConsoleMessagesToStdout func(settings unsafe.Pointer, enable bool)
+
 	// WebkitSettingsSetJavascriptCanAccessClipboard: Enables or disables JavaScript access to the clipboard.
 	// @param settings WebKitSettings*: the settings
 	// @param enable bool: true to enable JavaScript access to the clipboard, false to disable
-	WebkitSettingsSetJavascriptCanAccessClipboard        func(settings unsafe.Pointer, enable bool)
-	
+	WebkitSettingsSetJavascriptCanAccessClipboard func(settings unsafe.Pointer, enable bool)
+
 	// WebkitUserContentManagerAddScript: Adds a user script to a WebKitUserContentManager.
 	// @param manager WebKitUserContentManager*: the user content manager
 	// @param script WebKitUserScript*: the user script
-	WebkitUserContentManagerAddScript                    func(manager unsafe.Pointer, script unsafe.Pointer)
-	
+	WebkitUserContentManagerAddScript func(manager unsafe.Pointer, script unsafe.Pointer)
+
 	// WebkitUserContentManagerRegisterScriptMessageHandler: Registers a script message handler with a WebKitUserContentManager.
 	// @param manager WebKitUserContentManager*: the user content manager
 	// @param name string: the name of the message handler
 	// Returns bool: true if the message handler was registered successfully, false otherwise
 	WebkitUserContentManagerRegisterScriptMessageHandler func(manager unsafe.Pointer, name string) bool
-	
+
 	// WebkitUserScriptNew: Creates a new user script.
 	// @param source string: the source code of the script
 	// @param injectedFrames WebKitUserContentInjectedFrames: where the script should be injected
@@ -620,14 +620,14 @@ var (
 	// @param allowList []string: a list of patterns to match the URLs where the script should be injected
 	// @param blockList []string: a list of patterns to match the URLs where the script should not be injected
 	// Returns WebKitUserScript*: the new user script
-	WebkitUserScriptNew                                  func(
+	WebkitUserScriptNew func(
 		source string,
 		injectedFrames uint32,
 		injectedTime uint32,
 		allowList []string,
 		blockList []string,
 	) unsafe.Pointer
-	
+
 	// WebkitWebViewEvaluateJavascript: Evaluates JavaScript code in a WebKitWebView.
 	// @param webView WebKitWebView*: the web view
 	// @param script string: the JavaScript code to evaluate
@@ -648,36 +648,36 @@ var (
 		callback unsafe.Pointer,
 		userData unsafe.Pointer,
 	)
-	
+
 	// WebkitWebViewGetSettings: Gets the settings of a WebKitWebView.
 	// @param webView WebKitWebView*: the web view
 	// Returns WebKitSettings*: the settings
-	WebkitWebViewGetSettings           func(webView unsafe.Pointer) unsafe.Pointer
-	
+	WebkitWebViewGetSettings func(webView unsafe.Pointer) unsafe.Pointer
+
 	// WebkitWebViewGetUserContentManager: Gets the user content manager of a WebKitWebView.
 	// @param webView WebKitWebView*: the web view
 	// Returns WebKitUserContentManager*: the user content manager
 	WebkitWebViewGetUserContentManager func(webView unsafe.Pointer) unsafe.Pointer
-	
+
 	// WebkitWebViewLoadHtml: Loads HTML content into a WebKitWebView.
 	// @param webView WebKitWebView*: the web view
 	// @param content string: the HTML content to load
 	// @param baseUri string: the base URI for the content
-	WebkitWebViewLoadHtml              func(webView unsafe.Pointer, content string, baseUri string)
-	
+	WebkitWebViewLoadHtml func(webView unsafe.Pointer, content string, baseUri string)
+
 	// WebkitWebViewLoadUri: Loads a URI into a WebKitWebView.
 	// @param webView WebKitWebView*: the web view
 	// @param uri string: the URI to load
-	WebkitWebViewLoadUri               func(webView unsafe.Pointer, uri string)
-	
+	WebkitWebViewLoadUri func(webView unsafe.Pointer, uri string)
+
 	// WebkitWebViewNew: Creates a new WebKitWebView.
 	// Returns GtkWidget*: the newly created WebKitWebView widget
-	WebkitWebViewNew                   func() unsafe.Pointer
-	
+	WebkitWebViewNew func() unsafe.Pointer
+
 	// WebkitWebViewSetBackgroundColor: Sets the background color of a WebKitWebView.
 	// @param webView WebKitWebView*: the web view
 	// @param rgba GdkRGBA*: the background color
-	WebkitWebViewSetBackgroundColor    func(webView unsafe.Pointer, rgba *GdkRGBA)
+	WebkitWebViewSetBackgroundColor func(webView unsafe.Pointer, rgba *GdkRGBA)
 )
 
 var (
@@ -693,34 +693,34 @@ var (
 	// @param iconName string: the name of the icon
 	// @param category AppIndicatorCategory: the category of the indicator
 	// Returns AppIndicator*: the new AppIndicator
-	AppIndicatorNew         func(id string, iconName string, category uint32) unsafe.Pointer
-	
+	AppIndicatorNew func(id string, iconName string, category uint32) unsafe.Pointer
+
 	// AppIndicatorSetIconFull: Sets the icon of an AppIndicator.
 	// @param self AppIndicator*: the AppIndicator
 	// @param iconName string: the name of the icon
 	// @param iconDesc string: the description of the icon
 	AppIndicatorSetIconFull func(self unsafe.Pointer, iconName string, iconDesc string)
-	
+
 	// AppIndicatorSetLabel: Sets the label of an AppIndicator.
 	// @param self AppIndicator*: the AppIndicator
 	// @param label string: the label
 	// @param guide string: the guide
-	AppIndicatorSetLabel    func(self unsafe.Pointer, label string, guide string)
-	
+	AppIndicatorSetLabel func(self unsafe.Pointer, label string, guide string)
+
 	// AppIndicatorSetMenu: Sets the menu of an AppIndicator.
 	// @param self AppIndicator*: the AppIndicator
 	// @param menu GtkMenu*: the menu
-	AppIndicatorSetMenu     func(self unsafe.Pointer, menu unsafe.Pointer)
-	
+	AppIndicatorSetMenu func(self unsafe.Pointer, menu unsafe.Pointer)
+
 	// AppIndicatorSetStatus: Sets the status of an AppIndicator.
 	// @param self AppIndicator*: the AppIndicator
 	// @param status AppIndicatorStatus: the status
-	AppIndicatorSetStatus   func(self unsafe.Pointer, status uint32)
-	
+	AppIndicatorSetStatus func(self unsafe.Pointer, status uint32)
+
 	// AppIndicatorSetTitle: Sets the title of an AppIndicator.
 	// @param self AppIndicator*: the AppIndicator
 	// @param title string: the title
-	AppIndicatorSetTitle    func(self unsafe.Pointer, title string)
+	AppIndicatorSetTitle func(self unsafe.Pointer, title string)
 )
 
 var (
@@ -1249,13 +1249,13 @@ func (webview *Webview) SetSettings(config WebviewSetings) {
 }
 
 func (webview *Webview) Eval(js string) {
-    // Lambda function to safely cast int to int32
-    safeInt32Cast := func(value int) int32 {
-        if value > math.MaxInt32 || value < math.MinInt32 {
-            panic("Value out of range for int32")
-        }
-        return int32(value)
-    }
+	// Lambda function to safely cast int to int32
+	safeInt32Cast := func(value int) int32 {
+		if value > math.MaxInt32 || value < math.MinInt32 {
+			panic("Value out of range for int32")
+		}
+		return int32(value)
+	}
 
 	WebkitWebViewEvaluateJavascript(webview.Handle, js, safeInt32Cast(len(js)), nil, nil, nil, nil, nil)
 }
