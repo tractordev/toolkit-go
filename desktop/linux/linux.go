@@ -14,9 +14,11 @@ import (
 )
 
 type Window struct {
-	Handle  unsafe.Pointer
-	MaxSize Size
-	MinSize Size
+	Handle      unsafe.Pointer
+	MaxSize     Size
+	MinSize     Size
+	CurrentSize Size
+	Resizable   bool
 }
 
 type Webview struct {
@@ -1005,14 +1007,14 @@ func (window *Window) GetPosition() Position {
 	return result
 }
 
-// TODO this works as intended but user shall be aware of gtk_window_set_resizable's behavior
-// https://stackoverflow.com/a/3582628
 func (window *Window) SetResizable(resizable bool) {
-	GtkWindowSetResizable(window.Handle, resizable)
+	window.Resizable = resizable
+	window.draw()
 }
 
 func (window *Window) SetSize(width int32, height int32) {
-	GtkWindowResize(window.Handle, width, height)
+	window.CurrentSize = Size{Width: width, Height: height}
+	window.draw()
 }
 
 func (window *Window) SetPosition(x int32, y int32) {
@@ -1022,30 +1024,38 @@ func (window *Window) SetPosition(x int32, y int32) {
 func (window *Window) SetMinSize(width int32, height int32) {
 	window.MinSize.Width = width
 	window.MinSize.Height = height
-	window.setGeometry()
+	window.draw()
 }
 
 func (window *Window) SetMaxSize(width int32, height int32) {
 	window.MaxSize.Width = width
 	window.MaxSize.Height = height
-	window.setGeometry()
+	window.draw()
 }
 
-func (window *Window) setGeometry() {
+func (window *Window) setGeometry(maxSize Size, minSize Size) {
 	g := GdkGeometry{}
 	var flags uint32 = 0
-	if window.MaxSize.Width != 0 && window.MaxSize.Height != 0 {
-		g.max_width = window.MaxSize.Width
-		g.max_height = window.MaxSize.Height
+	if maxSize.Width != 0 && maxSize.Height != 0 {
+		g.max_width = maxSize.Width
+		g.max_height = maxSize.Height
 		flags = flags | GdkHintMaxSize
 	}
-	if window.MinSize.Width != 0 && window.MinSize.Height != 0 {
-		g.min_width = window.MinSize.Width
-		g.min_height = window.MinSize.Width
+	if minSize.Width != 0 && minSize.Height != 0 {
+		g.min_width = minSize.Width
+		g.min_height = minSize.Height
 		flags = flags | GdkHintMinSize
 	}
 	GtkWindowSetGeometryHints(window.Handle, nil, &g, flags)
+}
 
+func (window *Window) draw() {
+	if window.Resizable {
+		GtkWindowResize(window.Handle, window.CurrentSize.Width, window.CurrentSize.Height)
+		window.setGeometry(window.MaxSize, window.MinSize)
+	} else {
+		window.setGeometry(window.CurrentSize, window.CurrentSize)
+	}
 }
 
 func (window *Window) SetAlwaysOnTop(always bool) {
