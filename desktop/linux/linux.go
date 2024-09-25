@@ -5,6 +5,7 @@ package linux
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"sync"
 	"unsafe"
@@ -1248,8 +1249,15 @@ func (webview *Webview) SetSettings(config WebviewSetings) {
 }
 
 func (webview *Webview) Eval(js string) {
-	//TODO int to int32 is lossy cast careful!
-	WebkitWebViewEvaluateJavascript(webview.Handle, js, int32(len(js)), nil, nil, nil, nil, nil)
+    // Lambda function to safely cast int to int32
+    safeInt32Cast := func(value int) int32 {
+        if value > math.MaxInt32 || value < math.MinInt32 {
+            panic("Value out of range for int32")
+        }
+        return int32(value)
+    }
+
+	WebkitWebViewEvaluateJavascript(webview.Handle, js, safeInt32Cast(len(js)), nil, nil, nil, nil, nil)
 }
 
 func (webview *Webview) SetHtml(html string, baseUri string) {
