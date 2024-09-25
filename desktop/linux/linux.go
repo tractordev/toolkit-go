@@ -911,13 +911,13 @@ func StringFromJsResult(result unsafe.Pointer) string {
 }
 
 // A simple go implementation of `g_signal_connect`
-func g_signal_connect(
+func GSignalConnect(
 	instance unsafe.Pointer,
-	detailed_signal string,
-	c_handler uintptr,
+	detailedSignal string,
+	cHandler uintptr,
 	data unsafe.Pointer,
 ) {
-	GSignalConnectData(instance, detailed_signal, c_handler, data, nil, 0)
+	GSignalConnectData(instance, detailedSignal, cHandler, data, nil, 0)
 }
 
 //
@@ -1199,7 +1199,7 @@ func go_event_callback(window unsafe.Pointer, event *int32, arg int32) {
 }
 
 func (window *Window) BindEventCallback(userData int) {
-	g_signal_connect(window.Handle, "event", purego.NewCallback(go_event_callback), unsafe.Pointer(&userData))
+	GSignalConnect(window.Handle, "event", purego.NewCallback(go_event_callback), unsafe.Pointer(&userData))
 }
 
 func SetGlobalEventCallback(callback Event_Callback) {
@@ -1212,7 +1212,7 @@ func (webview *Webview) RegisterCallback(name string, callback func(result strin
 	event := fmt.Sprintf("script-message-received::%s", name)
 
 	index := wc_register(callback)
-	g_signal_connect(manager, event, purego.NewCallback(go_webview_callback), unsafe.Pointer(&index))
+	GSignalConnect(manager, event, purego.NewCallback(go_webview_callback), unsafe.Pointer(&index))
 	WebkitUserContentManagerRegisterScriptMessageHandler(manager, name)
 
 	return int(index)
@@ -1402,7 +1402,7 @@ func MenuItem_New(id int, title string, disabled bool, checked bool, separator b
 		   gtk_widget_add_accelerator(item, "activate", accel_group, GDK_KEY_F7, 0, GTK_ACCEL_VISIBLE);
 		*/
 
-		g_signal_connect(widget, "activate", purego.NewCallback(go_menu_callback), unsafe.Pointer(&id))
+		GSignalConnect(widget, "activate", purego.NewCallback(go_menu_callback), unsafe.Pointer(&id))
 
 		GtkWidgetShow(widget)
 	}
