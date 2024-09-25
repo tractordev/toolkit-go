@@ -16,11 +16,9 @@ sudo apt install \
 
 ## TODO
 
-- Use purego!
-- Go through every C.* call and update them to purego (i.e C.CString).
-- Remove cgo types
-- Test purego without cgo
 - Transparency call are succesful but no effect?
+- Focus has no effect?
+- Does purego has static linking, something like linking at compile time and purego just loading them in runtime?
 
 - Testing?
   - All api.
