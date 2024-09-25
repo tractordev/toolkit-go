@@ -490,22 +490,93 @@ var (
 )
 
 var (
+	// GdkAtomIntern: Interns a string and returns a GdkAtom.
+	// @param atomName string: the name of the atom
+	// @param onlyIfExists bool: if true, GdkAtomIntern only returns an atom if it already exists
+	// Returns GdkAtom: The atom corresponding to atomName
 	GdkAtomIntern             func(atomName string, onlyIfExists bool) unsafe.Pointer
+
+	// GdkDisplayGetDefault: Gets the default display.
+	// Returns GdkDisplay*: the default display
 	GdkDisplayGetDefault      func() unsafe.Pointer
+
+	// GdkDisplayGetMonitor: Gets a monitor from a display.
+	// @param display GdkDisplay*: the display
+	// @param monitorNum int32: the monitor number
+	// Returns GdkMonitor*: the monitor
 	GdkDisplayGetMonitor      func(display unsafe.Pointer, monitorNum int32) unsafe.Pointer
+
+	// GdkDisplayGetNMonitors: Gets the number of monitors from a display.
+	// @param display GdkDisplay*: the display
+	// Returns int32: the number of monitors
 	GdkDisplayGetNMonitors    func(display unsafe.Pointer) int32
-	GdkMonitorGetGeometry     func(monitor unsafe.Pointer, rect *GdkRectangle)
+
+	// GdkMonitorGetGeometry: Gets the geometry of a monitor.
+	// @param monitor GdkMonitor*: the monitor
+	// @param geometry *GdkRectangle: return location for the monitor geometry
+	GdkMonitorGetGeometry     func(monitor unsafe.Pointer, geometry *GdkRectangle)
+
+	// GdkMonitorGetManufacturer: Gets the manufacturer of a monitor.
+	// @param monitor GdkMonitor*: the monitor
+	// Returns string: the manufacturer
 	GdkMonitorGetManufacturer func(monitor unsafe.Pointer) string
+
+	// GdkMonitorGetModel: Gets the model of a monitor.
+	// @param monitor GdkMonitor*: the monitor
+	// Returns string: the model
 	GdkMonitorGetModel        func(monitor unsafe.Pointer) string
+
+	// GdkMonitorGetRefreshRate: Gets the refresh rate of a monitor.
+	// @param monitor GdkMonitor*: the monitor
+	// Returns int32: the refresh rate in millihertz
 	GdkMonitorGetRefreshRate  func(monitor unsafe.Pointer) int32
+
+	// GdkMonitorGetScaleFactor: Gets the scale factor of a monitor.
+	// @param monitor GdkMonitor*: the monitor
+	// Returns int32: the scale factor
 	GdkMonitorGetScaleFactor  func(monitor unsafe.Pointer) int32
+
+	// GdkMonitorIsPrimary: Checks if a monitor is the primary monitor.
+	// @param monitor GdkMonitor*: the monitor
+	// Returns bool: true if the monitor is the primary monitor, false otherwise
 	GdkMonitorIsPrimary       func(monitor unsafe.Pointer) bool
+
+	// GdkPixbufNewFromFile: Creates a new pixbuf by loading an image from a file.
+	// @param filename string: the name of the file to load
+	// @param err **GError: return location for a GError
+	// Returns GdkPixbuf*: the new pixbuf
 	GdkPixbufNewFromFile      func(filename string, err *unsafe.Pointer) unsafe.Pointer
+
+	// GdkScreenGetDefault: Gets the default screen.
+	// Returns GdkScreen*: the default screen
 	GdkScreenGetDefault       func() unsafe.Pointer
-	GdkScreenGetRootWindow    func(window unsafe.Pointer) unsafe.Pointer
-	GdkScreenGetRgbaVisual    func(window unsafe.Pointer) unsafe.Pointer
+
+	// GdkScreenGetRootWindow: Gets the root window of a screen.
+	// @param screen GdkScreen*: the screen
+	// Returns GdkWindow*: the root window
+	GdkScreenGetRootWindow    func(screen unsafe.Pointer) unsafe.Pointer
+
+	// GdkScreenGetRgbaVisual: Gets the RGBA visual of a screen.
+	// @param screen GdkScreen*: the screen
+	// Returns GdkVisual*: the RGBA visual
+	GdkScreenGetRgbaVisual    func(screen unsafe.Pointer) unsafe.Pointer
+
+	// GdkScreenIsComposited: Checks if a screen is composited.
+	// @param screen GdkScreen*: the screen
+	// Returns bool: true if the screen is composited, false otherwise
 	GdkScreenIsComposited     func(screen unsafe.Pointer) bool
+
+	// GdkWindowGetFrameExtends: Gets the frame extents of a window.
+	// @param window GdkWindow*: the window
+	// @param rect *GdkRectangle: return location for the frame extents
 	GdkWindowGetFrameExtends  func(window unsafe.Pointer, rect *GdkRectangle)
+
+	// GdkWindowGetGeometry: Gets the geometry of a window.
+	// @param window GdkWindow*: the window
+	// @param x *int32: return location for the X position
+	// @param y *int32: return location for the Y position
+	// @param width *int32: return location for the width
+	// @param height *int32: return location for the height
 	GdkWindowGetGeometry      func(window unsafe.Pointer, x, y, width, height *int32)
 )
 
