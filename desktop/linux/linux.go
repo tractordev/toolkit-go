@@ -13,7 +13,7 @@ import (
 )
 
 type Window struct {
-	Handle unsafe.Pointer
+	Handle  unsafe.Pointer
 	MaxSize Size
 	MinSize Size
 }
@@ -54,52 +54,52 @@ type Rectangle struct {
 }
 
 type GdkGeometry struct {
-	min_width	int32
-	min_height	int32
-	max_width	int32
-	max_height	int32
-	base_width	int32
-	base_height	int32
-	width_inc	int32
-	height_inc	int32
-	min_aspect	float64
-	max_aspect	float64
-	win_gravity	uint32
-	_		[4]byte
+	min_width   int32
+	min_height  int32
+	max_width   int32
+	max_height  int32
+	base_width  int32
+	base_height int32
+	width_inc   int32
+	height_inc  int32
+	min_aspect  float64
+	max_aspect  float64
+	win_gravity uint32
+	_           [4]byte
 }
 
 type GdkRectangle struct {
-	x		int32
-	y		int32
-	width	int32
-	height	int32
+	x      int32
+	y      int32
+	width  int32
+	height int32
 }
 
 type GdkRGBA struct {
-	red		int32
-	green	int32
-	blue	int32
-	alpha	int32
+	red   int32
+	green int32
+	blue  int32
+	alpha int32
 }
 
 type GdkEventConfigure struct {
-	_type		int32
-	window		unsafe.Pointer
-	send_event	int8
-	x			int32
-	y			int32
-	width		int32
-	height		int32
-	_		[4]byte
+	_type      int32
+	window     unsafe.Pointer
+	send_event int8
+	x          int32
+	y          int32
+	width      int32
+	height     int32
+	_          [4]byte
 }
 
 type GdkEventWindowState struct {
-	_type			int32
-	window			unsafe.Pointer
-	send_event		int8
-	changed_mask		uint32
-	new_window_state	uint32
-	_			[4]byte
+	_type            int32
+	window           unsafe.Pointer
+	send_event       int8
+	changed_mask     uint32
+	new_window_state uint32
+	_                [4]byte
 }
 
 type EventType int32
@@ -147,15 +147,15 @@ const (
 
 // GdkWindowHints
 const (
-	GdkHintPos       = 1 << 0
-	GdkHintMinSize   = 1 << 1
-	GdkHintMaxSize   = 1 << 2
-	GdkHintBaseSize  = 1 << 3
-	GdkHintAspect    = 1 << 4
-	GdkHintResizeInc = 1 << 5
+	GdkHintPos        = 1 << 0
+	GdkHintMinSize    = 1 << 1
+	GdkHintMaxSize    = 1 << 2
+	GdkHintBaseSize   = 1 << 3
+	GdkHintAspect     = 1 << 4
+	GdkHintResizeInc  = 1 << 5
 	GdkHintWinGravity = 1 << 6
-	GdkHintUserPos   = 1 << 7
-	GdkHintUserSize  = 1 << 8
+	GdkHintUserPos    = 1 << 7
+	GdkHintUserSize   = 1 << 8
 )
 
 // GdkWindowState
@@ -178,7 +178,6 @@ const (
 	GdkWindowStateLeftTiled       = 1 << 15
 	GdkWindowStateLeftResizable   = 1 << 16
 )
-
 
 // WebKitUserContentInjectedFrames
 const (
@@ -263,17 +262,16 @@ const (
 	GdkEventLast         = 48
 )
 
-
 /*
 * PureGo Gtk Bindings
-*/
+ */
 
 var (
-	LibCFree func (unsafe.Pointer)
+	LibCFree func(unsafe.Pointer)
 )
 
 var (
-	GSignalConnectData func (
+	GSignalConnectData func(
 		instance unsafe.Pointer,
 		detailed_signal string,
 		c_handler uintptr,
@@ -285,93 +283,92 @@ var (
 )
 
 var (
-	//TODO indentation
 	//TODO add parameter types in docs
-	GtkCheckMenuItemNewWithLabel      func (label string) unsafe.Pointer
-	GtkCheckMenuItemSetActive         func (checkMenuItem unsafe.Pointer, isActive bool)
+	GtkCheckMenuItemNewWithLabel func(label string) unsafe.Pointer
+	GtkCheckMenuItemSetActive    func(checkMenuItem unsafe.Pointer, isActive bool)
 	//GdkAtom is basically a pointer to 'struct _GdkAtom' (gdktypes.h)
 	//unsafe.Pointer is used in its place and gdk_atom_intern will be used to get the atoms for strings
 	//here since there is no way to use macros like GDK_SELECTION_CLIPBOARD
-	GtkClipboardGet                   func (selection unsafe.Pointer) unsafe.Pointer
-	GtkClipboardSetText               func (clipboard unsafe.Pointer, text string, length int32)
-	GtkClipboardWaitForText           func (clipboard unsafe.Pointer) string
-	GtkContainerAdd                   func (container unsafe.Pointer, widget unsafe.Pointer)
-	GtkInitCheck                      func (argc unsafe.Pointer, argv unsafe.Pointer)
-	GtkMain                           func ()
-	GtkMainIterationDo                func (blocking bool)
-	GtkMenuItemNewWithLabel           func (label string) unsafe.Pointer
-	GtkMenuItemSetSubmenu             func (menuItem unsafe.Pointer, submenu unsafe.Pointer)
-	GtkMenuNew                        func () unsafe.Pointer
-	GtkMenuShellAppend                func (menuShell unsafe.Pointer, child unsafe.Pointer)
-	GtkSeparatorMenuItemNew           func () unsafe.Pointer
-	GtkWidgetDestroy                  func (widget unsafe.Pointer)
-	GtkWidgetGrabFocus                func (widget unsafe.Pointer)
-	GtkWidgetGetWindow                func (widget unsafe.Pointer) unsafe.Pointer
-	GtkWidgetHide                     func (widget unsafe.Pointer)
-	GtkWidgetIsVisible                func (widget unsafe.Pointer) bool
-	GtkWidgetSetAppPaintable          func (window unsafe.Pointer, appPaintable bool)
-	GtkWidgetSetSensitive             func (widget unsafe.Pointer, sensitive bool)
-	GtkWidgetSetVisual                func (window unsafe.Pointer, visual unsafe.Pointer)
-	GtkWidgetShow                     func (widget unsafe.Pointer)
-	GtkWidgetShowAll                  func (widget unsafe.Pointer)
-	GtkWindowDeiconify                func (window unsafe.Pointer)
-	GtkWindowFullscreen               func (window unsafe.Pointer)
-	GtkWindowGetPosition              func (window unsafe.Pointer, x, y *int32)
-	GtkWindowGetSize                  func (window unsafe.Pointer, width, height *int32)
-	GtkWindowIconify                  func (window unsafe.Pointer)
-	GtkWindowMaximize                 func (window unsafe.Pointer)
-	GtkWindowMove                     func (window unsafe.Pointer, x, y int32)
-	GtkWindowNew                      func (windowType uint32) unsafe.Pointer
-	GtkWindowResize                   func (window unsafe.Pointer, width, height int32)
-	GtkWindowSetDecorated             func (window unsafe.Pointer, setting bool)
-	GtkWindowSetGeometryHints         func (
+	GtkClipboardGet           func(selection unsafe.Pointer) unsafe.Pointer
+	GtkClipboardSetText       func(clipboard unsafe.Pointer, text string, length int32)
+	GtkClipboardWaitForText   func(clipboard unsafe.Pointer) string
+	GtkContainerAdd           func(container unsafe.Pointer, widget unsafe.Pointer)
+	GtkInitCheck              func(argc unsafe.Pointer, argv unsafe.Pointer)
+	GtkMain                   func()
+	GtkMainIterationDo        func(blocking bool)
+	GtkMenuItemNewWithLabel   func(label string) unsafe.Pointer
+	GtkMenuItemSetSubmenu     func(menuItem unsafe.Pointer, submenu unsafe.Pointer)
+	GtkMenuNew                func() unsafe.Pointer
+	GtkMenuShellAppend        func(menuShell unsafe.Pointer, child unsafe.Pointer)
+	GtkSeparatorMenuItemNew   func() unsafe.Pointer
+	GtkWidgetDestroy          func(widget unsafe.Pointer)
+	GtkWidgetGrabFocus        func(widget unsafe.Pointer)
+	GtkWidgetGetWindow        func(widget unsafe.Pointer) unsafe.Pointer
+	GtkWidgetHide             func(widget unsafe.Pointer)
+	GtkWidgetIsVisible        func(widget unsafe.Pointer) bool
+	GtkWidgetSetAppPaintable  func(window unsafe.Pointer, appPaintable bool)
+	GtkWidgetSetSensitive     func(widget unsafe.Pointer, sensitive bool)
+	GtkWidgetSetVisual        func(window unsafe.Pointer, visual unsafe.Pointer)
+	GtkWidgetShow             func(widget unsafe.Pointer)
+	GtkWidgetShowAll          func(widget unsafe.Pointer)
+	GtkWindowDeiconify        func(window unsafe.Pointer)
+	GtkWindowFullscreen       func(window unsafe.Pointer)
+	GtkWindowGetPosition      func(window unsafe.Pointer, x, y *int32)
+	GtkWindowGetSize          func(window unsafe.Pointer, width, height *int32)
+	GtkWindowIconify          func(window unsafe.Pointer)
+	GtkWindowMaximize         func(window unsafe.Pointer)
+	GtkWindowMove             func(window unsafe.Pointer, x, y int32)
+	GtkWindowNew              func(windowType uint32) unsafe.Pointer
+	GtkWindowResize           func(window unsafe.Pointer, width, height int32)
+	GtkWindowSetDecorated     func(window unsafe.Pointer, setting bool)
+	GtkWindowSetGeometryHints func(
 		window unsafe.Pointer,
 		geometryWidget unsafe.Pointer,
 		geometry *GdkGeometry,
 		geomMask uint32)
-	GtkWindowSetIcon                  func (window unsafe.Pointer, icon unsafe.Pointer)
-	GtkWindowSetKeepAbove             func (window unsafe.Pointer, setting bool)
-	GtkWindowSetResizable             func (window unsafe.Pointer, resizable bool)
-	GtkWindowSetTitle                 func (window unsafe.Pointer, title string)
-	GtkWindowUnfullscreen             func (window unsafe.Pointer)
-	GtkWindowUnmaximize               func (window unsafe.Pointer)
+	GtkWindowSetIcon      func(window unsafe.Pointer, icon unsafe.Pointer)
+	GtkWindowSetKeepAbove func(window unsafe.Pointer, setting bool)
+	GtkWindowSetResizable func(window unsafe.Pointer, resizable bool)
+	GtkWindowSetTitle     func(window unsafe.Pointer, title string)
+	GtkWindowUnfullscreen func(window unsafe.Pointer)
+	GtkWindowUnmaximize   func(window unsafe.Pointer)
 )
 
 var (
-	GdkAtomIntern                     func(atomName string, onlyIfExists bool) unsafe.Pointer
-	GdkDisplayGetDefault              func() unsafe.Pointer
-	GdkDisplayGetMonitor              func(display unsafe.Pointer, monitorNum int32) unsafe.Pointer
-	GdkDisplayGetNMonitors            func(display unsafe.Pointer) int32
-	GdkMonitorGetGeometry             func(monitor unsafe.Pointer, rect *GdkRectangle)
-	GdkMonitorGetManufacturer         func(monitor unsafe.Pointer) string
-	GdkMonitorGetModel                func(monitor unsafe.Pointer) string
-	GdkMonitorGetRefreshRate          func(monitor unsafe.Pointer) int32
-	GdkMonitorGetScaleFactor          func(monitor unsafe.Pointer) int32
-	GdkMonitorIsPrimary               func(monitor unsafe.Pointer) bool
-	GdkPixbufNewFromFile              func(filename string, err *unsafe.Pointer) unsafe.Pointer
-	GdkScreenGetDefault               func() unsafe.Pointer
-	GdkScreenGetRootWindow            func(window unsafe.Pointer) unsafe.Pointer
-	GdkScreenGetRgbaVisual            func(window unsafe.Pointer) unsafe.Pointer
-	GdkScreenIsComposited             func(screen unsafe.Pointer) bool
-	GdkWindowGetFrameExtends          func(window unsafe.Pointer, rect *GdkRectangle)
-	GdkWindowGetGeometry              func(window unsafe.Pointer, x, y, width, height *int32)
+	GdkAtomIntern             func(atomName string, onlyIfExists bool) unsafe.Pointer
+	GdkDisplayGetDefault      func() unsafe.Pointer
+	GdkDisplayGetMonitor      func(display unsafe.Pointer, monitorNum int32) unsafe.Pointer
+	GdkDisplayGetNMonitors    func(display unsafe.Pointer) int32
+	GdkMonitorGetGeometry     func(monitor unsafe.Pointer, rect *GdkRectangle)
+	GdkMonitorGetManufacturer func(monitor unsafe.Pointer) string
+	GdkMonitorGetModel        func(monitor unsafe.Pointer) string
+	GdkMonitorGetRefreshRate  func(monitor unsafe.Pointer) int32
+	GdkMonitorGetScaleFactor  func(monitor unsafe.Pointer) int32
+	GdkMonitorIsPrimary       func(monitor unsafe.Pointer) bool
+	GdkPixbufNewFromFile      func(filename string, err *unsafe.Pointer) unsafe.Pointer
+	GdkScreenGetDefault       func() unsafe.Pointer
+	GdkScreenGetRootWindow    func(window unsafe.Pointer) unsafe.Pointer
+	GdkScreenGetRgbaVisual    func(window unsafe.Pointer) unsafe.Pointer
+	GdkScreenIsComposited     func(screen unsafe.Pointer) bool
+	GdkWindowGetFrameExtends  func(window unsafe.Pointer, rect *GdkRectangle)
+	GdkWindowGetGeometry      func(window unsafe.Pointer, x, y, width, height *int32)
 )
 
 var (
-	WebkitJavascriptResultGetJsValue                         func(jsResult unsafe.Pointer) unsafe.Pointer
-	WebkitSettingsSetEnableDeveloperExtras                   func(settings unsafe.Pointer, enable bool)
-	WebkitSettingsSetEnableWriteConsoleMessagesToStdout      func(settings unsafe.Pointer, enable bool)
-	WebkitSettingsSetJavascriptCanAccessClipboard            func(settings unsafe.Pointer, enable bool)
-	WebkitUserContentManagerAddScript                        func(manager unsafe.Pointer, script unsafe.Pointer)
-	WebkitUserContentManagerRegisterScriptMessageHandler     func(manager unsafe.Pointer, name string) bool
-	WebkitUserScriptNew                                      func(
+	WebkitJavascriptResultGetJsValue                     func(jsResult unsafe.Pointer) unsafe.Pointer
+	WebkitSettingsSetEnableDeveloperExtras               func(settings unsafe.Pointer, enable bool)
+	WebkitSettingsSetEnableWriteConsoleMessagesToStdout  func(settings unsafe.Pointer, enable bool)
+	WebkitSettingsSetJavascriptCanAccessClipboard        func(settings unsafe.Pointer, enable bool)
+	WebkitUserContentManagerAddScript                    func(manager unsafe.Pointer, script unsafe.Pointer)
+	WebkitUserContentManagerRegisterScriptMessageHandler func(manager unsafe.Pointer, name string) bool
+	WebkitUserScriptNew                                  func(
 		source string,
 		injectedFrames uint32,
 		injectedTime uint32,
 		allowList []string,
 		blockList []string,
 	) unsafe.Pointer
-	WebkitWebViewEvaluateJavascript                          func(
+	WebkitWebViewEvaluateJavascript func(
 		webView unsafe.Pointer,
 		script string,
 		length int32,
@@ -382,35 +379,34 @@ var (
 		callback unsafe.Pointer,
 		userData unsafe.Pointer,
 	)
-	WebkitWebViewGetSettings                                 func(webView unsafe.Pointer) unsafe.Pointer
-	WebkitWebViewGetUserContentManager                       func(webView unsafe.Pointer) unsafe.Pointer
-	WebkitWebViewLoadHtml                                    func(webView unsafe.Pointer, content string, baseUri string)
-	WebkitWebViewLoadUri                                     func(webView unsafe.Pointer, uri string)
-	WebkitWebViewNew                                         func() unsafe.Pointer
-	WebkitWebViewSetBackgroundColor                          func(webView unsafe.Pointer, rgba *GdkRGBA)
+	WebkitWebViewGetSettings           func(webView unsafe.Pointer) unsafe.Pointer
+	WebkitWebViewGetUserContentManager func(webView unsafe.Pointer) unsafe.Pointer
+	WebkitWebViewLoadHtml              func(webView unsafe.Pointer, content string, baseUri string)
+	WebkitWebViewLoadUri               func(webView unsafe.Pointer, uri string)
+	WebkitWebViewNew                   func() unsafe.Pointer
+	WebkitWebViewSetBackgroundColor    func(webView unsafe.Pointer, rgba *GdkRGBA)
 )
 
 var (
-	JscValueToString		func (unsafe.Pointer) string
+	JscValueToString func(unsafe.Pointer) string
 )
 
 var (
-	AppIndicatorNew                   func (id string, iconName string, category uint32) unsafe.Pointer
-	AppIndicatorSetIconFull           func (self unsafe.Pointer, iconName string, iconDesc string)
-	AppIndicatorSetLabel              func (self unsafe.Pointer, label string, guide string)
-	AppIndicatorSetMenu               func (self unsafe.Pointer, menu unsafe.Pointer)
-	AppIndicatorSetStatus             func (self unsafe.Pointer, status uint32)
-	AppIndicatorSetTitle              func (self unsafe.Pointer, title string)
+	AppIndicatorNew         func(id string, iconName string, category uint32) unsafe.Pointer
+	AppIndicatorSetIconFull func(self unsafe.Pointer, iconName string, iconDesc string)
+	AppIndicatorSetLabel    func(self unsafe.Pointer, label string, guide string)
+	AppIndicatorSetMenu     func(self unsafe.Pointer, menu unsafe.Pointer)
+	AppIndicatorSetStatus   func(self unsafe.Pointer, status uint32)
+	AppIndicatorSetTitle    func(self unsafe.Pointer, title string)
 )
 
 var (
-	libc	uintptr
-	libgtk 	uintptr
-	libwebgtk	uintptr
-	libjsc	uintptr
-	libind	uintptr
+	libc      uintptr
+	libgtk    uintptr
+	libwebgtk uintptr
+	libjsc    uintptr
+	libind    uintptr
 )
-
 
 func GetGTKPath() string {
 	return "libgtk-3.so"
@@ -556,7 +552,7 @@ func SetAllCFuncs() {
 
 /*
 * User defined Gtk functions
-*/
+ */
 func GtkWindowSetTransparent(window unsafe.Pointer, transparent bool) {
 	fmt.Println("setting transparent")
 	if transparent {
@@ -584,7 +580,7 @@ func GtkWebViewSetTransparent(webview unsafe.Pointer, transparent bool) {
 		color.alpha = 0
 	}
 
-	WebkitWebViewSetBackgroundColor(webview, &color);
+	WebkitWebViewSetBackgroundColor(webview, &color)
 }
 
 func StringFromJsResult(result unsafe.Pointer) string {
@@ -599,14 +595,12 @@ func g_signal_connect(
 	c_handler uintptr,
 	data unsafe.Pointer,
 ) {
-	GSignalConnectData(instance, detailed_signal, c_handler, data, nil, 0);
+	GSignalConnectData(instance, detailed_signal, c_handler, data, nil, 0)
 }
 
 //
 // Exports
 //
-
-
 
 func OS_Init() {
 	GtkInitCheck(nil, nil)
@@ -676,11 +670,10 @@ func (window *Window) GetOuterSize() Size {
 	frame_extends := GdkRectangle{}
 	GdkWindowGetFrameExtends(gdk_window, &frame_extends)
 	return Size{
-		Width: int32(frame_extends.width),
+		Width:  int32(frame_extends.width),
 		Height: int32(frame_extends.height),
 	}
 }
-
 
 func (window *Window) GetPosition() Position {
 	result := Position{}
@@ -689,8 +682,8 @@ func (window *Window) GetPosition() Position {
 	return result
 }
 
-//TODO this works as intended but user shall be aware of gtk_window_set_resizable's behavior
-//https://stackoverflow.com/a/3582628
+// TODO this works as intended but user shall be aware of gtk_window_set_resizable's behavior
+// https://stackoverflow.com/a/3582628
 func (window *Window) SetResizable(resizable bool) {
 	GtkWindowSetResizable(window.Handle, resizable)
 }
@@ -704,14 +697,14 @@ func (window *Window) SetPosition(x int32, y int32) {
 }
 
 func (window *Window) SetMinSize(width int32, height int32) {
-	window.MinSize.Width = width;
-	window.MinSize.Height = height;
+	window.MinSize.Width = width
+	window.MinSize.Height = height
 	window.setGeometry()
 }
 
 func (window *Window) SetMaxSize(width int32, height int32) {
-	window.MaxSize.Width = width;
-	window.MaxSize.Height = height;
+	window.MaxSize.Width = width
+	window.MaxSize.Height = height
 	window.setGeometry()
 }
 
