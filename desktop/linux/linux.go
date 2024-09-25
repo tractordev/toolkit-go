@@ -687,11 +687,38 @@ var (
 )
 
 var (
+	// AppIndicatorNew: Creates a new AppIndicator.
+	// @param id string: the ID of the indicator
+	// @param iconName string: the name of the icon
+	// @param category AppIndicatorCategory: the category of the indicator
+	// Returns AppIndicator*: the new AppIndicator
 	AppIndicatorNew         func(id string, iconName string, category uint32) unsafe.Pointer
+	
+	// AppIndicatorSetIconFull: Sets the icon of an AppIndicator.
+	// @param self AppIndicator*: the AppIndicator
+	// @param iconName string: the name of the icon
+	// @param iconDesc string: the description of the icon
 	AppIndicatorSetIconFull func(self unsafe.Pointer, iconName string, iconDesc string)
+	
+	// AppIndicatorSetLabel: Sets the label of an AppIndicator.
+	// @param self AppIndicator*: the AppIndicator
+	// @param label string: the label
+	// @param guide string: the guide
 	AppIndicatorSetLabel    func(self unsafe.Pointer, label string, guide string)
+	
+	// AppIndicatorSetMenu: Sets the menu of an AppIndicator.
+	// @param self AppIndicator*: the AppIndicator
+	// @param menu GtkMenu*: the menu
 	AppIndicatorSetMenu     func(self unsafe.Pointer, menu unsafe.Pointer)
+	
+	// AppIndicatorSetStatus: Sets the status of an AppIndicator.
+	// @param self AppIndicator*: the AppIndicator
+	// @param status AppIndicatorStatus: the status
 	AppIndicatorSetStatus   func(self unsafe.Pointer, status uint32)
+	
+	// AppIndicatorSetTitle: Sets the title of an AppIndicator.
+	// @param self AppIndicator*: the AppIndicator
+	// @param title string: the title
 	AppIndicatorSetTitle    func(self unsafe.Pointer, title string)
 )
 
