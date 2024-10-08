@@ -37,20 +37,21 @@ func (w *Window) Load() {
 		}
 	}
 
-	window.SetSize(int(size.Width), int(size.Height))
+	window.SetSize(int32(size.Width), int32(size.Height))
 
 	if w.Options.MinSize.Width != 0 || w.Options.MinSize.Height != 0 {
-		window.SetMinSize(int(w.Options.MinSize.Width), int(w.Options.MinSize.Height))
+		window.SetMinSize(int32(w.Options.MinSize.Width), int32(w.Options.MinSize.Height))
 	}
 
 	if w.Options.MaxSize.Width != 0 || w.Options.MaxSize.Height != 0 {
-		window.SetMaxSize(int(w.Options.MaxSize.Width), int(w.Options.MaxSize.Height))
+		window.SetMaxSize(int32(w.Options.MaxSize.Width), int32(w.Options.MaxSize.Height))
 	}
 
 	if w.Options.Center {
 		window.Center()
 	} else {
-		window.SetPosition(int(w.Options.Position.X), int(w.Options.Position.Y))
+		//TODO
+		window.SetPosition(int32(w.Options.Position.X), int32(w.Options.Position.Y))
 	}
 
 	if w.Options.Frameless {
@@ -165,15 +166,15 @@ func (w *Window) SetFullscreen(fullscreen bool) {
 }
 
 func (w *Window) SetSize(size Size) {
-	w.win.SetSize(int(size.Width), int(size.Height))
+	w.win.SetSize(int32(size.Width), int32(size.Height))
 }
 
 func (w *Window) SetMinSize(size Size) {
-	w.win.SetMinSize(int(size.Width), int(size.Height))
+	w.win.SetMinSize(int32(size.Width), int32(size.Height))
 }
 
 func (w *Window) SetMaxSize(size Size) {
-	w.win.SetMaxSize(int(size.Width), int(size.Height))
+	w.win.SetMaxSize(int32(size.Width), int32(size.Height))
 }
 
 func (w *Window) SetResizable(resizable bool) {
@@ -185,7 +186,7 @@ func (w *Window) SetAlwaysOnTop(always bool) {
 }
 
 func (w *Window) SetPosition(position Position) {
-	w.win.SetPosition(int(position.X), int(position.Y))
+	w.win.SetPosition(int32(position.X), int32(position.Y))
 }
 
 func (w *Window) SetTitle(title string) {
@@ -201,7 +202,7 @@ func (w *Window) GetOuterPosition() Position {
 }
 
 func (w *Window) GetOuterSize() Size {
-	size := w.win.GetSize()
+	size := w.win.GetOuterSize()
 	return Size{
 		Width:  float64(size.Width),
 		Height: float64(size.Height),
@@ -209,8 +210,11 @@ func (w *Window) GetOuterSize() Size {
 }
 
 func (w *Window) GetInnerSize() Size {
-	// TODO(nick): implement me
-	return w.GetOuterSize()
+	size := w.win.GetSize()
+	return Size{
+		Width:  float64(size.Width),
+		Height: float64(size.Height),
+	}
 }
 
 var ptrLookup sync.Map

@@ -16,4 +16,11 @@ sudo apt install \
 
 ## TODO
 
-Use purego!
+- Transparency call are succesful but no effect?
+- Focus has no effect? What is the intended effet of focus?
+- Does purego has static linking, something like linking at compile time and purego just loading them in runtime?
+- Reload undoes user effects, like resize and positioning.
+
+- Testing?
+  - All api.
+  - AppIndicator
