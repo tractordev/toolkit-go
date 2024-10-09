@@ -1150,13 +1150,12 @@ func (window *Window) SetIconFromBytes(icon []byte) bool {
 // not a idiomatic go call, the @event is handled more like C raw poitner here.
 // The function will first read that integer and deduce the union type, it will then cast
 // this pointer to one of two possible union fields declared in go.
-func go_event_callback(window unsafe.Pointer, event *int32, arg int32) {
+func go_event_callback(window unsafe.Pointer, event *int32, arg *Window) {
 	if globalEventCallback != nil {
 		eventType := *event
 
 		result := Event{}
 		result.Window.Handle = window
-		result.UserData = arg
 
 		if eventType == GdkDelete {
 			result.Type = Delete
@@ -1174,6 +1173,7 @@ func go_event_callback(window unsafe.Pointer, event *int32, arg int32) {
 			result.Type = Configure
 			result.Position = Position{X: int32(configure.x), Y: int32(configure.y)}
 			result.Size = Size{Width: int32(configure.width), Height: int32(configure.height)}
+			arg.CurrentSize = result.Size
 		}
 
 		/*
@@ -1209,8 +1209,8 @@ func go_event_callback(window unsafe.Pointer, event *int32, arg int32) {
 	}
 }
 
-func (window *Window) BindEventCallback(userData int) {
-	GSignalConnect(window.Handle, "event", purego.NewCallback(go_event_callback), unsafe.Pointer(&userData))
+func (window *Window) BindEventCallback() {
+	GSignalConnect(window.Handle, "event", purego.NewCallback(go_event_callback), unsafe.Pointer(window))
 }
 
 func SetGlobalEventCallback(callback Event_Callback) {
