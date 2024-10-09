@@ -587,6 +587,11 @@ var (
 	// Returns JSValue*: the JavaScript value
 	WebkitJavascriptResultGetJsValue func(jsResult unsafe.Pointer) unsafe.Pointer
 
+	// WebkitSettingsSetEnable2DCanvasAcceleration: Enables or disables 2D canvas acceleration.
+	// @param settings WebKitSettings*: the settings
+	// @param enable bool: true to enable 2D canvas acceleration, false to disable
+	WebkitSettingsSetEnable2DCanvasAcceleration func(settings unsafe.Pointer, enable bool)
+
 	// WebkitSettingsSetEnableDeveloperExtras: Enables or disables developer extras.
 	// @param settings WebKitSettings*: the settings
 	// @param enable bool: true to enable developer extras, false to disable
@@ -846,6 +851,7 @@ func SetAllCFuncs() {
 	purego.RegisterLibFunc(&GdkAtomIntern, libgtk, "gdk_atom_intern")
 
 	//Webkit functions
+	purego.RegisterLibFunc(&WebkitSettingsSetEnable2DCanvasAcceleration, libwebgtk, "webkit_settings_set_enable_2d_canvas_acceleration")
 	purego.RegisterLibFunc(&WebkitSettingsSetEnableDeveloperExtras, libwebgtk, "webkit_settings_set_enable_developer_extras")
 	purego.RegisterLibFunc(&WebkitSettingsSetEnableWriteConsoleMessagesToStdout, libwebgtk, "webkit_settings_set_enable_write_console_messages_to_stdout")
 	purego.RegisterLibFunc(&WebkitSettingsSetJavascriptCanAccessClipboard, libwebgtk, "webkit_settings_set_javascript_can_access_clipboard")
@@ -1246,6 +1252,7 @@ func (webview *Webview) SetSettings(config WebviewSetings) {
 	WebkitSettingsSetJavascriptCanAccessClipboard(settings, config.CanAccessClipboard)
 	WebkitSettingsSetEnableWriteConsoleMessagesToStdout(settings, config.WriteConsoleToStdout)
 	WebkitSettingsSetEnableDeveloperExtras(settings, config.DeveloperTools)
+	WebkitSettingsSetEnable2DCanvasAcceleration(settings, false)
 }
 
 func (webview *Webview) Eval(js string) {
