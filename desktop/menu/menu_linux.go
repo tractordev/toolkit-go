@@ -6,6 +6,7 @@ import (
 
 type menu struct {
 	linux.Menu
+	items []Item
 }
 
 func (m *menu) unload() {
@@ -16,15 +17,15 @@ func (m *menu) unload() {
 }
 
 func (m *menu) load() {
-	// TODO: finish this
-	//m.Menu = createMenu(items)
-	//m.Menu.Retain()
+	m.Menu = createMenu(m.items)
 }
 
-func (m *menu) AddItem(item Item) {
-	// TODO
+// Should always be called before load
+func (m *menu) AddItem(it Item) {
+	m.items = append(m.items, it)
 }
 
+//TODO
 func (m *menu) popup() int {
 	return 0
 }
@@ -45,6 +46,5 @@ func createMenu(items []Item) linux.Menu {
 			menu.AppendItem(item)
 		}
 	}
-
 	return menu
 }

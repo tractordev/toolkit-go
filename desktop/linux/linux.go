@@ -1390,7 +1390,7 @@ func MenuItem_New(id int, title string, disabled bool, checked bool, separator b
 
 			GtkCheckMenuItemSetActive(widget, checked)
 		} else {
-			widget = GtkCheckMenuItemNewWithLabel(title)
+			widget = GtkMenuItemNewWithLabel(title)
 		}
 
 		GtkWidgetSetSensitive(widget, !disabled)
