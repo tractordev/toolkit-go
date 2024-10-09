@@ -6,14 +6,12 @@ import (
 	"tractor.dev/toolkit-go/desktop/linux"
 )
 
-func init() {
-	linux.LoadLibraries()
-	linux.SetAllCFuncs()
-	linux.OS_Init()
-}
-
 func start() {
 	for isRunning.Load() {
+		linux.LoadLibraries()
+		linux.SetAllCFuncs()
+		linux.OS_Init()
+
 		linux.PollEvents()
 
 		select {
@@ -26,6 +24,8 @@ func start() {
 }
 
 func stop() {
-	linux.UnloadLibraries()
+	dispatch(func() {
+		linux.UnloadLibraries()
+	}, false)
 	isRunning.Store(false)
 }
