@@ -47,6 +47,9 @@ func New(items []Item) *Menu {
 	menu := &Menu{
 		Items: items,
 	}
+	for _, it := range items {
+		menu.AddItem(it)
+	}
 	menu.Reload()
 	return menu
 }
@@ -63,9 +66,6 @@ func (m *Menu) Reload() {
 	m.unload()
 	m.load()
 
-	for _, item := range m.Items {
-		m.AddItem(item)
-	}
 	// if len(m.Items) == 0 && m.obj != nil {
 	// 	for _, i := range node.GetAll[*Item](m.obj, node.Include{Children: true, NotSelf: true}) {
 	// 		items = append(items, *i)
