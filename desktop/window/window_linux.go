@@ -227,8 +227,6 @@ func findWindow(win linux.Window) *Window {
 }
 
 func init() {
-	linux.OS_Init()
-
 	linux.SetGlobalEventCallback(func(it linux.Event) {
 
 		if win := findWindow(it.Window); win != nil {
