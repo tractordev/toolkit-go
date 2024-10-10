@@ -21,7 +21,7 @@ type Window struct {
 }
 
 func (w *Window) Load() {
-	window := linux.Window_New()
+	w.win = linux.Window_New()
 
 	size := w.Options.Size
 
@@ -37,47 +37,47 @@ func (w *Window) Load() {
 		}
 	}
 
-	window.SetSize(int32(size.Width), int32(size.Height))
+	w.win.SetSize(int32(size.Width), int32(size.Height))
 
 	if w.Options.MinSize.Width != 0 || w.Options.MinSize.Height != 0 {
-		window.SetMinSize(int32(w.Options.MinSize.Width), int32(w.Options.MinSize.Height))
+		w.win.SetMinSize(int32(w.Options.MinSize.Width), int32(w.Options.MinSize.Height))
 	}
 
 	if w.Options.MaxSize.Width != 0 || w.Options.MaxSize.Height != 0 {
-		window.SetMaxSize(int32(w.Options.MaxSize.Width), int32(w.Options.MaxSize.Height))
+		w.win.SetMaxSize(int32(w.Options.MaxSize.Width), int32(w.Options.MaxSize.Height))
 	}
 
 	if w.Options.Center {
-		window.Center()
+		w.win.Center()
 	} else {
 		//TODO
-		window.SetPosition(int32(w.Options.Position.X), int32(w.Options.Position.Y))
+		w.win.SetPosition(int32(w.Options.Position.X), int32(w.Options.Position.Y))
 	}
 
 	if w.Options.Frameless {
-		window.SetDecorated(false)
+		w.win.SetDecorated(false)
 	}
 
 	if w.Options.Fullscreen {
-		window.SetFullscreen(true)
+		w.win.SetFullscreen(true)
 	}
 
 	if w.Options.Maximized {
-		window.SetMaximized(true)
+		w.win.SetMaximized(true)
 	}
 
-	window.SetResizable(w.Options.Resizable)
+	w.win.SetResizable(w.Options.Resizable)
 
 	if w.Options.Title != "" {
-		window.SetTitle(w.Options.Title)
+		w.win.SetTitle(w.Options.Title)
 	}
 
 	if w.Options.AlwaysOnTop {
-		window.SetAlwaysOnTop(true)
+		w.win.SetAlwaysOnTop(true)
 	}
 
 	if len(w.Options.Icon) > 0 {
-		window.SetIconFromBytes(w.Options.Icon)
+		w.win.SetIconFromBytes(w.Options.Icon)
 	}
 
 	webview := linux.Webview_New()
@@ -89,10 +89,10 @@ func (w *Window) Load() {
 	callbackId := webview.RegisterCallback("apptron", myCallback)
 	webview.Eval("webkit.messageHandlers.apptron.postMessage(JSON.stringify({ hello: 42 }));")
 
-	window.AddWebview(webview)
+	w.win.AddWebview(webview)
 
 	if w.Options.Transparent {
-		window.SetTransparent(true)
+		w.win.SetTransparent(true)
 		webview.SetTransparent(true)
 	}
 
@@ -109,12 +109,11 @@ func (w *Window) Load() {
 	}
 
 	if w.Options.Visible {
-		window.Show()
+		w.win.Show()
 	}
 
-	window.BindEventCallback(0)
+	w.win.BindEventCallback()
 
-	w.win = window
 	w.webview = webview
 	w.callbackId = callbackId
 
