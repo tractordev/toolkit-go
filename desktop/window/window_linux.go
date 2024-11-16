@@ -108,7 +108,7 @@ func (w *Window) Load() {
 		webview.AddScript(w.Options.Script)
 	}
 
-	if w.Options.Visible {
+	if !w.Options.Hidden {
 		w.win.Show()
 	}
 
