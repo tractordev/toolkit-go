@@ -7,13 +7,12 @@ import (
 )
 
 func start() {
+	linux.LoadLibraries()
+	linux.SetAllCFuncs()
+	linux.OS_Init()
+
 	for isRunning.Load() {
-		linux.LoadLibraries()
-		linux.SetAllCFuncs()
-		linux.OS_Init()
-
 		linux.PollEvents()
-
 		select {
 		case fn := <-dispatchQueue:
 			fn()
