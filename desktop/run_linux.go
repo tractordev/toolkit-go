@@ -25,6 +25,6 @@ func start() {
 func stop() {
 	dispatch(func() {
 		linux.UnloadLibraries()
+		isRunning.Store(false)
 	}, false)
-	isRunning.Store(false)
 }
