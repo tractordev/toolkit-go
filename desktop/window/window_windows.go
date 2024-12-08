@@ -349,7 +349,7 @@ func (w *Window) Load() {
 	}
 
 	// Finally, present the window and webview.
-	if w.Options.Visible {
+	if !w.Options.Hidden {
 		w.SetVisible(true)
 	}
 
