@@ -18,6 +18,7 @@ import (
 	"io/fs"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -161,16 +162,16 @@ func (m *FS) MkdirAll(path string, perm fs.FileMode) error {
 }
 
 // Handle some relative paths
-func normalizePath(path string) string {
-	path = filepath.Clean(path)
+func normalizePath(filePath string) string {
+	filePath = path.Clean(filePath)
 
-	switch path {
+	switch filePath {
 	case ".":
 		return filePathSeparator
 	case "..":
 		return filePathSeparator
 	default:
-		return path
+		return filePath
 	}
 }
 
@@ -335,6 +336,7 @@ func (m *FS) Stat(name string) (fs.FileInfo, error) {
 }
 
 func (m *FS) Chmod(name string, mode fs.FileMode) error {
+	name = normalizePath(name)
 	mode &= chmodBits
 
 	m.mu.RLock()
