@@ -26,13 +26,12 @@ type ioduplex struct {
 }
 
 func (d *ioduplex) Close() error {
-	if err := d.WriteCloser.Close(); err != nil {
-		return err
+	writeErr := d.WriteCloser.Close()
+	readErr := d.ReadCloser.Close()
+	if writeErr != nil {
+		return writeErr
 	}
-	if err := d.ReadCloser.Close(); err != nil {
-		return err
-	}
-	return nil
+	return readErr
 }
 
 // ListenIO returns an IOListener that gives a mux session based on seperate
