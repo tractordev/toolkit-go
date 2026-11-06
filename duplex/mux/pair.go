@@ -2,6 +2,7 @@ package mux
 
 import (
 	"io"
+	"sync"
 )
 
 func Pair() (a, b Session) {
@@ -17,48 +18,86 @@ func Pair() (a, b Session) {
 type bufferedPipeWriter struct {
 	dataCh  chan []byte
 	closeCh chan struct{}
-	closed  bool
+	spaceCh chan struct{}
+	mu      sync.Mutex
+	err     error
+	pw      *io.PipeWriter
 }
 
 func newBufferedPipeWriter(pw *io.PipeWriter, bufferSize int) *bufferedPipeWriter {
-	dataCh := make(chan []byte, bufferSize)
-	closeCh := make(chan struct{})
-
+	w := &bufferedPipeWriter{dataCh: make(chan []byte, bufferSize), closeCh: make(chan struct{}), spaceCh: make(chan struct{}), pw: pw}
 	go func() {
 		defer pw.Close()
 		for {
 			select {
-			case data := <-dataCh:
-				pw.Write(data)
-			case <-closeCh:
+			case <-w.closeCh:
 				return
+			case data := <-w.dataCh:
+				w.mu.Lock()
+				close(w.spaceCh)
+				w.spaceCh = make(chan struct{})
+				err := w.err
+				w.mu.Unlock()
+				if err != nil {
+					return
+				}
+				if _, err := pw.Write(data); err != nil {
+					w.stop(err)
+					return
+				}
 			}
 		}
 	}()
+	return w
+}
 
-	return &bufferedPipeWriter{
-		dataCh:  dataCh,
-		closeCh: closeCh,
-		closed:  false,
+// Write transfers ownership of a copy to the bounded queue, not delivery.
+func (w *bufferedPipeWriter) Write(p []byte) (int, error) {
+	for {
+		w.mu.Lock()
+		if w.err != nil {
+			err := w.err
+			w.mu.Unlock()
+			return 0, err
+		}
+		select {
+		case w.dataCh <- append([]byte(nil), p...):
+			w.mu.Unlock()
+			return len(p), nil
+		default:
+			space := w.spaceCh
+			w.mu.Unlock()
+			select {
+			case <-w.closeCh:
+			case <-space:
+			}
+		}
 	}
 }
 
-func (w *bufferedPipeWriter) Write(p []byte) (n int, err error) {
-	if w.closed {
-		return 0, io.ErrClosedPipe
+func (w *bufferedPipeWriter) stop(err error) bool {
+	w.mu.Lock()
+	if w.err != nil {
+		w.mu.Unlock()
+		return false
 	}
-
-	data := make([]byte, len(p))
-	copy(data, p)
-	w.dataCh <- data
-	return len(p), nil
+	w.err = err
+	close(w.closeCh)
+	// Close is abortive: release queued payloads without waiting for delivery.
+	for {
+		select {
+		case <-w.dataCh:
+		default:
+			w.mu.Unlock()
+			w.pw.Close()
+			return true
+		}
+	}
 }
 
 func (w *bufferedPipeWriter) Close() error {
-	if w.closed {
+	if !w.stop(io.ErrClosedPipe) {
 		return io.ErrClosedPipe
 	}
-	w.closed = true
-	close(w.closeCh)
 	return nil
 }
